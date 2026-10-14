@@ -1,0 +1,616 @@
+{
+ "id": "ks3-separating-mixtures-pract",
+ "v": 1,
+ "parts": [
+  {
+   "n": 1,
+   "title": "Mixtures"
+  },
+  {
+   "n": 2,
+   "title": "Filtration"
+  },
+  {
+   "n": 3,
+   "title": "Evaporation and crystals"
+  },
+  {
+   "n": 4,
+   "title": "Distillation"
+  },
+  {
+   "n": 5,
+   "title": "Chromatography"
+  },
+  {
+   "n": 6,
+   "title": "Decanting and separating funnel"
+  },
+  {
+   "n": 7,
+   "title": "Sieve and magnet"
+  },
+  {
+   "n": 8,
+   "title": "Method challenge"
+  }
+ ],
+ "groups": [],
+ "questions": [
+  {
+   "id": "p1-sim-zoom",
+   "part": 1,
+   "title": "Bench: zoomed in on all eight samples",
+   "short": "bench",
+   "kind": "task"
+  },
+  {
+   "id": "p1-sim-dissolve",
+   "part": 1,
+   "title": "Bench: dissolved salt until saturated; tried sand",
+   "short": "bench",
+   "kind": "task"
+  },
+  {
+   "id": "p1-sort-pure",
+   "part": 1,
+   "title": "Pure substance or mixture?",
+   "short": "sort 1",
+   "kind": "sort"
+  },
+  {
+   "id": "p1-sort-kind",
+   "part": 1,
+   "title": "Solution or mechanical mixture?",
+   "short": "sort 2",
+   "kind": "sort"
+  },
+  {
+   "id": "p1-qc-1",
+   "part": 1,
+   "title": "Why is mineral water a mixture?",
+   "short": "q1",
+   "kind": "mcq",
+   "opts": [
+    "Minerals are dissolved in it, and they are not chemically joined to the water.",
+    "Its water particles are made of hydrogen and oxygen atoms joined together.",
+    "It is a liquid, and every liquid that people drink is a mixture of substances.",
+    "It has only one phase, and a substance with only one phase is a mixture."
+   ]
+  },
+  {
+   "id": "p1-qc-2",
+   "part": 1,
+   "title": "Solute and solvent in coffee",
+   "short": "q2",
+   "kind": "gaps",
+   "gaps": [
+    "solvent",
+    "solute",
+    "solution"
+   ]
+  },
+  {
+   "id": "p1-qc-3",
+   "part": 1,
+   "title": "Soluble, insoluble, saturated",
+   "short": "q3",
+   "kind": "gaps",
+   "gaps": [
+    "soluble",
+    "insoluble",
+    "saturated"
+   ]
+  },
+  {
+   "id": "p1-ext-1",
+   "part": 1,
+   "title": "Milk (extension)",
+   "short": "ext",
+   "kind": "mcq",
+   "opts": [
+    "A mixture: fat droplets and proteins are spread through water, not joined to it.",
+    "A compound: fat, proteins and water are chemically joined into one substance.",
+    "A pure substance: it looks the same all through, so it has one kind of particle.",
+    "An element: it comes from one kind of animal, so it has one kind of atom."
+   ],
+   "ext": 1
+  },
+  {
+   "id": "p2-sim",
+   "part": 2,
+   "title": "Bench: filtration of muddy water and salt water",
+   "short": "bench",
+   "kind": "task"
+  },
+  {
+   "id": "p2-qc-1",
+   "part": 2,
+   "title": "Residue and filtrate in a coffee filter",
+   "short": "q1",
+   "kind": "gaps",
+   "gaps": [
+    "residue",
+    "filtrate"
+   ]
+  },
+  {
+   "id": "p2-qc-2",
+   "part": 2,
+   "title": "Why did the salt pass through?",
+   "short": "q2",
+   "kind": "mcq",
+   "opts": [
+    "The salt was dissolved, so its particles were small enough to pass through the holes.",
+    "The salt grains were heavier than the sand grains, so they fell straight through the paper.",
+    "The salt reacted with the paper and made the holes in the paper much bigger.",
+    "The water pushed the salt through because the funnel was filled too quickly."
+   ]
+  },
+  {
+   "id": "p2-qc-3",
+   "part": 2,
+   "title": "The two properties filtration uses",
+   "short": "q3",
+   "kind": "gaps",
+   "gaps": [
+    "size",
+    "solubility"
+   ]
+  },
+  {
+   "id": "p2-qc-4",
+   "part": 2,
+   "title": "Which mixture can filtration separate?",
+   "short": "q4",
+   "kind": "mcq",
+   "opts": [
+    "Chalk powder stirred into water",
+    "Sugar dissolved in warm tap water",
+    "Blue ink mixed with water",
+    "Salt dissolved in seawater"
+   ]
+  },
+  {
+   "id": "p3-sim-evap",
+   "part": 3,
+   "title": "Bench: evaporated salt solution",
+   "short": "bench",
+   "kind": "task"
+  },
+  {
+   "id": "p3-sim-cryst",
+   "part": 3,
+   "title": "Bench: grew copper sulfate crystals",
+   "short": "bench",
+   "kind": "task"
+  },
+  {
+   "id": "p3-qc-1",
+   "part": 3,
+   "title": "Why does the water leave and the salt stay?",
+   "short": "q1",
+   "kind": "mcq",
+   "opts": [
+    "Water is more volatile than salt: it turns into a gas at a much lower temperature.",
+    "Salt is more volatile than water: it turns into a gas first and then falls back down.",
+    "Salt is denser than water, so it sinks and stays in the basin while water rises.",
+    "Water particles are bigger than salt particles, so the heat pushes the water out."
+   ]
+  },
+  {
+   "id": "p3-qc-2",
+   "part": 3,
+   "title": "Salt pans in the sun",
+   "short": "q2",
+   "kind": "gaps",
+   "gaps": [
+    "evaporates",
+    "evaporation"
+   ]
+  },
+  {
+   "id": "p3-qc-3",
+   "part": 3,
+   "title": "The steps of crystallisation",
+   "short": "q3",
+   "kind": "order"
+  },
+  {
+   "id": "p3-qc-4",
+   "part": 3,
+   "title": "Why do crystals form as it cools?",
+   "short": "q4",
+   "kind": "mcq",
+   "opts": [
+    "A cool solution can hold less dissolved solute, so the extra solute forms crystals.",
+    "A cool solution can hold more dissolved solute, so the solute joins into crystals.",
+    "Cooling makes the water react with the solute, and the new compound is a solid crystal.",
+    "Cooling makes the solvent boil away quickly, so only the crystals stay behind."
+   ]
+  },
+  {
+   "id": "p3-qc-5",
+   "part": 3,
+   "title": "The property each method uses",
+   "short": "q5",
+   "kind": "gaps",
+   "gaps": [
+    "volatility",
+    "solubility"
+   ]
+  },
+  {
+   "id": "p4-sim",
+   "part": 4,
+   "title": "Bench: distilled seawater",
+   "short": "bench",
+   "kind": "task"
+  },
+  {
+   "id": "p4-sim-frac",
+   "part": 4,
+   "title": "Bench: fractional distillation (extension)",
+   "short": "bench",
+   "kind": "task",
+   "ext": 1
+  },
+  {
+   "id": "p4-qc-1",
+   "part": 4,
+   "title": "Why does cold water go in at the bottom?",
+   "short": "q1",
+   "kind": "mcq",
+   "opts": [
+    "So the jacket fills completely with cold water and cools all of the vapour.",
+    "So the cold water flows downhill and leaves the jacket as fast as it can.",
+    "So the vapour is pushed back into the flask and boils for a second time.",
+    "So the cold water mixes with the vapour and makes more distillate more quickly."
+   ]
+  },
+  {
+   "id": "p4-qc-2",
+   "part": 4,
+   "title": "The temperature while the distillate collects",
+   "short": "q2",
+   "kind": "num"
+  },
+  {
+   "id": "p4-qc-3",
+   "part": 4,
+   "title": "Drinking water on a ship",
+   "short": "q3",
+   "kind": "gaps",
+   "gaps": [
+    "boils",
+    "condenses",
+    "distillate"
+   ]
+  },
+  {
+   "id": "p4-qc-4",
+   "part": 4,
+   "title": "Distillation or evaporation?",
+   "short": "q4",
+   "kind": "mcq",
+   "opts": [
+    "In distillation the vapour is cooled and collected; in evaporation it is lost to the air.",
+    "In distillation the solid is collected; in evaporation the solid is lost to the air.",
+    "In distillation the liquid is never heated at all; in evaporation the liquid is always heated.",
+    "In distillation the solid dissolves again; in evaporation the solid forms crystals."
+   ]
+  },
+  {
+   "id": "p4-ext-1",
+   "part": 4,
+   "title": "Ethanol and water (extension)",
+   "short": "ext1",
+   "kind": "gaps",
+   "gaps": [
+    "ethanol",
+    "lower"
+   ],
+   "ext": 1
+  },
+  {
+   "id": "p4-ext-2",
+   "part": 4,
+   "title": "When to change the beaker (extension)",
+   "short": "ext2",
+   "kind": "mcq",
+   "opts": [
+    "Change the beaker: the ethanol has gone, and water is about to collect.",
+    "Turn off the Bunsen: the mixture is now fully separated into two liquids.",
+    "Keep the same beaker: the ethanol and the water are collected together.",
+    "Add more ethanol: the flask needs it to keep the temperature at 78 °C."
+   ],
+   "ext": 1
+  },
+  {
+   "id": "p5-sim",
+   "part": 5,
+   "title": "Bench: made the chromatogram of the five inks",
+   "short": "bench",
+   "kind": "task"
+  },
+  {
+   "id": "p5-qc-1",
+   "part": 5,
+   "title": "Why a pencil start line?",
+   "short": "q1",
+   "kind": "mcq",
+   "opts": [
+    "Pencil is insoluble in the solvent, so the line does not move or add colours.",
+    "Pencil is soluble in the solvent, so the line moves up the paper with the dyes.",
+    "Pencil lines are thicker than pen lines, so the ink spots are easier to see.",
+    "Pencil lines are darker than pen lines, so the dyes move further up the paper."
+   ]
+  },
+  {
+   "id": "p5-qc-2",
+   "part": 5,
+   "title": "Why the solvent stays below the line",
+   "short": "q2",
+   "kind": "mcq",
+   "opts": [
+    "Otherwise the dyes dissolve into the water in the beaker instead of moving up.",
+    "Otherwise the water cannot reach the paper, and so the dyes do not move at all.",
+    "Otherwise the paper becomes too heavy, and it falls into the beaker of water.",
+    "Otherwise the lid cannot be closed, and the water evaporates from the beaker."
+   ]
+  },
+  {
+   "id": "p5-qc-3",
+   "part": 5,
+   "title": "Which pen wrote the note?",
+   "short": "q3",
+   "kind": "mcq",
+   "opts": [
+    "Pen B",
+    "Pen A",
+    "Pen C",
+    "Pen D"
+   ]
+  },
+  {
+   "id": "p5-qc-4",
+   "part": 5,
+   "title": "How many dyes in the note?",
+   "short": "q4",
+   "kind": "num"
+  },
+  {
+   "id": "p5-qc-5",
+   "part": 5,
+   "title": "Pen D stayed on the line",
+   "short": "q5",
+   "kind": "gaps",
+   "gaps": [
+    "insoluble",
+    "solvent"
+   ]
+  },
+  {
+   "id": "p5-qc-6",
+   "part": 5,
+   "title": "Stationary and mobile phase in a new method",
+   "short": "q6",
+   "kind": "gaps",
+   "gaps": [
+    "stationary",
+    "mobile",
+    "chromatogram"
+   ]
+  },
+  {
+   "id": "p5-ext-1",
+   "part": 5,
+   "title": "Rf of the red dye (extension)",
+   "short": "ext",
+   "kind": "num",
+   "ext": 1
+  },
+  {
+   "id": "p6-sim-decant",
+   "part": 6,
+   "title": "Bench: decanted water off sand",
+   "short": "bench",
+   "kind": "task"
+  },
+  {
+   "id": "p6-sim-funnel",
+   "part": 6,
+   "title": "Bench: separated oil and water with a separating funnel",
+   "short": "bench",
+   "kind": "task"
+  },
+  {
+   "id": "p6-qc-1",
+   "part": 6,
+   "title": "Why is oil the top layer?",
+   "short": "q1",
+   "kind": "mcq",
+   "opts": [
+    "Oil is less dense than water, so it floats on top of the water.",
+    "Oil is more dense than water, so it rises up above all the water.",
+    "Oil is more volatile than water, so it rises up to the top.",
+    "Oil is less soluble than water, so it stays above the water."
+   ]
+  },
+  {
+   "id": "p6-qc-2",
+   "part": 6,
+   "title": "Immiscible liquids and density",
+   "short": "q2",
+   "kind": "gaps",
+   "gaps": [
+    "immiscible",
+    "density"
+   ]
+  },
+  {
+   "id": "p6-qc-3",
+   "part": 6,
+   "title": "Which pair can a separating funnel separate?",
+   "short": "q3",
+   "kind": "mcq",
+   "opts": [
+    "Cooking oil and vinegar",
+    "Ethanol and water",
+    "Orange juice and water",
+    "Salt water and pure water"
+   ]
+  },
+  {
+   "id": "p6-qc-4",
+   "part": 6,
+   "title": "When the funnel cannot work",
+   "short": "q4",
+   "kind": "gaps",
+   "gaps": [
+    "miscible",
+    "fractional distillation"
+   ]
+  },
+  {
+   "id": "p7-sim-magnet",
+   "part": 7,
+   "title": "Bench: sorted steel and aluminium cans with a magnet",
+   "short": "bench",
+   "kind": "task"
+  },
+  {
+   "id": "p7-sim-sieve",
+   "part": 7,
+   "title": "Bench: sieved soil",
+   "short": "bench",
+   "kind": "task"
+  },
+  {
+   "id": "p7-qc-1",
+   "part": 7,
+   "title": "Why do aluminium cans stay on the belt?",
+   "short": "q1",
+   "kind": "mcq",
+   "opts": [
+    "Aluminium is not a magnetic metal, so the magnet does not attract it at all.",
+    "Aluminium cans are heavier than steel cans, so the magnet cannot lift them.",
+    "Aluminium is magnetic, but the paint on the cans stops the magnet attracting it.",
+    "Aluminium cans are empty, so there is no metal inside for the magnet to attract."
+   ]
+  },
+  {
+   "id": "p7-qc-2",
+   "part": 7,
+   "title": "The property each tool uses",
+   "short": "q2",
+   "kind": "gaps",
+   "gaps": [
+    "magnetism",
+    "size"
+   ]
+  },
+  {
+   "id": "p7-qc-3",
+   "part": 7,
+   "title": "Iron filings and sulfur",
+   "short": "q3",
+   "kind": "mcq",
+   "opts": [
+    "Hold a magnet over the mixture: it attracts the iron filings.",
+    "Pour the mixture through filter paper: the iron stays on top.",
+    "Heat the mixture in a basin: the sulfur evaporates and leaves.",
+    "Stir the mixture into water: the iron filings float, and the sulfur sinks."
+   ]
+  },
+  {
+   "id": "p8-job-1",
+   "part": 8,
+   "title": "Job 1: drinking water from seawater",
+   "short": "j1",
+   "kind": "pick"
+  },
+  {
+   "id": "p8-job-2",
+   "part": 8,
+   "title": "Job 2: colours in a sweet",
+   "short": "j2",
+   "kind": "pick"
+  },
+  {
+   "id": "p8-job-3",
+   "part": 8,
+   "title": "Job 3: copper sulfate crystals",
+   "short": "j3",
+   "kind": "pick"
+  },
+  {
+   "id": "p8-job-4",
+   "part": 8,
+   "title": "Job 4: chalk from water",
+   "short": "j4",
+   "kind": "pick"
+  },
+  {
+   "id": "p8-job-5",
+   "part": 8,
+   "title": "Job 5: oil from water",
+   "short": "j5",
+   "kind": "pick"
+  },
+  {
+   "id": "p8-job-6",
+   "part": 8,
+   "title": "Job 6: steel and aluminium cans",
+   "short": "j6",
+   "kind": "pick"
+  },
+  {
+   "id": "p8-job-7",
+   "part": 8,
+   "title": "Job 7: stones from soil",
+   "short": "j7",
+   "kind": "pick"
+  },
+  {
+   "id": "p8-job-8",
+   "part": 8,
+   "title": "Job 8: salt from sand and salt",
+   "short": "j8",
+   "kind": "pick"
+  },
+  {
+   "id": "p8-job-9",
+   "part": 8,
+   "title": "Job 9: salt crystals from muddy seawater",
+   "short": "j9",
+   "kind": "pick"
+  },
+  {
+   "id": "p8-job-10",
+   "part": 8,
+   "title": "Job 10: ethanol from ethanol, water and sand (extension)",
+   "short": "j10",
+   "kind": "pick",
+   "ext": 1
+  },
+  {
+   "id": "p8-recap",
+   "part": 8,
+   "title": "The recap table: the property each method uses",
+   "short": "table",
+   "kind": "gaps",
+   "gaps": [
+    "size",
+    "solubility",
+    "volatility",
+    "solubility",
+    "boiling point",
+    "affinity",
+    "density",
+    "magnetism",
+    "size"
+   ]
+  }
+ ]
+}
