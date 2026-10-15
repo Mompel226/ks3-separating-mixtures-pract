@@ -204,8 +204,10 @@
        o.scale   size (1: oxygen radius 12)      o.fill   share of the space the particles fill (.68: touching)
        o.box     the lens's square is the container (for a flow), not its circle
        o.flow    px/s downwards; a particle that leaves at the bottom comes back in at the top (filtration)
+       o.drain   { x, y, w }: a hole w wide at (x, y) in a paper: the liquid above the paper slides sideways to it
        o.solids  [{ rect: [x0, y0, x1, y1] } | { circle: [x, y, r] } | { floor: x => y }]: places no particle enters
-       o.extra   [{ kind, n, r, fill, hug: '+' | '-', sign }]: other particles among the water, held by water if hug is set
+       o.extra   [{ kind, n, r, fill, hug: '+' | '-', sign, at: [[x, y]] }]: other particles among the water (held by water if hug
+                 is set), at the places given or anywhere
      Returns { add(extra, at), setSolids(list), count(kind), destroy() }. */
   function liquidLens(k, lz, o) {
     o = o || {};
@@ -251,14 +253,18 @@
     const spot = () => { for (let t = 0; t < 200; t++) { const x = cx - R + rnd() * 2 * R, y = cy - R + rnd() * 2 * R; if (inside(x, y, RW * .5) && !inSolid(x, y, RW * .5)) return [x, y]; } return [cx, cy]; };
     const cap0 = capacity();
     let c = 0;
-    (o.extra || []).forEach(e => { for (let i = 0; i < e.n; i++) { const [x, y] = cand[c++] || spot(); ps.push(other(e, x, y)); } });
+    (o.extra || []).forEach(e => { for (let i = 0; i < e.n; i++) { const [x, y] = (e.at && e.at[i]) || cand[c++] || spot(); ps.push(other(e, x, y)); } });
     while (used() + Math.PI * RW * RW <= cap0) { const [x, y] = cand[c++] || spot(); ps.push(water(x, y, rnd() * 360)); }
     function wall(q) {
       const r = q.r;
       if (o.box) { q.x = Math.max(cx - R + r * .5, Math.min(cx + R - r * .5, q.x)); if (!o.flow) q.y = Math.max(cy - R + r * .5, Math.min(cy + R - r * .5, q.y)); }
       else { const dx = q.x - cx, dy = q.y - cy, dd = Math.hypot(dx, dy), lim = R - r - 1; if (dd > lim) { q.x = cx + dx / dd * lim; q.y = cy + dy / dd * lim; q.vx *= -.5; q.vy *= -.5; } }
       solids.forEach(sh => {
-        if (sh.rect) { const [x0, y0, x1, y1] = sh.rect; if (q.x > x0 - r && q.x < x1 + r && q.y > y0 - r && q.y < y1 + r) { const l = q.x - x0 + r, rr = x1 + r - q.x, t = q.y - y0 + r, b = y1 + r - q.y, m = Math.min(l, rr, t, b); if (m === l) q.x -= l; else if (m === rr) q.x += rr; else if (m === t) q.y -= t; else q.y += b; } }
+        if (sh.rect) {
+          const [x0, y0, x1, y1] = sh.rect, nx = Math.max(x0, Math.min(x1, q.x)), ny = Math.max(y0, Math.min(y1, q.y)), dx = q.x - nx, dy = q.y - ny, dd = Math.hypot(dx, dy);
+          if (dd > 0 && dd < r) { q.x = nx + dx / dd * r; q.y = ny + dy / dd * r; }       /* touching an edge or a corner: out along the nearest point */
+          else if (dd === 0) { const l = q.x - x0 + r, rr = x1 + r - q.x, t = q.y - y0 + r, b = y1 + r - q.y, m = Math.min(l, rr, t, b); if (m === l) q.x -= l; else if (m === rr) q.x += rr; else if (m === t) q.y -= t; else q.y += b; }
+        }
         else if (sh.circle) { const [sx, sy, sr] = sh.circle, dx = q.x - sx, dy = q.y - sy, dd = Math.hypot(dx, dy) || 1, m = sr + r; if (dd < m) { q.x = sx + dx / dd * m; q.y = sy + dy / dd * m; } }
         else if (sh.floor) { const f = sh.floor(q.x) - r; if (q.y > f) q.y = f; }
       });
@@ -277,7 +283,17 @@
         const slow = q.shell && q.shell.length ? .6 : 1;                 /* an ion with its water moves a little slower */
         q.vx += (rand() - .5) * T * 8 * dt; q.vy += (rand() - .5) * T * 8 * dt;
         const sp = Math.hypot(q.vx, q.vy), top = T * slow; if (sp > top) { q.vx *= top / sp; q.vy *= top / sp; }
-        q.x += q.vx * dt; q.y += (q.vy + (o.flow || 0)) * dt;
+        /* a hole: over the paper the liquid slides sideways towards it; in the hole it flows faster, as much per second as
+           flows below the paper (a flow speeds up where it narrows), so nothing piles up */
+        let down = o.flow || 0;
+        if (o.drain && q.y < o.drain.y + 30) {
+          const dx = q.x - o.drain.x, half = o.drain.w / 2;
+          if (Math.abs(dx) < half - q.r * .5) down *= 2 * R / o.drain.w;
+          else if (q.y < o.drain.y) { down *= .15; q.x -= Math.sign(dx) * (o.flow || 0) * 1.6 * dt; }
+          /* a big particle (an ion with its water) is carried along the middle of the stream, so it meets the hole square on */
+          if (!q.water && q.y > o.drain.y - 160) q.x -= dx * Math.min(1, dt * 1.6);
+        }
+        q.x += q.vx * dt; q.y += (q.vy + down) * dt;
         q.va = Math.max(-50, Math.min(50, (q.va + (rand() - .5) * 240 * dt) * .98)); q.a += q.va * dt * slow;
         if (q.form < 1) { q.form = Math.min(1, q.form + dt / 2); q.r = q.r0 + (q.full - q.r0) * q.form; }
         if (o.flow && q.y > cy + R + q.r) { q.y = cy - R - q.r; q.x = cx - R + q.r + rand() * (2 * R - 2 * q.r); }

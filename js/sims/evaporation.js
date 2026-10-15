@@ -138,10 +138,10 @@
         if (heats >= 5) {
           bub.stop(); st.stop();
           await k.tween(1200, t => r.liq.set(level() * (1 - t)));
-          crust(r, 80, '#C9D6DC');
+          crust(r, 80, '#E8EDEF');                                   /* anhydrous copper sulfate: white */
           /* boiling dry, the hot solid cracks and spits, as salt does */
           const specks = [];
-          for (let i = 0; i < 14; i++) specks.push({ e: S('rect', { x: BX, y: BOT - 10, width: 4, height: 4, fill: i % 3 ? '#C9D6DC' : '#2B6FC4', stroke: '#777', 'stroke-width': .5 }, k.svg), vx: (Math.random() - .5) * 260, vy: -160 - Math.random() * 160 });
+          for (let i = 0; i < 14; i++) specks.push({ e: S('rect', { x: BX, y: BOT - 10, width: 4, height: 4, fill: i % 3 ? '#E8EDEF' : '#2B6FC4', stroke: '#777', 'stroke-width': .5 }, k.svg), vx: (Math.random() - .5) * 260, vy: -160 - Math.random() * 160 });
           await k.tween(900, t => specks.forEach(s => { s.e.setAttribute('x', BX + s.vx * t); s.e.setAttribute('y', BOT - 10 + s.vy * t + 320 * t * t); }), B.lin);
           specks.forEach(s => s.e.remove());
           const dz = K.danger(k.top, 70, 150, 'DANGER: hot crystals\nspit out of the basin');

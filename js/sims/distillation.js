@@ -99,7 +99,8 @@
     await k.choose([{ id: 'l', x: FX, y: 484, label: 'Light the Bunsen' }]);
     bun.on(true);
     let T = 20;
-    await k.tween(2500, t => { T = 20 + 80 * t; th.set(T); k.readout('t', FX + 46, 132, Math.round(T) + ' °C'); });
+    /* the bulb is at the side arm: it stays near room temperature until the steam reaches it, then climbs fast to 100 °C */
+    await k.tween(2500, t => { T = t < .65 ? 20 + 8 * t : 25 + 75 * (t - .65) / .35; th.set(T); k.readout('t', FX + 46, 132, Math.round(T) + ' °C'); });
     const bub = K.bubbles(g, k, FX - 30, FX + 30, FY + FR - 8, () => fl.liq.y());
     const path = [[FX, FY - 10], [FX, 240], [FX + 30, 248], [FX + 64, 260], cd.W(150, 0), cd.W(cd.L, 0), [520, 350], [594, 351], [604, 366], [604, 404]];
     if (wrong) {
@@ -111,7 +112,7 @@
       await k.tween(4000, t => { fl.liq.set(.62 - .35 * t); rec.liq.set(.03 * t); });
       k.lapse(null); fw.stop(); puff.stop(); few.stop(); bun.on(false); bub.stop(); relabelSea('seawater');
       k.label('steam escaping', 600, 306, 532, 338, { anchor: 'start' });
-      await k.oops('Steam came out of the end of the condenser and only a few drops of distillate were collected. The jacket never filled, so the vapour was not cooled. Cold water must go IN at the <b>lower</b> end.');
+      await k.oops('Steam came out of the end of the condenser and only a few drops of distillate were collected. The jacket did not fill with cold water, so the vapour was not cooled enough. Cold water must go IN at the <b>lower</b> end.');
       k.restart(); return;
     }
     k.step(3, 4, 'The water boils. The vapour rises, passes the thermometer and goes into the condenser, where it condenses. The distillate drips into the flask.');
@@ -150,13 +151,25 @@
     k.finish('Nothing was left on the watch glass: the distillate is <b>pure water</b>. The salt stayed in the flask. Distillation keeps the liquid; evaporation loses it.');
   }
 
+  /* an electric heater (a heating mantle): ethanol catches fire easily, so schools never heat it with a flame (15 Oct 2026
+     audit; the page's two distillation photos show such heaters). Drawn after the flask, so the flask sits in it. */
+  function heater(p, x, by, w, top) {
+    const g = S('g', null, p);
+    S('rect', { x: x - w / 2, y: top, width: w, height: by - top, rx: 10, fill: '#3E79B7', stroke: '#24496E', 'stroke-width': 2 }, g);
+    S('rect', { x: x - w / 2, y: top, width: w, height: 11, rx: 5, fill: '#2B2F35' }, g);
+    const glow = S('rect', { x: x - w / 2 + 8, y: top + 2, width: w - 16, height: 5, rx: 2.5, fill: '#FF8A3D', opacity: 0 }, g);
+    S('circle', { cx: x - w / 2 + 18, cy: by - 20, r: 7, fill: '#DDE3EA', stroke: '#24496E', 'stroke-width': 1.5 }, g);
+    S('line', { x1: x - w / 2 + 18, y1: by - 20, x2: x - w / 2 + 21, y2: by - 25, stroke: '#24496E', 'stroke-width': 2 }, g);
+    const lamp = S('circle', { cx: x + w / 2 - 16, cy: by - 20, r: 4.5, fill: '#5A2020' }, g);
+    return { g, on(v) { glow.setAttribute('opacity', v ? .9 : 0); lamp.setAttribute('fill', v ? '#FF3B30' : '#5A2020'); } };
+  }
+
   /* ---------------- fractional distillation (extension) ---------------- */
   async function fracRun(k) {
     const g = k.svg, FX = 150, FY = 340, FR = 46;
-    const bun = K.bunsen(g, FX, 446, { flame: 22, h: 30 });
-    K.tripod(g, FX, 446, 396, 104);
     K.stand(g, 64, 446, 380, 240, FX - 12);
     const fl = K.rbFlask(g, FX, FY, FR, 268, { color: C.ethanol, level: .6 });
+    const bun = heater(g, FX, 446, 124, 376);
     /* the fractionating column: a tall tube of glass beads */
     S('rect', { x: FX - 13, y: 140, width: 26, height: 128, rx: 4, fill: 'var(--glass-fill)', stroke: 'var(--glass)', 'stroke-width': 2.2 }, g);
     for (let y = 150; y < 262; y += 9) for (let x = FX - 8; x <= FX + 8; x += 8) S('circle', { cx: x + ((y / 9) % 2) * 3, cy: y, r: 3.4, fill: 'none', stroke: 'var(--glass)', 'stroke-width': 1 }, g);
@@ -189,23 +202,25 @@
     S('text', { x: GX + GW / 2, y: GY + GH + 22, 'text-anchor': 'middle', 'font-size': 12, 'font-weight': 800, fill: 'var(--ink2)' }, gr, 'time');
     S('text', { x: GX - 34, y: GY - 10, 'font-size': 12, 'font-weight': 800, fill: 'var(--ink2)' }, gr, 'temperature / °C');
     const line = S('polyline', { points: '', fill: 'none', stroke: '#D22F27', 'stroke-width': 2.6, 'stroke-linejoin': 'round' }, gr);
-    const TT = 15, temp = t => t < 3 ? 20 + 58 * t / 3 : t < 8 ? 78 : t < 12 ? 78 + 22 * (t - 8) / 4 : 100;
+    const TT = 15, temp = t => t < 2 ? 20 + 2 * t : t < 3 ? 24 + 54 * (t - 2) : t < 8 ? 78 : t < 12 ? 78 + 22 * (t - 8) / 4 : 100;   /* the vapour reaches the bulb at 2 s */
     const draw = t => { const pts = []; for (let s = 0; s <= t; s += .1) pts.push((GX + s / TT * GW).toFixed(1) + ',' + ty(temp(s)).toFixed(1)); line.setAttribute('points', pts.join(' ')); };
 
-    k.step(1, 3, 'Ethanol boils at 78 °C, water at 100 °C. Light the Bunsen and watch the thermometer and the graph.');
-    await k.choose([{ id: 'l', x: FX + 70, y: 420, label: 'Light the Bunsen', side: 'r' }]);
+    k.step(1, 3, 'Ethanol boils at 78 °C, water at 100 °C. Ethanol catches fire easily, so it is heated with an electric heater, never a flame. Switch on the heater and watch the thermometer and the graph.');
+    await k.choose([{ id: 'l', x: FX + 76, y: 420, label: 'Switch on the heater', side: 'r' }]);
     bun.on(true);
-    if (k.FAST) { draw(TT); th.set(100); k.readout('t', FX + 44, 80, '100 °C'); bA.liq.set(.3); bB.liq.set(.3); fl.liq.set(.3); relabelMix('water left'); k.finish('Ethanol collected first, at 78 °C; water came over at 100 °C.'); return; }
+    if (k.FAST) { draw(TT); th.set(100); k.readout('t', FX + 44, 80, '100 °C'); bA.liq.set(.3); bB.liq.set(.3); fl.liq.set(.3); relabelMix('water left'); k.finish('Ethanol collected first, at 78 °C; water followed at 100 °C.'); return; }
     for (;;) {
       let t = 0, swapped = false, late = null;
       const lateP = new Promise(res => { late = res; });
       bA.liq.set(0); bB.liq.set(0); fl.liq.set(.6); bBw.setAttribute('transform', ''); bA.g.setAttribute('transform', ''); relabelMix('ethanol and water');
-      const drip = K.drips(g, k, 496, 332, () => (swapped ? bB : bA).liq.y(), { color: '#CFE9F7', every: .3 });
+      let drip = null;                                                  /* no drops until the ethanol boils (3 s, 78 °C) */
+      const dripStop = () => { if (drip) drip.stop(); };
       k.lapse('40 minutes in 15 seconds');
-      k.step(2, 3, 'When the ethanol has all boiled off, the temperature starts to rise. Change the beaker <b>then</b>, not before.');
+      k.step(2, 3, 'When almost no ethanol is left in the flask, the temperature starts to rise. Change the beaker <b>then</b>, not before.');
       k.loop(dt => {
         if (swapped === 'done') return false;
         t += dt; const T = temp(t);
+        if (t > 3 && !drip) drip = K.drips(g, k, 496, 332, () => (swapped ? bB : bA).liq.y(), { color: '#CFE9F7', every: .3 });
         th.set(T); k.readout('t', FX + 44, 80, Math.round(T) + ' °C'); draw(Math.min(t, TT));
         if (t > 3 && t < 8) bA.liq.set(Math.min(.42, (t - 3) / 5 * .42));
         if (t > 3) fl.liq.set(.6 - .3 * Math.min(1, (t - 3) / (TT - 3)));      /* the flask empties as both liquids boil off */
@@ -214,11 +229,11 @@
       });
       const r = await Promise.race([k.choose([{ id: 'swap', x: 550, y: 330, label: 'Change the beaker', side: 'r' }]).then(() => 'press'), lateP.then(() => 'late')]);
       if (r === 'late' || t < 8) {
-        swapped = 'done'; drip.stop(); k.clearHots(); k.lapse(null); relabelMix(r === 'late' ? 'water left' : 'ethanol and water');
+        swapped = 'done'; dripStop(); k.clearHots(); k.lapse(null); relabelMix(r === 'late' ? 'water left' : 'ethanol and water');
         if (r === 'late') bA.liq.color('#A6D2F0');
         await k.oops(r === 'late'
-          ? 'Too late: the temperature passed 78 °C and water vapour came over too. Beaker 1 now holds ethanol <b>and</b> water.'
-          : 'Too early: the temperature was still 78 °C, so ethanol was still coming over. You lost some ethanol into beaker 2.');
+          ? 'Too late: the temperature reached almost 100 °C, so water vapour reached beaker 1 too. Beaker 1 now holds ethanol <b>and</b> water.'
+          : 'Too early: the temperature was still 78 °C, so ethanol was still reaching the beaker. You lost some ethanol into beaker 2.');
         bA.liq.color('#CFE9F7'); draw(0); th.set(20); k.readout('t', FX + 44, 80, '20 °C');
         continue;
       }
@@ -226,17 +241,17 @@
       await k.tween(900, x => { bA.g.setAttribute('transform', `translate(${200 * Math.min(1, x * 2)} 0)`); bBw.setAttribute('transform', `translate(${-100 * Math.max(0, x * 2 - 1)} 0)`); });
       k.step(3, 3, 'Good timing. Now water collects in beaker 2 at 100 °C.');
       await k.tween(4500, x => bB.liq.set(.3 * x));
-      swapped = 'done'; drip.stop(); k.lapse(null); relabelMix('water left');
+      swapped = 'done'; dripStop(); k.lapse(null); relabelMix('water left');
       break;
     }
     bun.on(false);
-    k.finish('Ethanol (boiling point 78 °C) came over first and the temperature stayed at 78 °C. When it rose, the ethanol was gone, and water followed at 100 °C.');
+    k.finish('Ethanol (boiling point 78 °C) reached the beaker first, while the temperature stayed at 78 °C. When the temperature rose, almost no ethanol was left in the flask, and water followed at 100 °C.');
   }
 
   B.define(4, [
     { id: 'simple', name: 'Simple distillation', title: 'Pure water from seawater', view: [40, 70, 720], task: { id: 'p4-sim', title: 'Bench: distilled seawater' }, run: simpleRun,
       alt: 'A round-bottomed flask of seawater over a Bunsen burner, a thermometer at the side arm, a sloping condenser with a cold-water jacket, and a flask to collect the distillate.' },
     { id: 'frac', name: 'Fractional', ext: true, title: 'Fractional distillation of ethanol and water', kicker: 'Extension · the bench', view: [20, 20, 780], task: { id: 'p4-sim-frac', title: 'Bench: fractional distillation (extension)' }, run: fracRun,
-      alt: 'A flask of ethanol and water under a column of glass beads, a condenser, two beakers and a graph of temperature against time.' }
+      alt: 'A flask of ethanol and water in an electric heater, under a column of glass beads, a condenser, two beakers and a graph of temperature against time.' }
   ]);
 })();

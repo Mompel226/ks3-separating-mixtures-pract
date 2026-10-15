@@ -131,7 +131,7 @@
     k.step(4, 5, 'The beaker is empty. The sand stayed on the paper; clear water passed through. Why? Look at the paper close up.');
     await k.choose([{ id: 'z', x: 560, y: 150, label: 'Look closer at the paper', side: 'r' }]);
     bk.wrap.remove(); k.clearLabels();
-    const lz = K.lens(k.top, 628, 228, 100, 'Sand grains are too big to pass', 'water particles pass through the hole · not to scale');
+    const lz = K.lens(k.top, 628, 228, 100, 'Sand grains are too big to pass', 'water passes through the holes · its particles are too small to show');
     zoom(k, lz, true);
     k.label('residue (sand)', 250, AP - 12, FX - 6, AP - 12, { anchor: 'end' });
     k.label('filtrate (clear water)', 250, 430, FX - 52, 430, { anchor: 'end' });
@@ -167,7 +167,7 @@
     const ring = S('g', null, g);
     for (let i = 0; i < 26; i++) { const a = i / 26 * Math.PI * 2; S('rect', { x: wx + Math.cos(a) * 16 - 1.8, y: wy - 2 + Math.sin(a) * 3 - 1.8, width: 3.6, height: 3.6, fill: C.salt, stroke: '#9A968A', 'stroke-width': .6 }, ring); }
     k.label('salt left behind', wx - 74, wy - 14, wx - 18, wy - 4, { anchor: 'end' });
-    const lz2 = K.lens(k.top, 628, 228, 100, 'Salt particles pass through too', 'each ion, with its water, is · smaller than the hole · not to scale');
+    const lz2 = K.lens(k.top, 628, 228, 100, 'Salt particles pass through too', 'inside one hole, much bigger · each ion, with its water, · is far smaller than the hole');
     zoom(k, lz2, false);
     k.finish('The salt passed through the paper. Filtration separates an <b>insoluble</b> solid from a liquid; it cannot remove a <b>dissolved</b> solid.');
   }
@@ -193,26 +193,43 @@
   }
 
   /* the paper close up: fibres with gaps; water particles slip through, sand grains rest on top (or salt slips through) */
-  /* the filter paper close up, not to scale (Daniel, 15 Oct 2026: water as a liquid is particles that touch and slide
-     past each other, held by hydrogen bonds; dissolved ions are held by water particles). The water flows down through
-     the paper's holes as a liquid (kit liquidLens). A sand grain is far bigger than a hole and stays on top; a dissolved
-     ion, even with the water particles round it, is smaller than a hole and goes through with the water. */
+  /* the filter paper close up, at two sizes (15 Oct 2026 audit: the picture must show what the words say).
+     Sand: at the size of sand grains the holes in the paper are much smaller than a grain, and water particles are far too
+     small to draw, so the water is a pale blue (as in the milk lens). Grains rest on the paper; a grain over a hole blocks
+     it; drops of water pass through the open holes.
+     Salt: much bigger, inside one hole: the paper is the wall on each side. The water is drawn as particles (kit
+     liquidLens: touching, sliding, hydrogen bonds), and the dissolved ions, each with its water, flow through with it. */
   function zoom(k, lz, sand) {
     const p = lz.inner, x = lz.x, y = lz.y, r = lz.r;
+    const fibres = (g, x0, y0, w, h) => { S('rect', { x: x0, y: y0, width: w, height: h, fill: '#EDE6CF', stroke: '#B8AD8A', 'stroke-width': 1.5 }, g); for (let i = 0; i < (w + h) / 9; i++) { const fx = x0 + ((i * 37) % Math.max(1, w)), fy = y0 + ((i * 23) % Math.max(1, h)); S('line', { x1: fx, y1: fy, x2: Math.min(x0 + w, fx + 7), y2: Math.min(y0 + h, fy + 4), stroke: '#CDBF98', 'stroke-width': 1.2 }, g); } };
+    const tag = (tx, ty, t, col, rot) => S('text', { x: tx, y: ty, 'text-anchor': 'middle', 'font-size': 12.5, 'font-weight': 900, fill: col, stroke: '#EAF3FB', 'stroke-width': 4, 'paint-order': 'stroke', transform: rot ? `rotate(${rot} ${tx} ${ty})` : null }, p, t);
+    if (sand) {
+      S('rect', { x: x - r, y: y - r, width: 2 * r, height: 2 * r, fill: '#CFE4F6' }, p);
+      const fy = y + 10, PH = 18, HW = 8, holes = [x - 80, x - 40, x, x + 40, x + 80];
+      const grains = [[x - 40, fy - 28, 30], [x + 60, fy - 24, 26]];          /* one over the hole at -40, one over +40 and +80 */
+      const open = holes.filter(h => !grains.some(([gx, , gs]) => Math.abs(h - gx) < gs));
+      /* the paper between the holes */
+      const edges = [x - r - 10].concat(...holes.map(h => [h - HW / 2, h + HW / 2])).concat([x + r + 10]);
+      for (let i = 0; i < edges.length; i += 2) fibres(p, edges[i], fy, edges[i + 1] - edges[i], PH);
+      /* drops of water: from above, along the paper to an open hole, through it, and on down */
+      const drops = [];
+      for (let i = 0; i < 10; i++) drops.push({ e: S('rect', { width: 4, height: 9, rx: 2, fill: '#3F86C9', opacity: .85 }, p), t: i / 10, h: open[i % open.length], x0: x - r + 10 + ((i * 53) % (2 * r - 20)) });
+      const place = d => { const top = y - r, yh = fy - 6; let px, py; if (d.t < .55) { const u = d.t / .55; px = d.x0 + (d.h - d.x0) * u * u; py = top + (yh - top) * u; } else { const u = (d.t - .55) / .45; px = d.h; py = yh + (y + r - yh) * u; } d.e.setAttribute('x', (px - 2).toFixed(1)); d.e.setAttribute('y', (py - 4.5).toFixed(1)); };
+      drops.forEach(place);
+      if (!k.FAST) k.loop(dt => { drops.forEach(d => { d.t += dt * .16; if (d.t > 1) { d.t -= 1; d.x0 = x - r + 10 + Math.random() * (2 * r - 20); d.h = open[Math.floor(Math.random() * open.length)]; } place(d); }); return lz.g.isConnected; });
+      grains.forEach(([gx, gy, gs]) => S('path', { d: `M${gx - gs},${gy + gs * .25} L${gx - gs * .45},${gy - gs * .8} L${gx + gs * .55},${gy - gs * .75} L${gx + gs},${gy + gs * .1} L${gx + gs * .4},${gy + gs * .95} L${gx - gs * .6},${gy + gs * .9} Z`, fill: C.sand, stroke: '#8A6A3A', 'stroke-width': 1.4 }, p));
+      tag(x - 40, fy - 26, 'sand', '#5B4520');
+      tag(x - 20, fy + 14, 'paper', '#7A6D45');
+      tag(x + 4, y - 64, 'water', '#1F4E79');
+      return;
+    }
+    /* inside one hole: the paper's walls left and right; the water flows down between them, the ions with it */
     S('rect', { x: x - r, y: y - r, width: 2 * r, height: 2 * r, fill: '#EAF3FB' }, p);
-    /* one hole in the middle (78 wide): wider than a water particle (28) and than a dissolved ion with its water round
-       it (68 at most); the sand grains (88 and 80 across) rest on the paper either side and cannot pass */
-    const fy = y + 4, PH = 24, HW = 78;
-    const paper = [[x - r - 20, x - HW / 2], [x + HW / 2, x + r + 20]];
-    const grains = sand ? [[x - 66, fy - 44, 44], [x + 70, fy - 40, 40]] : [];
-    K.liquidLens(k, lz, { scale: .7, box: true, flow: 8, seed: sand ? 4 : 6,
-      solids: paper.map(([a, b]) => ({ rect: [a, fy, b, fy + PH] })).concat(grains.map(([gx, gy, gs]) => ({ circle: [gx, gy, gs * .95] }))),
-      extra: sand ? [] : [{ kind: 'Na', n: 1, r: 6, fill: '#8E6BD8', hug: '+', sign: '+' }, { kind: 'Cl', n: 1, r: 10.5, fill: '#3DBA6A', hug: '-', sign: '−' }] });
-    paper.forEach(([a, b]) => S('rect', { x: a, y: fy, width: b - a, height: PH, fill: '#EDE6CF', stroke: '#B8AD8A', 'stroke-width': 1.5 }, p));
-    grains.forEach(([gx, gy, gs]) => S('path', { d: `M${gx - gs},${gy + gs * .25} L${gx - gs * .45},${gy - gs * .8} L${gx + gs * .55},${gy - gs * .75} L${gx + gs},${gy + gs * .1} L${gx + gs * .4},${gy + gs * .95} L${gx - gs * .6},${gy + gs * .9} Z`, fill: C.sand, stroke: '#8A6A3A', 'stroke-width': 1.4 }, p));
-    const tag = (tx, ty, t, col) => S('text', { x: tx, y: ty, 'text-anchor': 'middle', 'font-size': 12.5, 'font-weight': 900, fill: col, stroke: '#EAF3FB', 'stroke-width': 4, 'paint-order': 'stroke' }, p, t);
-    tag(x - 68, fy + 17, 'paper', '#7A6D45');
-    if (sand) tag(x - 66, fy - 40, 'sand grain', '#5B4520');
+    const left = [x - r - 20, y - r - 20, x - 60, y + r + 20], right = [x + 60, y - r - 20, x + r + 20, y + r + 20];   /* a hole 120 wide */
+    K.liquidLens(k, lz, { scale: .62, fill: .6, box: true, flow: 14, seed: 6, solids: [{ rect: left }, { rect: right }],
+      extra: [{ kind: 'Na', n: 1, r: 5, fill: '#8E6BD8', hug: '+', sign: '+', at: [[x - 20, y - 50]] }, { kind: 'Cl', n: 1, r: 9.3, fill: '#3DBA6A', hug: '-', sign: '−', at: [[x + 24, y + 20]] }] });
+    fibres(p, left[0], left[1], left[2] - left[0], left[3] - left[1]); fibres(p, right[0], right[1], right[2] - right[0], right[3] - right[1]);
+    tag(x - 80, y + 4, 'paper', '#7A6D45', -90); tag(x + 80, y + 4, 'paper', '#7A6D45', 90);
   }
 
   B.define(2, [{ id: 'filter', name: 'Filtration', title: 'Filtration', view: [70, 112, 670], kicker: 'Part 2 · the bench', task: { id: 'p2-sim', title: 'Bench: filtration of muddy water and salt water' }, run,

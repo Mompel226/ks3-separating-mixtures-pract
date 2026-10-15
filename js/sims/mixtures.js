@@ -5,16 +5,16 @@
 (function () {
   'use strict';
   const B = window.BENCH, K = window.KIT, S = B.S, C = K.C;
-  const COL = { O: '#E0533F', H: '#F4F6F8', Na: '#8E6BD8', Cl: '#3DBA6A', Au: '#E8B923', Cu: '#D9814A', Zn: '#AEB8C2', min: '#F29B38', cof: '#7A4A26', N: '#5B8DEF', Ar: '#B06AD9', sand: '#C9A66B' };
+  const COL = { O: '#E0533F', H: '#F4F6F8', Na: '#8E6BD8', Cl: '#3DBA6A', Au: '#E8B923', Cu: '#D9814A', Zn: '#AEB8C2', min: '#F29B38', cof: '#7A4A26', N: '#5B8DEF', Ar: '#B06AD9', sand: '#C9A66B', Si: '#B08A4E' };
   const SAMPLES = [
     { id: 'gold', name: 'Gold', x: 52, say: 'Only one kind of atom: gold atoms, packed in rows.', key: [['Au', 'gold atom']] },
-    { id: 'dist', name: 'Distilled', sub: 'water', x: 149, say: 'Only water particles. Each one is two hydrogen atoms joined to one oxygen atom. In a liquid they touch and slide past each other.', key: [['O', 'oxygen'], ['H', 'hydrogen'], ['hb', 'hydrogen bond']] },
+    { id: 'dist', name: 'Distilled', sub: 'water', x: 149, say: 'Only water particles. Each one is two hydrogen atoms joined to one oxygen atom. In a liquid they touch and slide past each other.', key: [['w', 'water particle'], ['O', 'oxygen atom'], ['H', 'hydrogen atom'], ['hb', 'hydrogen bond']] },
     { id: 'salt', name: 'Salt', x: 246, say: 'Sodium ions and chloride ions, held together in a regular pattern (a lattice). Only this one kind of substance.', key: [['Na', 'sodium ion'], ['Cl', 'chloride ion']] },
-    { id: 'mineral', name: 'Mineral', sub: 'water', x: 343, say: 'Water particles, with a few mineral particles spread between them. Water particles crowd round each mineral particle, but are not joined to it.', key: [['O', 'water'], ['min', 'mineral'], ['hb', 'hydrogen bond']] },
-    { id: 'coffee', name: 'Black', sub: 'coffee', x: 440, say: 'Water particles, with coffee particles spread evenly between them.', key: [['O', 'water'], ['cof', 'coffee'], ['hb', 'hydrogen bond']] },
-    { id: 'brass', name: 'Brass', x: 537, say: 'Copper atoms and zinc atoms, mixed in rows but not joined to each other.', key: [['Cu', 'copper'], ['Zn', 'zinc']] },
-    { id: 'mud', name: 'Muddy', sub: 'water', x: 634, say: 'Water particles above a grain of sand. The grain is millions of times bigger than a water particle.', key: [['O', 'water'], ['sand', 'sand grain'], ['hb', 'hydrogen bond']] },
-    { id: 'air', name: 'Air', x: 731, say: 'A gas: mostly nitrogen and oxygen particles (about 4 to 1), far apart and moving fast. They do not hold on to each other.', key: [['N', 'nitrogen'], ['O', 'oxygen']] }
+    { id: 'mineral', name: 'Mineral', sub: 'water', x: 343, say: 'Water particles, with a few mineral particles spread between them. Water particles crowd round each mineral particle, but are not joined to it.', key: [['w', 'water particle'], ['min', 'mineral particle'], ['hb', 'hydrogen bond']] },
+    { id: 'coffee', name: 'Black', sub: 'coffee', x: 440, say: 'Water particles, with coffee particles spread evenly between them.', key: [['w', 'water particle'], ['cof', 'coffee particle'], ['hb', 'hydrogen bond']] },
+    { id: 'brass', name: 'Brass', x: 537, say: 'Copper atoms and zinc atoms, mixed in one regular pattern. They are not chemically joined into a new substance.', key: [['Cu', 'copper atom'], ['Zn', 'zinc atom']] },
+    { id: 'mud', name: 'Muddy', sub: 'water', x: 634, say: 'Water particles above part of a sand grain: two phases. Sand is silicon and oxygen atoms joined by strong bonds.', key: [['w', 'water particle'], ['Si', 'silicon atom'], ['O', 'oxygen atom'], ['hb', 'hydrogen bond']] },
+    { id: 'air', name: 'Air', x: 731, say: 'A gas: mostly nitrogen and oxygen particles (about 4 to 1), far apart and moving fast. The pull between them is very weak.', key: [['N2', 'nitrogen particle'], ['O2', 'oxygen particle']] }
   ];
 
   /* ---------------- the samples on the bench (97 apart, so their buttons can be big: Daniel, 15 Oct 2026) ---------------- */
@@ -35,6 +35,25 @@
   function water(p, x, y, a) {
     const g = S('g', { transform: `translate(${x} ${y}) rotate(${a})` }, p);
     atom(g, -7, 6, 5, 'H'); atom(g, 7, 6, 5, 'H'); atom(g, 0, 0, 8, 'O'); return g;
+  }
+  /* sand at the scale of particles (15 Oct 2026, a pupil: why does sand not dissolve, only the salt? Daniel: show the two
+     phases clearly separated): silicon and oxygen atoms joined by strong bonds in one giant structure, below a clear
+     surface; the water particles above can bump into it but cannot pull any atom away. Drawn below y = top. */
+  function sandSolid(p, cx, cy, R, top) {
+    const g = S('g', null, p);
+    S('rect', { x: cx - R, y: top, width: 2 * R, height: cy + R - top, fill: '#EFE3C8' }, g);
+    const D = 34, row0 = top + 16;
+    for (let y = row0; y < cy + R + D; y += D) for (let x = cx - R - ((y - row0) / D % 2 ? D / 2 : 0); x < cx + R + D; x += D) {
+      S('line', { x1: x, y1: y, x2: x + D, y2: y, stroke: '#7A6A4E', 'stroke-width': 3 }, g);
+      S('line', { x1: x, y1: y, x2: x + D / 2, y2: y + D, stroke: '#7A6A4E', 'stroke-width': 3 }, g);
+    }
+    for (let y = row0; y < cy + R + D; y += D) for (let x = cx - R - ((y - row0) / D % 2 ? D / 2 : 0); x < cx + R + D; x += D) {
+      atom(g, x + D / 2, y, 6.5, 'O'); atom(g, x + D / 4, y + D / 2, 6.5, 'O'); atom(g, x, y, 9, 'Si');
+    }
+    S('line', { x1: cx - R, y1: top, x2: cx + R, y2: top, stroke: '#7A6A4E', 'stroke-width': 2, 'stroke-dasharray': '6 4' }, g);
+    const tag = (x, y, t) => S('text', { x, y, 'text-anchor': 'middle', 'font-size': 14, 'font-weight': 900, fill: '#3B3020', stroke: '#FFFFFF', 'stroke-width': 4, 'paint-order': 'stroke' }, g, t);
+    tag(cx, top + 34, 'solid: sand');
+    return { g, tag };
   }
   function pair(p, x, y, a, c) { const g = S('g', { transform: `translate(${x} ${y}) rotate(${a})` }, p); atom(g, -8, 0, 9, c); atom(g, 8, 0, 9, c); return g; }
   function fillLens(k, lz, id) {
@@ -58,12 +77,11 @@
     } else if (id === 'air') {
       scatter(8, () => pair(p, 0, 0, 0, 'N')); scatter(2, () => pair(p, 0, 0, 0, 'O'));      /* air is 78 % nitrogen, 21 % oxygen, 1 % argon */
     } else if (id === 'mud') {
-      /* the top of one sand grain, a gentle curve; the water particles rest on it */
-      const gy = cy + 30, y0 = gy + 10, y1 = gy - 14, y2 = gy + 4, top = x => { const t = (x - cx + R) / (2 * R); return (1 - t) * (1 - t) * y0 + 2 * t * (1 - t) * y1 + t * t * y2; };
-      K.liquidLens(k, lz, { seed: 5, solids: [{ floor: top }] });
-      S('path', { d: `M${cx - R},${y0} Q${cx},${y1} ${cx + R},${y2} L${cx + R},${cy + R} L${cx - R},${cy + R} Z`, fill: COL.sand, stroke: '#8A6A3A', 'stroke-width': 1.5 }, p);
-      for (let i = 0; i < 26; i++) S('circle', { cx: cx - R + 10 + rnd() * 2 * R, cy: gy + 22 + rnd() * 60, r: 1.4, fill: '#8A6A3A', opacity: .6 }, p);
-      S('text', { x: cx, y: gy + 50, 'text-anchor': 'middle', 'font-size': 13, 'font-weight': 900, fill: '#5B4520' }, p, 'part of one sand grain');
+      /* water above part of one sand grain: two phases, each named, the surface between them clear */
+      const top = cy + 30;
+      K.liquidLens(k, lz, { seed: 5, solids: [{ rect: [cx - R - 10, top, cx + R + 10, cy + R + 10] }] });
+      const sd = sandSolid(p, cx, cy, R, top);
+      sd.tag(cx, cy - 62, 'liquid: water');
     } else {
       /* a liquid: the particles touch and slide past each other, held by hydrogen bonds (kit liquidLens) */
       K.liquidLens(k, lz, { seed: id === 'dist' ? 7 : id === 'mineral' ? 9 : 13,
@@ -101,13 +119,21 @@
       const s = SAMPLES.find(x => x.id === id); seen.add(id);
       fillLens(k, lz, id);
       cap.innerHTML = '';
+      S('path', { d: `M${s.x},${400} L${230 + (s.x - 230) * .25},${330}`, stroke: 'var(--accent)', 'stroke-width': 2.5, 'stroke-dasharray': '5 5', fill: 'none' }, cap);
       S('text', { x: 400, y: 112, 'font-size': 26, 'font-weight': 900, fill: 'var(--ink)' }, cap, (s.name + ' ' + (s.sub || '')).trim());
       const words = wrap(s.say, 34); words.forEach((ln, i) => S('text', { x: 400, y: 146 + i * 22, 'font-size': 17, 'font-weight': 700, fill: 'var(--ink2)' }, cap, ln));
-      s.key.forEach(([c, t], i) => { const y = 160 + words.length * 22 + i * 26; if (c === 'O' && (id === 'dist' || id === 'mineral' || id === 'coffee' || id === 'mud')) { water(cap, 412, y - 5, 0); } else if (c === 'sand') { S('rect', { x: 402, y: y - 14, width: 20, height: 16, fill: COL.sand, stroke: '#8A6A3A' }, cap); } else if (c === 'hb') { S('line', { x1: 400, y1: y - 5, x2: 424, y2: y - 5, stroke: '#2F4A66', 'stroke-width': 1.8, 'stroke-dasharray': '3 2.5', 'stroke-linecap': 'round' }, cap); } else atom(cap, 412, y - 5, 8, c); S('text', { x: 432, y, 'font-size': 15, 'font-weight': 800, fill: 'var(--ink)' }, cap, t); });
-      S('text', { x: 400, y: 172 + words.length * 22 + s.key.length * 26, class: 'zoom-sub' }, cap, 'particles, not to scale');
-      const pointer = S('path', { d: `M${s.x},${400} L${230 + (s.x - 230) * .25},${330}`, stroke: 'var(--accent)', 'stroke-width': 2.5, 'stroke-dasharray': '5 5', fill: 'none' }, cap);
+      /* each row of the key draws exactly what it names: a whole water particle, one atom, or a pair of joined atoms
+         (15 Oct 2026: pupils saw a water particle labelled "oxygen") */
+      s.key.forEach(([c, t], i) => { const y = 160 + words.length * 22 + i * 26;
+        if (c === 'w') water(cap, 412, y - 5, 0);
+        else if (c === 'N2' || c === 'O2') pair(cap, 412, y - 5, 0, c[0]).setAttribute('transform', `translate(412 ${y - 5}) scale(.75)`);
+        else if (c === 'sand') S('rect', { x: 402, y: y - 14, width: 20, height: 16, fill: COL.sand, stroke: '#8A6A3A' }, cap);
+        else if (c === 'hb') S('line', { x1: 400, y1: y - 5, x2: 424, y2: y - 5, stroke: '#2F4A66', 'stroke-width': 1.8, 'stroke-dasharray': '3 2.5', 'stroke-linecap': 'round' }, cap);
+        else atom(cap, 412, y - 5, 8, c);
+        S('text', { x: 436, y, 'font-size': 15, 'font-weight': 800, fill: 'var(--ink)' }, cap, t); });
+      S('text', { x: 400, y: 172 + words.length * 22 + s.key.length * 26, class: 'zoom-sub', stroke: 'var(--wall)', 'stroke-width': 5, 'paint-order': 'stroke' }, cap, 'particles, not to scale');
       k.say(`<b>${(s.name + ' ' + (s.sub || '')).trim()}</b>: ${s.say} <span style="color:var(--ink3)">Seen ${seen.size} of 8.</span>`);
-      if (seen.size === SAMPLES.length) { k.finish('You have seen all eight. Now sort them in the first check: one kind of particle, or more than one?'); return; }
+      if (seen.size === SAMPLES.length) { k.finish('You have seen all eight. Now sort them in the first check: one substance only, or more than one substance?'); return; }
     }
   }
   function wrap(t, n) { const out = []; let ln = ''; t.split(' ').forEach(w => { if ((ln + ' ' + w).trim().length > n) { out.push(ln.trim()); ln = w; } else ln += ' ' + w; }); if (ln.trim()) out.push(ln.trim()); return out; }
@@ -145,8 +171,11 @@
     const legend = S('g', null, g);
     S('text', { x: 60, y: 76, class: 'note' }, legend, 'In the lens:');
     water(legend, 72, 100, 0); S('text', { x: 88, y: 105, class: 'note' }, legend, 'water');
-    ion(legend, 152, 100, NA); S('text', { x: 166, y: 105, class: 'note' }, legend, 'sodium ion');
-    ion(legend, 262, 100, CL); S('text', { x: 282, y: 105, class: 'note' }, legend, 'chloride ion');
+    const saltKey = S('g', null, legend), sandKey = S('g', { opacity: 0 }, legend);       /* the key names what the lens shows now */
+    ion(saltKey, 152, 100, NA); S('text', { x: 166, y: 105, class: 'note' }, saltKey, 'sodium ion');
+    ion(saltKey, 262, 100, CL); S('text', { x: 282, y: 105, class: 'note' }, saltKey, 'chloride ion');
+    atom(sandKey, 152, 100, 9, 'Si'); S('text', { x: 166, y: 105, class: 'note' }, sandKey, 'silicon atom');
+    atom(sandKey, 262, 100, 6.5, 'O'); S('text', { x: 276, y: 105, class: 'note' }, sandKey, 'oxygen atom');
     S('line', { x1: 62, y1: 126, x2: 84, y2: 126, stroke: '#2F4A66', 'stroke-width': 1.8, 'stroke-dasharray': '3 2.5', 'stroke-linecap': 'round' }, legend); S('text', { x: 90, y: 131, class: 'note' }, legend, 'hydrogen bond');
     let spoons = 0;
     let spoonX = 440;
@@ -179,15 +208,16 @@
       if (spoons < 3) {
         piece.setAttribute('opacity', 0); liq.setSolids([]);
         PIECE.forEach(([x, y, e]) => liq.add(e, [x, y]));
-        k.say(`The salt has gone: it <b>dissolved</b>. In the lens, water particles closed round each ion and carried it away: the <b>oxygen</b> side faces sodium, a <b>hydrogen</b> side faces chloride. Spoons dissolved: <b>${spoons}</b>.`);
+        k.say(`You cannot see the salt now, but it is still in the water: it <b>dissolved</b>. In the lens, water particles closed round each ion and carried it away: the <b>oxygen</b> side faces sodium, a <b>hydrogen</b> side faces chloride. Spoons dissolved: <b>${spoons}</b>.`);
         await k.wait(400); continue;
       }
       k.label('undissolved salt', 250, 418, null, null, { anchor: 'middle' });
       break;
     }
-    k.step('Dissolve', 0, 'After three spoons, some salt stays at the bottom however long you stir. In the lens, most water particles are already holding an ion, and too few are free to take more. No more salt can dissolve: the solution is <b>saturated</b>. Now try sand.');
+    k.step('Dissolve', 0, 'After three spoons, some salt stays at the bottom however long you stir. In the lens, most water particles are already holding an ion, and too few are free to take more. No more salt can dissolve: the solution is <b>saturated</b>. Now try sand, in fresh water, so that you see what sand does on its own.');
     await k.choose([{ id: 'sand', x: 520, y: 482, label: 'Add a spoon of sand', sub: 'to fresh water' }]);
     k.clearLabels(); grains.innerHTML = ''; settled.innerHTML = ''; refill({}); crystal.setAttribute('opacity', 0);
+    saltKey.setAttribute('opacity', 0); sandKey.setAttribute('opacity', 1);
     spoonX = 520;
     const fall = await spoonIn(C.sand, 18);
     await k.choose([{ id: 'stir', x: 250, y: 236, label: 'Stir' }]);
@@ -196,12 +226,12 @@
     rod.remove();
     k.say('The sand swirls around, then sinks again…');
     await k.tween(1200, t => fall.forEach((f, i) => f.setAttribute('y', B.mix(+f.getAttribute('y'), 434 - (i % 3) * 4, t))));
-    /* the top of a sand grain, a gentle curve: the water particles rest on it */
-    const y0 = cy + 40, y1 = cy + 16, y2 = cy + 26, top = x => { const t = (x - cx + R) / (2 * R); return (1 - t) * (1 - t) * y0 + 2 * t * (1 - t) * y1 + t * t * y2; };
-    refill({ solids: [{ floor: top }] });
-    S('path', { d: `M${cx - R},${y0} Q${cx},${y1} ${cx + R},${y2} L${cx + R},${cy + R} L${cx - R},${cy + R} Z`, fill: COL.sand, stroke: '#8A6A3A', 'stroke-width': 1.5 }, over);
+    /* in the lens: the top of a sand grain, a giant structure, below liquid water: two phases */
+    const top = cy + 34;
+    refill({ solids: [{ rect: [cx - R - 10, top, cx + R + 10, cy + R + 10] }] });
+    sandSolid(over, cx, cy, R, top).tag(cx, cy - 70, 'liquid: water');
     k.label('sand at the bottom', 250, 418, null, null, { anchor: 'middle' });
-    k.finish('The sand did not dissolve: sand is <b>insoluble</b> in water. Salt is <b>soluble</b>. (At 20 °C, 100 cm³ of water dissolves about 36 g of salt.)');
+    k.finish('The sand did not dissolve: sand is <b>insoluble</b> in water. In the lens, sand is silicon and oxygen atoms joined by strong bonds in one giant structure. The water particles bump into it but cannot pull any atom away, so the sand stays a separate solid: two phases, solid sand and liquid water. Salt is <b>soluble</b>: water particles can pull its ions away. (At 20 °C, 100 cm³ of water dissolves about 36 g of salt.)');
   }
 
   /* ---------------- Extension: milk, a colloid (Daniel, 15 Oct 2026: "for the colloid … show … an animation") ----------------
@@ -221,7 +251,7 @@
     S('text', { x: 160, y: 474, 'text-anchor': 'middle', 'font-size': 13, 'font-weight': 800, fill: '#DDE6EE' }, g, 'a solution');
     S('text', { x: 310, y: 474, 'text-anchor': 'middle', 'font-size': 13, 'font-weight': 800, fill: '#DDE6EE' }, g, 'a colloid');
     S('text', { x: 460, y: 474, 'text-anchor': 'middle', 'font-size': 13, 'font-weight': 800, fill: '#DDE6EE' }, g, 'a mechanical mixture');
-    k.step(1, 3, 'Milk looks white all through, like a solution. Look inside it. (<b>Fat</b> is the oily part of milk, as in butter. <b>Protein</b> is a substance the body uses to grow, as in egg white.)');
+    k.step(1, 3, 'Milk looks the same all through, like a solution, but you cannot see through it. Look inside it. (<b>Fat</b> is the oily part of milk, as in butter. <b>Protein</b> is a substance the body uses to grow, as in egg white.)');
     await k.choose([{ id: 'z', x: 310, y: 262, label: 'Zoom into the milk' }]);
     const lz = K.lens(g, 650, 186, 112, 'Milk, much bigger', 'fat droplets and protein clumps in water · too small to see with your eyes');
     const L = lz.inner, cx = lz.x, cy = lz.y, R = lz.r;
@@ -239,13 +269,13 @@
     S('circle', { cx: 652, cy: 389, r: 3, fill: '#F4F4F2', stroke: '#9AA3AC' }, key); S('circle', { cx: 658, cy: 394, r: 3, fill: '#F4F4F2', stroke: '#9AA3AC' }, key); S('text', { x: 668, y: 397, class: 'note' }, key, 'protein clump');
     S('rect', { x: 543, y: 407, width: 14, height: 12, rx: 2, fill: '#CFE4F6', stroke: '#7FB2E5' }, key); S('text', { x: 562, y: 419, class: 'note' }, key, 'water (particles too small to show)');
     k.loop(dt => { bits.forEach(m => { m.vx += (Math.random() - .5) * 120 * dt; m.vy += (Math.random() - .5) * 120 * dt; m.vx *= .96; m.vy *= .96; m.x += m.vx * dt; m.y += m.vy * dt; if (Math.hypot(m.x - cx, m.y - cy) > R - 18) { m.x += (cx - m.x) * .05; m.y += (cy - m.y) * .05; } put(m); }); return lz.g.isConnected; });
-    k.step(2, 3, 'The droplets and clumps jiggle about all the time; they are too small to sink. Now leave all three beakers to stand.');
+    k.step(2, 3, 'The droplets and clumps move in all directions all the time. They are too small to sink to the bottom or rise to the top. Now leave all three beakers to stand.');
     await k.choose([{ id: 'w', x: 310, y: 262, label: 'Leave them for an hour' }]);
     k.lapse('an hour in a few seconds');
     await k.tween(2600, t => { mud.liq.color(t < .4 ? '#7A5430' : t < .75 ? '#A99A82' : '#C9DCEB').opacity(.82 - .2 * t); sand.setAttribute('y', 444 - 20 * t); sand.setAttribute('height', 20 * t); });
     k.lapse(null);
     k.label('the sand settled', 600, 434, 488, 434, { anchor: 'start' });
-    k.step(3, 3, 'Only the mud settled. The milk is still white all through, and the salt water is still clear. Now shine a torch through all three.');
+    k.step(3, 3, 'Only the mud settled. The milk is still the same all through, and the salt water is still clear. Now shine a torch through all three.');
     await k.choose([{ id: 't', x: 112, y: 372, label: 'Shine the torch', side: 't' }]);
     S('rect', { x: 34, y: 386, width: 46, height: 18, rx: 4, fill: '#3C434B' }, g); S('path', { d: 'M80,382 L92,378 L92,412 L80,408 Z', fill: '#5B6573' }, g);
     const BY = 395;

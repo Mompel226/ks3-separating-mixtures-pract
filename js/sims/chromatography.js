@@ -5,7 +5,7 @@
 (function () {
   'use strict';
   const B = window.BENCH, K = window.KIT, S = B.S;
-  const PX0 = 268, PX1 = 532, PTOP = 154, PBOT = 432, LINE = 400, CM = 20, FRONT = LINE - 10 * CM;
+  const PX0 = 268, PX1 = 532, PTOP = 154, PBOT = 432, LINE = 392, CM = 20, FRONT = LINE - 10 * CM;   /* the start line 2 cm above the bottom edge, as the step says */
   const COLS = { Y: '#E9B820', R: '#D8343A', B: '#2A5FC8', P: '#8A3FC2' };
   const RF = { Y: .80, R: .55, B: .25, P: .40 };
   const INKS = [['X', ['Y', 'R', 'B']], ['A', ['Y', 'B']], ['B', ['Y', 'R', 'B']], ['C', ['R', 'P', 'B']], ['D', []]];
@@ -107,7 +107,7 @@
       k.label('water (solvent)', PX1 + 46, 426, PX1 + 10, 426, { anchor: 'start' });
 
       /* 4 · the run */
-      k.step(4, 5, 'Cover the beaker so the water does not evaporate, and wait. Watch the water soak up the paper.');
+      k.step(4, 5, 'Cover the beaker so the water does not evaporate, and wait. Watch the water move up the paper.');
       await k.choose([{ id: 'go', x: 400, y: 130, label: 'Cover it and wait' }]);
       const lid = S('rect', { x: 236, y: PTOP - 14, width: 328, height: 6, rx: 3, fill: 'var(--glass-fill)', stroke: 'var(--glass)', 'stroke-width': 1.6 }, g);
       k.clearLabels();
@@ -207,7 +207,7 @@
     await k.choose([{ id: 'd', x: cx0 + 79, y: 478, label: 'Divide' }]);
     l3.textContent = 'Rf = 8.0 ÷ 10.0';
     await k.tween(600, t => { l4.textContent = t < .5 ? '' : '= 0.80'; });
-    k.finish('Rf of pen A’s yellow dye = 8.0 ÷ 10.0 = <b>0.80</b>. An Rf has no unit and is always less than 1. The note’s yellow dye has the same Rf, so it can be the same dye. Now work out the Rf of the <b>red</b> dye in X yourself, in the extension check.');
+    k.finish('Rf of pen A’s yellow dye = 8.0 ÷ 10.0 = <b>0.80</b>. An Rf has no unit and is always between 0 and 1. The note’s yellow dye has the same Rf, so it can be the same dye. Now work out the Rf of the <b>red</b> dye in X yourself, in the extension check.');
   }
 
   B.define(5, [{ id: 'chrom', name: 'Chromatography', title: 'Who wrote the note?', view: [40, 70, 720], task: { id: 'p5-sim', title: 'Bench: made the chromatogram of the five inks' }, run,
