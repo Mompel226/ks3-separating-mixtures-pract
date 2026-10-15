@@ -112,7 +112,7 @@
             b.style.left = px(it.x); b.style.top = py(it.y);
             hots.appendChild(b);
             if (it.onHold) { holdable(b, it, my); return; }   /* press and hold: never resolves; another button moves on */
-            b.addEventListener('click', e => { kbd = e.detail === 0; scene._busy = true; clearHots(); my === gen ? res(it.id) : rej(CANCEL); });
+            b.addEventListener('click', e => { kbd = e.detail === 0; scene._busy = !scene.free; clearHots(); my === gen ? res(it.id) : rej(CANCEL); });   /* a free bench (exploring, nothing to lose) is never half done */
           });
           if (kbd) { const first = hots.querySelector('.hot'); if (first) first.focus({ preventScroll: true }); }
         });

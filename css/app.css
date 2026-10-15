@@ -288,14 +288,24 @@ table.recap td:first-child{font-weight:800}
 .wb__find{margin-top:8px;width:100%;font:700 15px/1.2 var(--sans);color:var(--ink);background:var(--surface);border:1.5px solid var(--rule2);border-radius:9px;padding:8px 10px}
 .wb__list{overflow-y:auto;padding:4px 16px 20px;flex:1}
 .wb__g{font:900 11.5px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink);margin:16px 0 6px}
-.wb__row{display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:8px;padding:6px 0;border-bottom:1px solid var(--rule);font-size:15px;align-items:baseline}
+.wb__item{border-bottom:1px solid var(--rule)}
+.wb__row{display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:8px;padding:7px 0;width:100%;font:inherit;font-size:15px;color:inherit;text-align:left;background:none;border:0;cursor:pointer;align-items:baseline}
+.wb__row:hover b,.wb__item.open .wb__row b{color:var(--accent-ink)}
+.wb__row b::after{content:" ▸";font-size:.8em;color:var(--ink3)}
+.wb__item.open .wb__row b::after{content:" ▾"}
+/* the definition under its word; a word of the bank inside it is a link to that word (dotted, like the page's key words) */
+.wb__def{margin:0 0 10px;padding:6px 10px;border-left:3px solid var(--accent);background:var(--surface);border-radius:0 8px 8px 0;font-size:14.5px;line-height:1.5;color:var(--ink2)}
+.wb__link{font:inherit;color:var(--accent-ink);background:none;border:0;padding:0;border-bottom:1.5px dotted currentColor;cursor:pointer}
+.wb__link:hover{border-bottom-style:solid}
+.wb__item.flash{animation:wbflash 1.4s ease-out}
+@keyframes wbflash{0%{background:rgba(255,200,0,.35)}100%{background:transparent}}
 .wb__row b{font-weight:800}
 .wb__row span{color:var(--ink2)}
 .wb[data-lang="ko"] .wb__row{grid-template-columns:1.1fr 1fr}
 .wb[data-lang="zh"] .wb__row{grid-template-columns:1.1fr 1fr}
 .wb[data-lang="ko"] .zh,.wb[data-lang="zh"] .ko,.wb[data-lang="en"] .ko,.wb[data-lang="en"] .zh{display:none}
 .wb[data-lang="en"] .wb__row{grid-template-columns:1fr}
-.wb__row.hide{display:none}
+.wb__item.hide{display:none}
 
 /* ---------- the bottom ---------- */
 footer{max-width:1480px;margin:0 auto;padding:6px 24px 40px;font-size:13px;color:var(--ink3);line-height:1.6}

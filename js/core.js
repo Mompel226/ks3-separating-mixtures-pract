@@ -141,8 +141,25 @@
   function initWordBank() {
     const wb = $('#wb'), btn = $('#wbBtn'), list = $('#wbList'), find = $('#wbFind');
     if (!wb || !btn) return;
+    /* each word opens its KS3 definition under it (15 Oct 2026, Daniel); a word of the bank inside a definition is a link to
+       its own definition, so the definitions are joined together. One definition per word: labs-shared/ks3-glossary.js */
+    const G = window.KS3_GLOSSARY, has = k => !!WORD[k];
+    const defHtml = w => G ? G.links(w.d, has, w.k).map(([t, k]) => k ? `<button type="button" class="wb__link" data-k="${esc(k)}">${esc(t)}</button>` : esc(t)).join('') : esc(w.d);
     list.innerHTML = (window.WORDS || []).map(g => `<p class="wb__g">${esc(g.g)}</p>` + g.w.map(w =>
-      `<div class="wb__row" data-s="${esc((w.en + ' ' + w.ko + ' ' + w.zh).toLowerCase())}"><b>${esc(w.en)}</b><span class="ko" lang="ko">${esc(w.ko)}</span><span class="zh" lang="zh-Hans">${esc(w.zh)}</span></div>`).join('')).join('');
+      `<div class="wb__item" data-k="${esc(w.k)}" data-s="${esc((w.en + ' ' + w.ko + ' ' + w.zh).toLowerCase())}"><button type="button" class="wb__row" aria-expanded="false"><b>${esc(w.en)}</b><span class="ko" lang="ko">${esc(w.ko)}</span><span class="zh" lang="zh-Hans">${esc(w.zh)}</span></button><div class="wb__def" hidden>${defHtml(w)}</div></div>`).join('')).join('');
+    const openItem = (item, on) => { const d = $('.wb__def', item), r = $('.wb__row', item); on = on == null ? d.hidden : on; d.hidden = !on; r.setAttribute('aria-expanded', String(on)); item.classList.toggle('open', on); };
+    const goTo = k => {
+      const item = $(`.wb__item[data-k="${k}"]`, list); if (!item) return;
+      if (item.classList.contains('hide')) { find.value = ''; $$('.wb__item', list).forEach(i => i.classList.remove('hide')); }
+      openItem(item, true);
+      item.scrollIntoView({ block: 'nearest', behavior: FAST ? 'auto' : 'smooth' });
+      item.classList.remove('flash'); void item.offsetWidth; item.classList.add('flash');
+      $('.wb__row', item).focus({ preventScroll: true });
+    };
+    list.addEventListener('click', e => {
+      const link = e.target.closest('.wb__link'); if (link) { goTo(link.dataset.k); return; }
+      const row = e.target.closest('.wb__row'); if (row) openItem(row.parentNode);
+    });
     const setLang = l => {
       wb.setAttribute('data-lang', l); store.set('lang', l);
       $$('.langs button', wb).forEach(b => b.setAttribute('aria-pressed', String(b.dataset.l === l)));
@@ -159,7 +176,7 @@
     document.addEventListener('pointerdown', e => { if (!wb.hidden && !wb.contains(e.target) && !btn.contains(e.target)) open(false); });
     find.addEventListener('input', () => {
       const v = find.value.trim().toLowerCase();
-      $$('.wb__row', list).forEach(r => r.classList.toggle('hide', !!v && r.dataset.s.indexOf(v) < 0));
+      $$('.wb__item', list).forEach(r => r.classList.toggle('hide', !!v && r.dataset.s.indexOf(v) < 0));
     });
   }
   const lang = () => store.get('lang', 'all');
