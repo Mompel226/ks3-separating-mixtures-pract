@@ -27,8 +27,10 @@ wrong, then lets them try again.
 
 **Particles as pupils draw them.** Solids are a lattice; liquid water is particles that touch and slide past each
 other, held close by hydrogen bonds; a gas is particles far apart, moving fast. When salt dissolves, water particles
-close round each ion (oxygen towards sodium, a hydrogen towards chloride) and carry it away. When a pupil scrolls to a
-question about an animation, the bench shows that animation.
+close round each ion (oxygen towards sodium, a hydrogen towards chloride) and carry it away; sand is one giant structure
+that the water cannot pull apart. When a pupil scrolls to a question about an animation, the bench shows that animation,
+and the question says where to look ("👀 On the bench · …"). Every word a question uses is explained, as a word to tap,
+in the text above it.
 
 **Real photos.** A 📷 Real photo switch above each bench shows the real apparatus.
 
