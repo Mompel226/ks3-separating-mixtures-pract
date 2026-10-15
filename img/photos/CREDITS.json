@@ -104,39 +104,29 @@
   "page": "https://commons.wikimedia.org/wiki/File:Gold_Ingot_on_white_background.jpg",
   "licence": "Public domain",
   "author": "Szaaman",
-  "w": 480,
-  "h": 320,
-  "note": "cropped close-up for \"What you see\" (Zoom in)"
- },
- {
-  "file": "img/photos/visible/water2.jpg",
-  "title": "Glass of Water (50838445027).jpg",
-  "page": "https://commons.wikimedia.org/wiki/File:Glass_of_Water_(50838445027).jpg",
-  "licence": "CC0",
-  "author": "Alabama Extension",
-  "w": 480,
-  "h": 320,
-  "note": "cropped close-up for \"What you see\" (Zoom in)"
+  "w": 240,
+  "h": 240,
+  "note": "cropped to the material only, shown inside the lens by \"Show what you see\" (Zoom in); the evenly lit front face of the bar"
  },
  {
   "file": "img/photos/visible/salt.jpg",
-  "title": "Salt-crystals.jpg",
-  "page": "https://commons.wikimedia.org/wiki/File:Salt-crystals.jpg",
-  "licence": "CC0",
-  "author": "Nate Steiner",
-  "w": 480,
-  "h": 320,
-  "note": "cropped close-up for \"What you see\" (Zoom in)"
+  "title": "Table salt (43301932891).jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Table_salt_(43301932891).jpg",
+  "licence": "CC BY 2.0",
+  "author": "Stock Catalog",
+  "w": 200,
+  "h": 200,
+  "note": "cropped to the material only, shown inside the lens by \"Show what you see\" (Zoom in)"
  },
  {
   "file": "img/photos/visible/coffee.jpg",
-  "title": "Black Coffee for Breakfast in White Porcelain Cup.jpg",
-  "page": "https://commons.wikimedia.org/wiki/File:Black_Coffee_for_Breakfast_in_White_Porcelain_Cup.jpg",
-  "licence": "CC BY 2.0",
-  "author": "epSos.de",
-  "w": 480,
-  "h": 320,
-  "note": "cropped close-up for \"What you see\" (Zoom in)"
+  "title": "Cold drip coffee 2.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Cold_drip_coffee_2.jpg",
+  "licence": "CC BY 3.0",
+  "author": "Misaochan",
+  "w": 220,
+  "h": 220,
+  "note": "cropped to the material only, shown inside the lens by \"Show what you see\" (Zoom in)"
  },
  {
   "file": "img/photos/visible/brass.jpg",
@@ -144,9 +134,9 @@
   "page": "https://commons.wikimedia.org/wiki/File:Brass.jpg",
   "licence": "Public domain",
   "author": "Splarka",
-  "w": 480,
-  "h": 320,
-  "note": "cropped close-up for \"What you see\" (Zoom in)"
+  "w": 160,
+  "h": 160,
+  "note": "cropped to the material only, shown inside the lens by \"Show what you see\" (Zoom in)"
  },
  {
   "file": "img/photos/visible/granite.jpg",
@@ -154,9 +144,9 @@
   "page": "https://commons.wikimedia.org/wiki/File:Westerly_Granite_(Early_Permian,_276_to_279_Ma;_near_Westerly,_Rhode_Island,_USA)_1.jpg",
   "licence": "CC BY 2.0",
   "author": "James St. John",
-  "w": 480,
-  "h": 320,
-  "note": "cropped close-up for \"What you see\" (Zoom in)"
+  "w": 640,
+  "h": 640,
+  "note": "cropped to the material only, shown inside the lens by \"Show what you see\" (Zoom in)"
  },
  {
   "file": "img/photos/visible/oil.jpg",
@@ -164,8 +154,8 @@
   "page": "https://commons.wikimedia.org/wiki/File:Olive_Oil_on_Water_(47993245783).jpg",
   "licence": "CC BY 2.0",
   "author": "Rolf Dietrich Brecher from Germany",
-  "w": 480,
-  "h": 320,
-  "note": "cropped close-up for \"What you see\" (Zoom in)"
+  "w": 640,
+  "h": 640,
+  "note": "cropped to the material only, shown inside the lens by \"Show what you see\" (Zoom in)"
  }
 ]
