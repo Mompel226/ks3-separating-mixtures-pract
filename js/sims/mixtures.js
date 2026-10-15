@@ -7,17 +7,17 @@
   const B = window.BENCH, K = window.KIT, S = B.S, C = K.C;
   const COL = { O: '#E0533F', H: '#F4F6F8', Na: '#8E6BD8', Cl: '#3DBA6A', Au: '#E8B923', Cu: '#D9814A', Zn: '#AEB8C2', min: '#F29B38', cof: '#7A4A26', N: '#5B8DEF', Ar: '#B06AD9', sand: '#C9A66B' };
   const SAMPLES = [
-    { id: 'gold', name: 'Gold', x: 70, say: 'Only one kind of atom: gold atoms, packed in rows.', key: [['Au', 'gold atom']] },
-    { id: 'dist', name: 'Distilled', sub: 'water', x: 163, say: 'Only water particles. Each one is two hydrogen atoms joined to one oxygen atom. In a liquid they touch and slide past each other.', key: [['O', 'oxygen'], ['H', 'hydrogen'], ['hb', 'hydrogen bond']] },
-    { id: 'salt', name: 'Salt', x: 256, say: 'Sodium ions and chloride ions, held together in a regular pattern (a lattice). Only this one kind of substance.', key: [['Na', 'sodium ion'], ['Cl', 'chloride ion']] },
-    { id: 'mineral', name: 'Mineral', sub: 'water', x: 349, say: 'Water particles, with a few mineral particles spread between them. Water particles crowd round each mineral particle, but are not joined to it.', key: [['O', 'water'], ['min', 'mineral'], ['hb', 'hydrogen bond']] },
-    { id: 'coffee', name: 'Black', sub: 'coffee', x: 442, say: 'Water particles, with coffee particles spread evenly between them.', key: [['O', 'water'], ['cof', 'coffee'], ['hb', 'hydrogen bond']] },
-    { id: 'brass', name: 'Brass', x: 535, say: 'Copper atoms and zinc atoms, mixed in rows but not joined to each other.', key: [['Cu', 'copper'], ['Zn', 'zinc']] },
-    { id: 'mud', name: 'Muddy', sub: 'water', x: 628, say: 'Water particles above a grain of sand. The grain is millions of times bigger than a water particle.', key: [['O', 'water'], ['sand', 'sand grain'], ['hb', 'hydrogen bond']] },
-    { id: 'air', name: 'Air', x: 721, say: 'A gas: mostly nitrogen and oxygen particles (about 4 to 1), far apart and moving fast. They do not hold on to each other.', key: [['N', 'nitrogen'], ['O', 'oxygen']] }
+    { id: 'gold', name: 'Gold', x: 52, say: 'Only one kind of atom: gold atoms, packed in rows.', key: [['Au', 'gold atom']] },
+    { id: 'dist', name: 'Distilled', sub: 'water', x: 149, say: 'Only water particles. Each one is two hydrogen atoms joined to one oxygen atom. In a liquid they touch and slide past each other.', key: [['O', 'oxygen'], ['H', 'hydrogen'], ['hb', 'hydrogen bond']] },
+    { id: 'salt', name: 'Salt', x: 246, say: 'Sodium ions and chloride ions, held together in a regular pattern (a lattice). Only this one kind of substance.', key: [['Na', 'sodium ion'], ['Cl', 'chloride ion']] },
+    { id: 'mineral', name: 'Mineral', sub: 'water', x: 343, say: 'Water particles, with a few mineral particles spread between them. Water particles crowd round each mineral particle, but are not joined to it.', key: [['O', 'water'], ['min', 'mineral'], ['hb', 'hydrogen bond']] },
+    { id: 'coffee', name: 'Black', sub: 'coffee', x: 440, say: 'Water particles, with coffee particles spread evenly between them.', key: [['O', 'water'], ['cof', 'coffee'], ['hb', 'hydrogen bond']] },
+    { id: 'brass', name: 'Brass', x: 537, say: 'Copper atoms and zinc atoms, mixed in rows but not joined to each other.', key: [['Cu', 'copper'], ['Zn', 'zinc']] },
+    { id: 'mud', name: 'Muddy', sub: 'water', x: 634, say: 'Water particles above a grain of sand. The grain is millions of times bigger than a water particle.', key: [['O', 'water'], ['sand', 'sand grain'], ['hb', 'hydrogen bond']] },
+    { id: 'air', name: 'Air', x: 731, say: 'A gas: mostly nitrogen and oxygen particles (about 4 to 1), far apart and moving fast. They do not hold on to each other.', key: [['N', 'nitrogen'], ['O', 'oxygen']] }
   ];
 
-  /* ---------------- the samples on the bench ---------------- */
+  /* ---------------- the samples on the bench (97 apart, so their buttons can be big: Daniel, 15 Oct 2026) ---------------- */
   function drawSample(g, s) {
     const x = s.x, by = 446;
     if (s.id === 'gold') { S('path', { d: `M${x - 32},${by} L${x - 22},${by - 22} L${x + 22},${by - 22} L${x + 32},${by} Z`, fill: '#E8B923', stroke: '#9A7412', 'stroke-width': 1.6 }, g); S('path', { d: `M${x - 22},${by - 22} L${x - 14},${by - 18} L${x + 14},${by - 18} L${x + 22},${by - 22}`, fill: '#F6D869', stroke: 'none' }, g); }
