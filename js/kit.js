@@ -189,6 +189,164 @@
     path.setAttribute('stroke-dasharray', len); path.setAttribute('stroke-dashoffset', len);
     return { path, grow(f) { path.setAttribute('stroke-dashoffset', len * (1 - f)); }, cut(f) { path.setAttribute('stroke-dasharray', `0 ${len * f} ${len}`); path.setAttribute('stroke-dashoffset', 0); }, remove() { path.remove(); } };
   }
+  /* ---------------- the particles of liquid water (15 Oct 2026, Daniel: "if you're showing water as a liquid, you show
+     the molecules moving past each other, but still with a hydrogen bond … if it's a solid, they're in a lattice … if it's
+     a gas, they're passing past each other, but not bonding … otherwise you're gonna confuse the students"; and fewer,
+     bigger particles, so a lens is never crowded). The pupils' particle model, as they drew it in class.
+     liquidLens(k, lz, o) fills a lens with water particles that TOUCH and slide past each other: each frame they jiggle,
+     then any two that overlap are pushed apart and the walls keep them in, so they stay packed but never fixed in place.
+     Dashed hydrogen bonds join a hydrogen atom of one particle to the oxygen atom of a neighbour; they break and form
+     again as the particles move.
+     Dissolved particles (Daniel, same day: "the solvent … hugs … the solute … water will hug … ions of sodium and …
+     chloride") are each held by four water particles that move with them: around a positive ion (sodium, the minerals)
+     the water particles turn their OXYGEN atom inwards; around a negative ion (chloride) each turns ONE HYDROGEN atom
+     inwards. add() shows it happening: the four nearest water particles turn and close round the new ion.
+       o.scale   size (1: oxygen radius 12)      o.fill   share of the space the particles fill (.68: touching)
+       o.box     the lens's square is the container (for a flow), not its circle
+       o.flow    px/s downwards; a particle that leaves at the bottom comes back in at the top (filtration)
+       o.solids  [{ rect: [x0, y0, x1, y1] } | { circle: [x, y, r] } | { floor: x => y }]: places no particle enters
+       o.extra   [{ kind, n, r, fill, hug: '+' | '-', sign }]: other particles among the water, held by water if hug is set
+     Returns { add(extra, at), setSolids(list), count(kind), destroy() }. */
+  function liquidLens(k, lz, o) {
+    o = o || {};
+    const p = lz.inner, cx = lz.x, cy = lz.y, R = lz.r, s = o.scale || 1;
+    const rO = 12 * s, rH = 7 * s, hx = 10 * s, hy = 8 * s, RW = 20 * s, reach = rH + rO + 10 * s, T = (o.speed || 24) * s;
+    const DEG = Math.PI / 180, HA = Math.atan2(hy, hx) / DEG, HL = Math.hypot(hx, hy);
+    let solids = o.solids || [];
+    const rnd = (() => { let q = o.seed || 3; return () => (q = (q * 9301 + 49297) % 233280) / 233280; })();
+    const root = S('g', null, p), bonds = S('g', null, root), layer = S('g', null, root), pool = [], ps = [];
+    let stopped = false;
+    const inSolid = (x, y, r) => solids.some(sh => sh.rect ? x > sh.rect[0] - r && x < sh.rect[2] + r && y > sh.rect[1] - r && y < sh.rect[3] + r
+      : sh.circle ? Math.hypot(x - sh.circle[0], y - sh.circle[1]) < sh.circle[2] + r : sh.floor ? y > sh.floor(x) - r : false);
+    const inside = (x, y, r) => o.box ? Math.abs(x - cx) <= R - r * .5 && Math.abs(y - cy) <= R - r * .5 : Math.hypot(x - cx, y - cy) < R - r - 2;
+    const atom = (g, x, y, r, fill) => S('circle', { cx: x, cy: y, r, fill, stroke: 'rgba(0,0,0,.35)', 'stroke-width': .9 }, g);
+    const makeWater = () => { const g = S('g', null, layer); atom(g, -hx, hy, rH, '#F4F6F8'); atom(g, hx, hy, rH, '#F4F6F8'); atom(g, 0, 0, rO, '#E0533F'); return g; };
+    const water = (x, y, a) => ({ g: makeWater(), x, y, vx: 0, vy: 0, a, va: 0, r: RW, water: true });
+    /* the four places round an ion, in the ion's own frame: [x, y, angle of the water particle] */
+    const slots = (e, n) => {
+      const out = [];
+      for (let i = 0; i < n; i++) {
+        const th = (i * 360 / n + 45) * DEG;
+        if (e.hug === '-') { const d = e.r + rH + 1 * s + HL; out.push([Math.cos(th) * d, Math.sin(th) * d, th / DEG + 180 - HA]); }   /* one H inwards */
+        else { const d = e.r + rO + 1 * s; out.push([Math.cos(th) * d, Math.sin(th) * d, th / DEG - 90]); }                             /* O inwards */
+      }
+      return out;
+    };
+    const hugR = e => e.hug === '-' ? e.r + rH + 1 * s + HL + rO + 1 * s : Math.hypot(e.r + rO + 1 * s + hy, hx) + rH;
+    const other = (e, x, y) => {
+      const q = { g: S('g', null, layer), x, y, vx: 0, vy: 0, a: rnd() * 360, va: 0, r: e.r + 3 * s, water: false, kind: e.kind, full: e.hug ? hugR(e) : e.r + 3 * s, form: 1, shell: [] };
+      atom(q.g, 0, 0, e.r, e.fill);
+      if (e.sign) S('text', { x: 0, y: e.r * .42, 'text-anchor': 'middle', 'font-size': e.r * 1.25, 'font-weight': 900, fill: '#FFFFFF' }, q.g, e.sign);
+      if (e.hug) { q.r = q.full; slots(e, 4).forEach(sl => q.shell.push({ w: water(0, 0, 0), sl, from: null })); }
+      return q;
+    };
+    /* how many: o.fill of the free space (the container less its solids), counted on a fine grid; they start on a loose
+       honeycomb (any left over at random), then jiggle into a liquid's random packing */
+    const capacity = () => { let free = 0; for (let y = cy - R; y < cy + R; y += 4) for (let x = cx - R; x < cx + R; x += 4) if (inside(x, y, 0) && !inSolid(x, y, 0)) free += 16; return (o.fill || .68) * free; };
+    const used = () => ps.reduce((t, q) => t + Math.PI * (q.full || q.r) * (q.full || q.r), 0);
+    const d = 2 * RW * 1.04, cand = [];
+    for (let row = 0, y = cy - R + RW * .6; y < cy + R; row++, y += d * .866)
+      for (let x = cx - R + RW * .6 + (row % 2) * d / 2; x < cx + R; x += d) if (inside(x, y, RW) && !inSolid(x, y, RW * .9)) cand.push([x, y]);
+    for (let i = cand.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [cand[i], cand[j]] = [cand[j], cand[i]]; }
+    const spot = () => { for (let t = 0; t < 200; t++) { const x = cx - R + rnd() * 2 * R, y = cy - R + rnd() * 2 * R; if (inside(x, y, RW * .5) && !inSolid(x, y, RW * .5)) return [x, y]; } return [cx, cy]; };
+    const cap0 = capacity();
+    let c = 0;
+    (o.extra || []).forEach(e => { for (let i = 0; i < e.n; i++) { const [x, y] = cand[c++] || spot(); ps.push(other(e, x, y)); } });
+    while (used() + Math.PI * RW * RW <= cap0) { const [x, y] = cand[c++] || spot(); ps.push(water(x, y, rnd() * 360)); }
+    function wall(q) {
+      const r = q.r;
+      if (o.box) { q.x = Math.max(cx - R + r * .5, Math.min(cx + R - r * .5, q.x)); if (!o.flow) q.y = Math.max(cy - R + r * .5, Math.min(cy + R - r * .5, q.y)); }
+      else { const dx = q.x - cx, dy = q.y - cy, dd = Math.hypot(dx, dy), lim = R - r - 1; if (dd > lim) { q.x = cx + dx / dd * lim; q.y = cy + dy / dd * lim; q.vx *= -.5; q.vy *= -.5; } }
+      solids.forEach(sh => {
+        if (sh.rect) { const [x0, y0, x1, y1] = sh.rect; if (q.x > x0 - r && q.x < x1 + r && q.y > y0 - r && q.y < y1 + r) { const l = q.x - x0 + r, rr = x1 + r - q.x, t = q.y - y0 + r, b = y1 + r - q.y, m = Math.min(l, rr, t, b); if (m === l) q.x -= l; else if (m === rr) q.x += rr; else if (m === t) q.y -= t; else q.y += b; } }
+        else if (sh.circle) { const [sx, sy, sr] = sh.circle, dx = q.x - sx, dy = q.y - sy, dd = Math.hypot(dx, dy) || 1, m = sr + r; if (dd < m) { q.x = sx + dx / dd * m; q.y = sy + dy / dd * m; } }
+        else if (sh.floor) { const f = sh.floor(q.x) - r; if (q.y > f) q.y = f; }
+      });
+    }
+    function relax(times) {
+      for (let t = 0; t < times; t++) {
+        for (let i = 0; i < ps.length; i++) for (let j = i + 1; j < ps.length; j++) {
+          const a = ps[i], b = ps[j], dx = b.x - a.x, dy = b.y - a.y, m = a.r + b.r, d2 = dx * dx + dy * dy;
+          if (d2 < m * m && d2 > 1e-6) { const dd = Math.sqrt(d2), push = (m - dd) / 2, ux = dx / dd, uy = dy / dd; a.x -= ux * push; a.y -= uy * push; b.x += ux * push; b.y += uy * push; }
+        }
+        ps.forEach(wall);
+      }
+    }
+    function step(dt, rand) {
+      ps.forEach(q => {
+        const slow = q.shell && q.shell.length ? .6 : 1;                 /* an ion with its water moves a little slower */
+        q.vx += (rand() - .5) * T * 8 * dt; q.vy += (rand() - .5) * T * 8 * dt;
+        const sp = Math.hypot(q.vx, q.vy), top = T * slow; if (sp > top) { q.vx *= top / sp; q.vy *= top / sp; }
+        q.x += q.vx * dt; q.y += (q.vy + (o.flow || 0)) * dt;
+        q.va = Math.max(-50, Math.min(50, (q.va + (rand() - .5) * 240 * dt) * .98)); q.a += q.va * dt * slow;
+        if (q.form < 1) { q.form = Math.min(1, q.form + dt / 2); q.r = q.r0 + (q.full - q.r0) * q.form; }
+        if (o.flow && q.y > cy + R + q.r) { q.y = cy - R - q.r; q.x = cx - R + q.r + rand() * (2 * R - 2 * q.r); }
+      });
+      relax(3);
+    }
+    /* every water particle in the lens, with where it is drawn now: the free ones, and the ones holding an ion */
+    function bodies() {
+      const out = [];
+      ps.forEach(q => {
+        if (q.water) { out.push(q); return; }
+        const co = Math.cos(q.a * DEG), sn = Math.sin(q.a * DEG), e = q.form < 1 ? q.form * q.form * (3 - 2 * q.form) : 1;
+        q.shell.forEach(sh => {
+          const tx = q.x + sh.sl[0] * co - sh.sl[1] * sn, ty = q.y + sh.sl[0] * sn + sh.sl[1] * co, ta = q.a + sh.sl[2];
+          if (sh.from && e < 1) { let da = ((ta - sh.from[2]) % 360 + 540) % 360 - 180; sh.w.x = sh.from[0] + (tx - sh.from[0]) * e; sh.w.y = sh.from[1] + (ty - sh.from[1]) * e; sh.w.a = sh.from[2] + da * e; }
+          else { sh.w.x = tx; sh.w.y = ty; sh.w.a = ta; }
+          out.push(sh.w);
+        });
+      });
+      return out;
+    }
+    function draw() {
+      ps.forEach(q => q.g.setAttribute('transform', `translate(${q.x.toFixed(1)} ${q.y.toFixed(1)})` + (q.water ? ` rotate(${q.a.toFixed(0)})` : '')));
+      const W = bodies();
+      W.forEach(w => { if (!w.water || !ps.includes(w)) w.g.setAttribute('transform', `translate(${w.x.toFixed(1)} ${w.y.toFixed(1)}) rotate(${w.a.toFixed(0)})`); });
+      let n = 0;
+      W.forEach(q => {
+        const co = Math.cos(q.a * DEG), sn = Math.sin(q.a * DEG);
+        [-1, 1].forEach(sd => {
+          const x = q.x + sd * hx * co - hy * sn, y = q.y + sd * hx * sn + hy * co;
+          let best = null, bd = reach;
+          W.forEach(w => { if (w === q) return; const dd = Math.hypot(w.x - x, w.y - y); if (dd < bd) { bd = dd; best = w; } });
+          if (!best) return;
+          const ux = (best.x - x) / bd, uy = (best.y - y) / bd;
+          const ln = pool[n] || (pool[n] = S('line', { stroke: '#2F4A66', 'stroke-width': 1.8 * Math.max(.8, s), 'stroke-dasharray': '3 2.5', 'stroke-linecap': 'round' }, bonds));
+          ln.style.display = '';
+          ln.setAttribute('x1', (x + ux * rH).toFixed(1)); ln.setAttribute('y1', (y + uy * rH).toFixed(1));
+          ln.setAttribute('x2', (best.x - ux * rO).toFixed(1)); ln.setAttribute('y2', (best.y - uy * rO).toFixed(1));
+          n++;
+        });
+      });
+      for (let i = n; i < pool.length; i++) pool[i].style.display = 'none';
+    }
+    /* fit what is there into the space: free water particles leave (those inside a solid first) until it fits */
+    function fit() {
+      const cap = capacity();
+      ps.filter(q => q.water && inSolid(q.x, q.y, 0)).forEach(q => { q.g.remove(); ps.splice(ps.indexOf(q), 1); });
+      while (used() > cap) { const W = ps.filter(q => q.water); if (!W.length) break; const q = W[Math.floor(rnd() * W.length)]; q.g.remove(); ps.splice(ps.indexOf(q), 1); }
+    }
+    relax(30); for (let i = 0; i < 40; i++) step(1 / 30, rnd);
+    draw();
+    if (!k.FAST) k.loop(dt => { if (stopped || !root.isConnected) return false; step(dt, Math.random); draw(); return true; });
+    return {
+      /* a new particle among the water, at [x, y] (or a random place); one that is held by water takes the four nearest
+         water particles, which turn and close round it */
+      add(e, at) {
+        const [x, y] = at || spot(), q = other(e, x, y);
+        if (e.hug) {
+          const free = ps.filter(w => w.water).sort((a, b) => Math.hypot(a.x - x, a.y - y) - Math.hypot(b.x - x, b.y - y));
+          q.shell.forEach((sh, i) => { const w = free[i]; if (!w) return; sh.w.g.remove(); sh.w = w; sh.from = [w.x, w.y, w.a]; ps.splice(ps.indexOf(w), 1); });
+          q.r0 = e.r + 3 * s; q.r = q.r0; q.form = k.FAST ? 1 : 0; if (k.FAST) q.r = q.full;
+        }
+        ps.push(q); fit(); relax(4); draw();
+      },
+      setSolids(list) { solids = list; fit(); relax(20); draw(); },
+      count(kind) { return ps.filter(q => q.kind === kind).length; },
+      destroy() { stopped = true; root.remove(); }
+    };
+  }
   /* a round "zoom" lens drawn at (x, y): returns its inner group, clipped to the circle */
   function lens(p, x, y, r, title, sub) {
     const g = S('g', { class: 'lens' }, p), cid = id('lens');
@@ -200,5 +358,37 @@
     if (sub) { const parts = String(sub).split(' · '); parts.forEach((t, i) => S('text', { class: 'zoom-sub', x, y: y + r + 37 + i * 16, 'text-anchor': 'middle' }, g, t)); }
     return { g, inner, x, y, r };
   }
-  window.KIT = { C, liquid, beaker, conical, rbFlask, funnel, stand, bunsen, tripod, thermometer, steam, bubbles, drips, stream, lens, id };
+  /* a danger card (15 Oct 2026, Daniel: "add the warning sign … blinking … then you show goggles and lab coat on the left"):
+     a blinking hazard triangle, what goes wrong, and what to wear, drawn at (x, y) = its top-left corner, 196 x 196 */
+  function danger(p, x, y, text) {
+    const g = S('g', { class: 'danger' }, p);
+    S('rect', { x, y, width: 196, height: 206, rx: 12, fill: 'var(--sheet)', stroke: '#C62828', 'stroke-width': 3 }, g);
+    const tri = S('g', { class: 'blink' }, g);
+    S('path', { d: `M${x + 98},${y + 12} L${x + 128},${y + 62} L${x + 68},${y + 62} Z`, fill: '#F6C026', stroke: '#1B1B1B', 'stroke-width': 3.5, 'stroke-linejoin': 'round' }, tri);
+    S('text', { x: x + 98, y: y + 57, 'text-anchor': 'middle', 'font-size': 30, 'font-weight': 900, fill: '#1B1B1B' }, tri, '!');
+    String(text).split('\n').forEach((t, i) => S('text', { x: x + 98, y: y + 84 + i * 19, 'text-anchor': 'middle', 'font-size': 14.5, 'font-weight': 900, fill: '#C62828' }, g, t));
+    /* goggles */
+    const gx = x + 52, gy = y + 146;
+    S('path', { d: `M${gx - 36},${gy} Q${gx},${gy - 10} ${gx + 36},${gy}`, stroke: '#3A3F47', 'stroke-width': 4, fill: 'none', 'stroke-linecap': 'round' }, g);
+    S('rect', { x: gx - 30, y: gy - 12, width: 27, height: 22, rx: 9, fill: '#BFE3F7', stroke: '#2F4357', 'stroke-width': 3 }, g);
+    S('rect', { x: gx + 3, y: gy - 12, width: 27, height: 22, rx: 9, fill: '#BFE3F7', stroke: '#2F4357', 'stroke-width': 3 }, g);
+    S('path', { d: `M${gx - 24},${gy - 5} l7,-3 M${gx + 9},${gy - 5} l7,-3`, stroke: '#FFFFFF', 'stroke-width': 2.2, 'stroke-linecap': 'round' }, g);
+    S('text', { x: gx, y: gy + 38, 'text-anchor': 'middle', 'font-size': 13, 'font-weight': 800, fill: 'var(--ink)' }, g, 'goggles');
+    /* lab coat */
+    const cx = x + 146, cy = y + 146;
+    S('path', { d: `M${cx - 13},${cy - 30} L${cx - 28},${cy - 23} L${cx - 34},${cy + 5} L${cx - 26},${cy + 7} L${cx - 22},${cy - 8} L${cx - 21},${cy + 30} L${cx + 21},${cy + 30} L${cx + 22},${cy - 8} L${cx + 26},${cy + 7} L${cx + 34},${cy + 5} L${cx + 28},${cy - 23} L${cx + 13},${cy - 30} L${cx},${cy - 16} Z`, fill: '#FFFFFF', stroke: '#5C6679', 'stroke-width': 2.4, 'stroke-linejoin': 'round' }, g);
+    S('path', { d: `M${cx - 13},${cy - 30} L${cx - 2},${cy - 6} M${cx + 13},${cy - 30} L${cx + 2},${cy - 6} M${cx},${cy - 12} L${cx},${cy + 30}`, stroke: '#5C6679', 'stroke-width': 2, fill: 'none' }, g);
+    [-2, 9, 20].forEach(d => S('circle', { cx: cx + 4, cy: cy + d, r: 1.8, fill: '#5C6679' }, g));
+    S('text', { x: cx, y: cy + 44, 'text-anchor': 'middle', 'font-size': 13, 'font-weight': 800, fill: 'var(--ink)' }, g, 'lab coat');
+    return g;
+  }
+  /* a glass rod from (x1, y1) to (x2, y2): clear glass with an outline and a highlight, never a dark stick */
+  function glassRod(p, x1, y1, x2, y2) {
+    const g = S('g', { class: 'rod' }, p), a = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI, L = Math.hypot(x2 - x1, y2 - y1);
+    const r = S('g', { transform: `translate(${x1} ${y1}) rotate(${a})` }, g);
+    S('rect', { x: 0, y: -3.5, width: L, height: 7, rx: 3.5, fill: 'var(--glass-fill)', stroke: 'var(--glass)', 'stroke-width': 1.6 }, r);
+    S('line', { x1: 5, y1: -1, x2: L - 5, y2: -1, stroke: 'var(--shine)', 'stroke-width': 1.5, 'stroke-linecap': 'round' }, r);
+    return g;
+  }
+  window.KIT = { glassRod, danger, C, liquid, beaker, conical, rbFlask, funnel, stand, bunsen, tripod, thermometer, steam, bubbles, drips, stream, lens, liquidLens, id };
 })();

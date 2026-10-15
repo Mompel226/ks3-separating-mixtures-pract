@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap">
-<link rel="stylesheet" href="css/app.css?v=202610150055">
+<link rel="stylesheet" href="css/app.css?v=202610151223">
 <!-- Bright or dark: the reader's choice for the whole site (biology.theme), else the computer's setting. -->
 <script>(function () { try { var t = localStorage.getItem('biology.theme'); if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); } catch (e) {} })();</script>
 </head>
@@ -71,24 +71,36 @@
       <p>A <dfn data-w="pure">pure substance</dfn> has only one kind of particle. It can be an <dfn data-w="element">element</dfn> (one kind of atom) or a <dfn data-w="compound">compound</dfn> (atoms of different elements chemically joined together).</p>
       <p>A <dfn data-w="mixture">mixture</dfn> has two or more substances that are <u>not chemically joined</u>. Each substance keeps its own properties. So you can separate a mixture by physical methods, such as a filter or a magnet.</p>
     </div>
-    <div class="q" data-q="p1-sort-pure"></div>
+    <div class="q" data-q="p1-sort-pure" data-scene="zoom"></div>
     <p class="k3">Two types of mixture</p>
     <div class="cmp">
       <div><b class="h">Only one phase</b>A <dfn data-w="solution">solution</dfn>, an <dfn data-w="alloy">alloy</dfn> or a mixture of gases. The particles are spread evenly, so it looks the same all through (<dfn data-w="homogeneous">homogeneous</dfn>).</div>
       <div><b class="h">More than one phase</b>A <dfn data-w="mechanical">mechanical mixture</dfn>. You can see the different parts (<dfn data-w="heterogeneous">heterogeneous</dfn>).</div>
     </div>
-    <div class="q" data-q="p1-sort-kind"></div>
-    <div class="q" data-q="p1-qc-1"></div>
+    <div class="q" data-q="p1-sort-kind" data-scene="zoom"></div>
+    <div class="q" data-q="p1-qc-1" data-scene="zoom"></div>
+    <p class="k3">Particles in a solid, a liquid and a gas</p>
+    <div class="read">
+      <p>Look at the lens again. In gold, brass and salt (solids), the particles are held in a regular pattern, a <dfn data-w="lattice">lattice</dfn>. In distilled water (a liquid), the particles touch and slide past each other: <dfn data-w="hydrogen-bond">hydrogen bonds</dfn> (the dashed lines) hold them close. In air (a gas), the particles are far apart and move fast in straight lines: nothing holds them together.</p>
+    </div>
+    <div class="q" data-q="p1-sort-state" data-scene="zoom"></div>
     <p class="k3">Dissolving</p>
     <div class="read">
-      <p>When salt <dfn data-w="dissolve">dissolves</dfn> in water, its particles spread out between the water particles, and you can no longer see the salt. The substance that dissolves is the <dfn data-w="solute">solute</dfn>. The liquid that does the dissolving is the <dfn data-w="solvent">solvent</dfn>.</p>
+      <p>When salt <dfn data-w="dissolve">dissolves</dfn> in water, water particles crowd round the salt particles and carry them away from the grain. The salt particles spread out between the water particles, and you can no longer see the salt. The substance that dissolves is the <dfn data-w="solute">solute</dfn>. The liquid that does the dissolving is the <dfn data-w="solvent">solvent</dfn>.</p>
     </div>
     <div class="q" data-q="p1-qc-2"></div>
     <div class="read"><p>Now press <b>Dissolve</b> above the bench. Add salt to water, one spoon at a time, then try sand. Read what the bench tells you.</p></div>
-    <div class="q" data-q="p1-qc-3"></div>
-    <div class="ext">
-      <p class="k3">Extension · milk</p>
-      <p>Milk is not a solution. Its fat droplets are too small to see and too small to settle. Shine a torch through it and the beam shows, because the droplets scatter the light. A mixture like this is a <dfn data-w="colloid">colloid</dfn>.</p>
+    <div class="q" data-q="p1-qc-5" data-scene="dissolve"></div>
+    <div class="read">
+      <p>Look closely. Salt is made of two kinds of <dfn data-w="ion">ion</dfn>: sodium ions (+) and chloride ions (−). Each water particle has a slightly negative end (its oxygen atom) and a slightly positive end (its hydrogen atoms). Which end faces each ion? Look at the lens.</p>
+    </div>
+    <div class="q" data-q="p1-qc-4" data-scene="dissolve"></div>
+    <div class="q" data-q="p1-qc-3" data-scene="dissolve"></div>
+    <div class="q" data-q="p1-qc-6" data-scene="dissolve"></div>
+    <div class="ext" data-scene="colloid">
+      <p class="k3">Extension · milk, a colloid</p>
+      <p>Milk is mostly water. Spread through it are tiny <dfn data-w="droplet">droplets</dfn> of <dfn data-w="fat">fat</dfn> (the oily part of milk, as in butter) and small clumps of <dfn data-w="protein">protein</dfn> (a substance the body uses to grow, as in egg white).</p>
+      <p>The bits are too small to see with your eyes and too small to settle, so milk is not a mechanical mixture. But they are much bigger than the particles in a solution, big enough to scatter light: a torch beam shows in milk (the <dfn data-w="tyndall">Tyndall effect</dfn>). A mixture like this is a <dfn data-w="colloid">colloid</dfn>. The bench shows it: <b>Milk (colloid)</b>, above the bench.</p>
       <div class="q" data-q="p1-ext-1"></div>
     </div>
     <div class="partnav"><button class="next" type="button">Filtration →</button></div>
@@ -121,18 +133,18 @@
       <p><dfn data-w="evaporation">Evaporation</dfn> separates a dissolved solid from a liquid. Heat the solution in an <dfn data-w="basin">evaporating basin</dfn>: the water turns into a gas and leaves, and the solid stays in the basin.</p>
       <p>Water boils at 100 °C. Salt melts only at 801 °C.</p>
     </div>
-    <div class="q" data-q="p3-qc-1"></div>
-    <div class="q" data-q="p3-qc-2"></div>
+    <div class="q" data-q="p3-qc-1" data-scene="evap"></div>
+    <div class="q" data-q="p3-qc-2" data-scene="evap"></div>
     <div class="read"><p>Water turns into a gas much more easily than salt: water is more <dfn data-w="volatility">volatile</dfn>. Evaporation uses this property, volatility.</p></div>
     <p class="k3">Crystallisation</p>
     <div class="read">
       <p><dfn data-w="crystallisation">Crystallisation</dfn> gives large, pure <dfn data-w="crystal">crystals</dfn>. You heat the solution only until it is <dfn data-w="saturated">saturated</dfn>, not until it is dry. Crystals then grow as it cools. They are usually purer than the solid you started with, because other substances stay dissolved. So crystallisation is a way to purify a solid.</p>
       <p>Run it on the bench, then answer.</p>
     </div>
-    <div class="q" data-q="p3-qc-3"></div>
-    <div class="q" data-q="p3-qc-4"></div>
+    <div class="q" data-q="p3-qc-3" data-scene="cryst"></div>
+    <div class="q" data-q="p3-qc-4" data-scene="cryst"></div>
     <div class="q" data-q="p3-qc-5"></div>
-    <div class="real noimg"><div><p class="k3">In real life</p><p>In Cádiz, Spain, and on the coast of China, seawater is let into wide, shallow ponds. Over weeks the sun evaporates the water and workers rake up the salt.</p></div></div>
+    <div class="real wide"><img src="img/photos/salt-pans.jpg" alt="A woman in a hat rakes salt in a flooded salt pan. Small heaps of white salt stand in the shallow water behind her." loading="lazy" width="1100" height="618"><div><p class="k3">In real life</p><p>Salt pans in Kampot, Cambodia (in the photo), and in Sinan, Korea, work the same way. Seawater is let into wide, shallow ponds. Over several weeks the sun evaporates the water, and workers rake the salt that is left into heaps.</p><small>Photo: <a href="https://commons.wikimedia.org/wiki/File:Woman_working_the_salt_fields_in_Kampot.jpg" target="_blank" rel="noopener">douglasjonesjr</a>, CC BY 2.0</small></div></div>
     <div class="partnav"><button class="back" type="button">← Filtration</button><button class="next" type="button">Distillation →</button></div>
   </section>
 
@@ -145,11 +157,11 @@
       <p><dfn data-w="distillation">Simple distillation</dfn> separates a solvent from a solution: for example, pure water from seawater. Heat the seawater in a <dfn data-w="flask">round-bottomed flask</dfn>: the water <dfn data-w="boil">boils</dfn> and becomes water <dfn data-w="vapour">vapour</dfn>.</p>
       <p>The vapour goes into the <dfn data-w="condenser">condenser</dfn>, a glass tube with cold water flowing around it. There it <dfn data-w="condense">condenses</dfn>: it turns back into a liquid. The pure liquid you collect is the <dfn data-w="distillate">distillate</dfn>. The salt stays in the flask.</p>
     </div>
-    <div class="q" data-q="p4-qc-1"></div>
-    <div class="q" data-q="p4-qc-2"></div>
+    <div class="q" data-q="p4-qc-1" data-scene="simple"></div>
+    <div class="q" data-q="p4-qc-2" data-scene="simple"></div>
     <div class="q" data-q="p4-qc-3"></div>
     <div class="q" data-q="p4-qc-4"></div>
-    <div class="ext">
+    <div class="ext" data-scene="frac">
       <p class="k3">Extension · fractional distillation</p>
       <p><dfn data-w="fractional">Fractional distillation</dfn> separates <dfn data-w="miscible">miscible</dfn> liquids (liquids that mix) with different <dfn data-w="boiling-point">boiling points</dfn>, such as ethanol and water. A column of glass beads sits above the flask. Press <b>Fractional</b> above the bench and watch the thermometer and its graph.</p>
       <div class="q" data-q="p4-ext-1"></div>
@@ -168,18 +180,18 @@
       <p>This note was found on the lab bench: <i>“The test answers are in the blue cupboard.”</i> Four people each have a black pen: A, B, C and D. Black ink is usually a mixture of <dfn data-w="dye">dyes</dfn>. Which pen has the same dyes as the note?</p>
       <p><dfn data-w="chromatography">Paper chromatography</dfn> separates the dissolved substances in a mixture. Small spots of ink go on a <dfn data-w="baseline">start line</dfn> near the bottom of the paper. The paper stands in a <dfn data-w="solvent">solvent</dfn>, such as water. The solvent soaks up the paper and carries the dyes with it. Each dye travels a different distance, so the dyes separate.</p>
     </div>
-    <div class="q" data-q="p5-qc-1"></div>
-    <div class="q" data-q="p5-qc-2"></div>
-    <div class="q" data-q="p5-qc-3"></div>
-    <div class="q" data-q="p5-qc-4"></div>
-    <div class="q" data-q="p5-qc-5"></div>
+    <div class="q" data-q="p5-qc-1" data-scene="chrom"></div>
+    <div class="q" data-q="p5-qc-2" data-scene="chrom"></div>
+    <div class="q" data-q="p5-qc-3" data-scene="chrom"></div>
+    <div class="q" data-q="p5-qc-4" data-scene="chrom"></div>
+    <div class="q" data-q="p5-qc-5" data-scene="chrom"></div>
     <div class="read">
       <p>The paper does not move: it is the <dfn data-w="stationary">stationary phase</dfn>. The solvent moves: it is the <dfn data-w="mobile">mobile phase</dfn>. A dye that is attracted more strongly to the solvent than to the paper travels further. This attraction is called <dfn data-w="affinity">affinity</dfn>.</p>
     </div>
     <div class="q" data-q="p5-qc-6"></div>
-    <div class="ext">
+    <div class="ext" data-scene="rf">
       <p class="k3">Extension · Rf values</p>
-      <p>Rf = distance moved by the dye ÷ distance moved by the solvent. Both are measured from the start line. The same dye in the same solvent always has the same Rf, so an Rf value helps to identify a dye.</p>
+      <p><dfn data-w="rf">Rf</dfn> = distance moved by the dye ÷ distance moved by the solvent. Both are measured from the start line. The same dye in the same solvent always has the same Rf, so an Rf value helps to identify a dye. The bench works one out: <b>Rf values</b>, above the bench.</p>
       <div class="q" data-q="p5-ext-1"></div>
     </div>
     <div class="real noimg"><div><p class="k3">In real life</p><p>Forensic scientists use chromatography to compare the ink on a document with the ink in a suspect's pen. Food scientists use it to check which colourings are in a sweet or a drink.</p></div></div>
@@ -195,10 +207,10 @@
       <p><dfn data-w="decanting">Decanting</dfn>: let the solid sink to the bottom and <dfn data-w="settle">settle</dfn>. Then pour the liquid slowly into another beaker, so the solid stays behind. A <dfn data-w="glass-rod">glass rod</dfn> guides the liquid. Decanting is quick, but not perfect.</p>
       <p>Oil and water do not mix: liquids that do not mix are <dfn data-w="immiscible">immiscible</dfn>. They form two layers. Which liquid is on top depends on its <dfn data-w="density">density</dfn>. A <dfn data-w="funnel-sep">separating funnel</dfn> has a tap at the bottom, so you can run off the bottom layer.</p>
     </div>
-    <div class="q" data-q="p6-qc-1"></div>
-    <div class="q" data-q="p6-qc-2"></div>
-    <div class="q" data-q="p6-qc-3"></div>
-    <div class="q" data-q="p6-qc-4"></div>
+    <div class="q" data-q="p6-qc-1" data-scene="funnel"></div>
+    <div class="q" data-q="p6-qc-2" data-scene="funnel"></div>
+    <div class="q" data-q="p6-qc-3" data-scene="funnel"></div>
+    <div class="q" data-q="p6-qc-4" data-scene="funnel"></div>
     <div class="partnav"><button class="back" type="button">← Chromatography</button><button class="next" type="button">Sieve and magnet →</button></div>
   </section>
 
@@ -211,7 +223,7 @@
       <p>Some mixtures of solids can be separated by hand, using a property you can see or test: size, colour or <dfn data-w="magnetism">magnetism</dfn>. Pick pieces out with tweezers only when it is safe.</p>
       <p>A <dfn data-w="sieve">sieve</dfn> lets small pieces fall through its holes and keeps the big pieces. A <dfn data-w="magnet">magnet</dfn> <dfn data-w="attract">attracts</dfn> magnetic materials out of a mixture.</p>
     </div>
-    <div class="q" data-q="p7-qc-1"></div>
+    <div class="q" data-q="p7-qc-1" data-scene="magnet"></div>
     <div class="q" data-q="p7-qc-2"></div>
     <div class="q" data-q="p7-qc-3"></div>
     <div class="read"><p>In the lab you will separate a mixture of your own. The bench does not do that one: you and your partner plan it. For each substance, ask which property separates it from the rest.</p></div>
@@ -246,26 +258,28 @@
 <footer>
   Something wrong, or a suggestion? Please contact me: <a href="mailto:dmompelriera@nlcsjeju.kr">dmompelriera@nlcsjeju.kr</a>.<br>
   The apparatus, the particles and the results on the bench are a simulation drawn for this page. The words of the checks follow the department's Year 7 lesson on separating mixtures.<br>
+  <details><summary>Photo credits</summary>The real photos come from Wikimedia Commons:<ul><li>filtration: <a href="https://commons.wikimedia.org/wiki/File:Filtra%C4%8Dn%C3%AD_aparatura.jpg" target="_blank" rel="noopener">David Rouzek</a>, CC BY-SA 4.0</li><li>evaporating basins: <a href="https://commons.wikimedia.org/wiki/File:Abdampfschalen,_porzellan_innen_glasiert.jpg" target="_blank" rel="noopener">Lysippos</a>, CC0</li><li>salt pans: <a href="https://commons.wikimedia.org/wiki/File:Woman_working_the_salt_fields_in_Kampot.jpg" target="_blank" rel="noopener">douglasjonesjr</a>, CC BY 2.0</li><li>copper sulfate crystals: <a href="https://commons.wikimedia.org/wiki/File:%D0%A1opper_sulfate_crystals_IMG_6330%D0%BE%D0%B1%D1%80_01.jpg" target="_blank" rel="noopener">Дарья Могилевцева</a>, CC BY 4.0</li><li>distillation: <a href="https://commons.wikimedia.org/wiki/File:Distillation_2-3.jpg" target="_blank" rel="noopener">Arlen (derivative work: Mario Link)</a>, CC BY 2.0</li><li>fractional distillation: <a href="https://commons.wikimedia.org/wiki/File:Fraktionierte_Destillation_-_Laboratory_Fractional_distillation_apparatus.jpg" target="_blank" rel="noopener">Chemie-Verbände Baden-Württemberg</a>, CC BY 2.0</li><li>chromatogram: <a href="https://commons.wikimedia.org/wiki/File:Paper_Chromatography_1.jpg" target="_blank" rel="noopener">Pbak4622</a>, CC BY 4.0</li><li>decanting 1850s: <a href="https://commons.wikimedia.org/wiki/File:Decantation_with_a_Guiding-Rod.png" target="_blank" rel="noopener">Mohr Francis (1808? — 1861?), Redwood Theophilus (1806—1892)</a>, Public domain</li><li>separating funnel: <a href="https://commons.wikimedia.org/wiki/File:Separatory_funnel.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, Public domain</li><li>scrap magnet: <a href="https://commons.wikimedia.org/wiki/File:Allegheny_Ludlum_Steel_Corp_Scrap_Piles.jpg" target="_blank" rel="noopener">Palmer, Alfred T.</a>, Public domain</li><li>sieving soil: <a href="https://commons.wikimedia.org/wiki/File:Sieving_the_compost_with_a_coarse_sieve_(8915941421).jpg" target="_blank" rel="noopener">SuSanA Secretariat</a>, CC BY 2.0</li></ul></details>
   Code: AGPL-3.0 · Teaching material: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> — free for teaching, not for selling.
 </footer>
 
 <script src="https://accounts.google.com/gsi/client?hl=en-GB" async defer></script>
-<script src="js/config.js?v=202610150055"></script>
-<script src="js/signin.js?v=202610150055"></script>
-<script src="js/lesson.js?v=202610150055"></script>
-<script src="js/words.js?v=202610150055"></script>
-<script src="js/questions.js?v=202610150055"></script>
-<script src="js/core.js?v=202610150055"></script>
-<script src="js/checks.js?v=202610150055"></script>
-<script src="js/bench.js?v=202610150055"></script>
-<script src="js/kit.js?v=202610150055"></script>
-<script src="js/sims/mixtures.js?v=202610150055"></script>
-<script src="js/sims/filtration.js?v=202610150055"></script>
-<script src="js/sims/evaporation.js?v=202610150055"></script>
-<script src="js/sims/distillation.js?v=202610150055"></script>
-<script src="js/sims/chromatography.js?v=202610150055"></script>
-<script src="js/sims/funnel.js?v=202610150055"></script>
-<script src="js/sims/magnet.js?v=202610150055"></script>
-<script src="js/sims/finder.js?v=202610150055"></script>
+<script src="js/config.js?v=202610151223"></script>
+<script src="js/signin.js?v=202610151223"></script>
+<script src="js/lesson.js?v=202610151223"></script>
+<script src="js/words.js?v=202610151223"></script>
+<script src="js/questions.js?v=202610151223"></script>
+<script src="js/core.js?v=202610151223"></script>
+<script src="js/checks.js?v=202610151223"></script>
+<script src="js/bench.js?v=202610151223"></script>
+<script src="js/photos.js?v=202610151223"></script>
+<script src="js/kit.js?v=202610151223"></script>
+<script src="js/sims/mixtures.js?v=202610151223"></script>
+<script src="js/sims/filtration.js?v=202610151223"></script>
+<script src="js/sims/evaporation.js?v=202610151223"></script>
+<script src="js/sims/distillation.js?v=202610151223"></script>
+<script src="js/sims/chromatography.js?v=202610151223"></script>
+<script src="js/sims/funnel.js?v=202610151223"></script>
+<script src="js/sims/magnet.js?v=202610151223"></script>
+<script src="js/sims/finder.js?v=202610151223"></script>
 </body>
 </html>
