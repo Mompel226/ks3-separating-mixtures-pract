@@ -10,19 +10,19 @@
     const g = k.svg;
     S('rect', { x: 236, y: 400, width: 120, height: 46, rx: 4, fill: '#8C7A62', stroke: '#5E5140' }, g);   /* a wooden block */
     const wrap = S('g', null, g);
-    const b1 = K.beaker(wrap, 300, 400, 104, 130, { color: C.mud, level: .72 });
+    const b1 = K.beaker(wrap, 300, 400, 104, 130, { color: '#7A5430', level: .72, opacity: .82 });
     const sandG = S('g', null, b1.g);
     const sand = S('rect', { x: 250, y: 396, width: 100, height: 0, fill: C.sand, rx: 2 }, sandG);
     const b2 = K.beaker(g, 470, 446, 104, 120, { color: C.water });
     const sand2 = S('rect', { x: 420, y: 444, width: 100, height: 0, fill: C.sand }, b2.g);
-    S('line', { x1: 362, y1: 262, x2: 452, y2: 432, stroke: 'var(--glass)', 'stroke-width': 5, 'stroke-linecap': 'round', opacity: .85 }, g);
-    k.label('glass rod', 470, 290, 404, 300, { anchor: 'start', layer: g, fade: false });
+    K.glassRod(g, 362, 262, 452, 432);
+    k.label('glass rod', 470, 300, 382, 300, { anchor: 'start', layer: g, fade: false });
     k.step(1, 2, 'Muddy water: sand stirred into water. First, let the sand settle to the bottom.');
     await k.choose([{ id: 'w', x: 300, y: 236, label: 'Wait for the sand to settle' }]);
     k.lapse('ten minutes in a few seconds');
-    await k.tween(2200, t => { b1.liq.color(t < .5 ? C.mud : '#9DB9C9'); b1.liq.opacity(.78); sand.setAttribute('y', 396 - 22 * t); sand.setAttribute('height', 22 * t); });
-    b1.liq.color(C.water); k.lapse(null);
-    k.label('sand', 220, 386, 254, 386, { anchor: 'end', layer: g });
+    await k.tween(2200, t => { b1.liq.color(t < .35 ? '#7A5430' : t < .7 ? '#A99A82' : '#BCD7EA'); b1.liq.opacity(.82 - .1 * t); sand.setAttribute('y', 396 - 22 * t); sand.setAttribute('height', 22 * t); });
+    b1.liq.color('#BCD7EA'); k.lapse(null);
+    const sandLabel = k.label('sand', 220, 386, 254, 386, { anchor: 'end', layer: g });
     /* the physics: holding tips the beaker further; letting go keeps the angle, so water keeps flowing until its
        level falls below the lip. Water reaches the lip past an angle that rises as the beaker empties; the settled
        sand reaches it only past 74°. */
@@ -32,6 +32,7 @@
     const st = K.stream(g, [[sx, sy], [sx + 14, sy + 8], [380, 296]], C.water, 5);
     const paint = () => {
       wrap.setAttribute('transform', `rotate(${tilt} ${sx} ${sy})`); b1.liq.tilt(tilt, sx, sy); b1.liq.set(w);
+      sandLabel.setAttribute('opacity', tilt < 3 ? 1 : 0);          /* the label stays only while the beaker stands still */
       b2.liq.set(Math.min(.62, poured * .85));
       st.grow((tilt > th() && w > .02) || tilt > 74 ? 1 : 0);
     };
@@ -96,9 +97,9 @@
     const oilB = S('rect', { x: FX - 52, y: 444, width: 104, height: 0, fill: C.oil, opacity: .9 }, bk.g);
     const stream = S('line', { x1: FX, y1: Y1 + 64, x2: FX, y2: 444, stroke: '#5DA9E9', 'stroke-width': 4, opacity: 0 }, g);
     k.label('separating funnel', FX + 92, 160, FX + 40, 168, { anchor: 'start', layer: g, fade: false });
-    k.label('tap', FX + 60, Y1 + 18, FX + 24, Y1 + 14, { anchor: 'start', layer: g, fade: false });
+    k.label('tap', FX + 60, Y1 + 14, FX + 22, Y1 + 14, { anchor: 'start', layer: g, fade: false });
     const VW0 = vol(262), VO0 = vol(184) - VW0;
-    let Vw = VW0, Vo = VO0, outW = 0, outO = 0, open = false, stop = true, flowLeft = 0;
+    let Vw = VW0, Vo = VO0, outW = 0, outO = 0, open = false, stop = true, flowLeft = 0, lab = null;
     const paint = () => {
       const yi = yAt(Vw), yt = yAt(Vw + Vo);
       wat.setAttribute('y', yi); wat.setAttribute('height', Y1 - yi + 1);
@@ -108,6 +109,7 @@
       tap.setAttribute('transform', open ? `rotate(90 ${FX + 18} ${Y1 + 14})` : '');
       stream.setAttribute('opacity', open && (Vw + Vo) > 1 && (!stop || flowLeft > 0) ? .9 : 0);
       stream.setAttribute('stroke', Vw > 1 ? '#5DA9E9' : C.oil);
+      if (lab) { place(lab.water, (yi + Y1) / 2 - 6, Vw > VW0 * .04); place(lab.oil, (yt + yi) / 2, Vo > VO0 * .04); }
     };
     const drain = dt => {
       if (stop) { if (flowLeft <= 0) return; flowLeft -= dt; }
@@ -116,8 +118,11 @@
       const b = Math.min(Vo, d); Vo -= b; outO += b;
       paint();
     };
-    k.label('oil', FX - 92, 200, FX - 46, 200, { anchor: 'end', layer: g, fade: false });
-    k.label('water', FX - 92, 282, FX - 26, 282, { anchor: 'end', layer: g, fade: false });
+    /* each layer's label follows the middle of its layer, its line ending on the glass there; gone when the layer has gone */
+    lab = { oil: k.label('oil', 0, 0, 0, 0, { anchor: 'end', layer: g, fade: false }), water: k.label('water', 0, 0, 0, 0, { anchor: 'end', layer: g, fade: false }) };
+    /* a label never sits on the clamp's ring (y 226), where its line would run along the clamp arm */
+    const place = (l, y, on) => { l.setAttribute('opacity', on ? 1 : 0); if (!on) return; if (Math.abs(y - 226) < 14) y = y < 226 ? 212 : 240; const t = l.querySelector('text'), d = l.querySelector('path'), x = FX - 96, tx = FX - hw(y) + 8;
+      t.setAttribute('x', x); t.setAttribute('y', y + 5); d.setAttribute('d', `M${x + 6},${y} L${tx},${y}`); const r = l.querySelector('rect'); if (r) { const bb = t.getBBox(); r.setAttribute('x', bb.x - 4); r.setAttribute('y', bb.y - 2); r.setAttribute('width', bb.width + 8); r.setAttribute('height', bb.height + 4); } };
     paint();
     for (;;) {
       k.step(1, 3, 'Oil and water have settled into two layers. The stopper is still in the top. What do you do first?');
@@ -141,7 +146,7 @@
       k.step(2, 3, 'Run off the bottom layer. <b>Hold</b> the tap button to open the tap; let go to close it. Close it just as the boundary reaches the tap.');
       const c = await k.choose([
         { id: 'open', x: FX + 40, y: Y1 + 44, label: 'Hold to open the tap', side: 'r', onHold: drain, onPress: v => { open = v; paint(); }, fastHold: (VW0 - 30) / 900 },
-        { id: 'done', x: 620, y: 230, label: 'Tap closed at the boundary', side: 'r' }
+        { id: 'done', x: 610, y: 300, label: 'Tap closed at the boundary' }
       ]);
       open = false; paint();
       if (outO > VO0 * .04) {
@@ -157,8 +162,10 @@
     await k.tween(500, t => bk.g.setAttribute('transform', `translate(${180 * t} 0)`));
     const bk2 = K.beaker(g, FX, 446, 110, 70, { color: C.oil });
     open = true;
-    await k.tween(1800, t => { const v = VO0 * t; Vo = Math.max(0, VO0 - v); Vw = 0; bk2.liq.set(.62 * t); const yi = yAt(0), yt = yAt(Vo); oil.setAttribute('y', yt); oil.setAttribute('height', Math.max(0, yi - yt)); wat.setAttribute('height', 0); stream.setAttribute('opacity', t < 1 ? .9 : 0); stream.setAttribute('stroke', C.oil); });
+    await k.tween(1800, t => { Vo = Math.max(0, VO0 * (1 - t)); Vw = 0; bk2.liq.set(.62 * t); paint(); stream.setAttribute('opacity', t < 1 ? .9 : 0); });
     open = false; stream.setAttribute('opacity', 0); tap.setAttribute('transform', '');
+    k.label('oil', FX - 92, 424, FX - 40, 424, { anchor: 'end' });
+    k.label('water', FX + 270, 424, FX + 220, 424, { anchor: 'start' });
     k.finish('Two beakers: water and oil. The water was the bottom layer because it is <b>denser</b>; the oil floated because it is <b>less dense</b>.');
   }
 

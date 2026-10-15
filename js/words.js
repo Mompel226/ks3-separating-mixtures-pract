@@ -13,6 +13,9 @@ window.WORDS = [
     { k: 'element',          en: 'element',          ko: '원소',              zh: '元素（单质）', d: 'A substance made of only one kind of atom.' },
     { k: 'compound',         en: 'compound',         ko: '화합물',            zh: '化合物',      d: 'A substance made of atoms of different elements chemically joined together.' },
     { k: 'particle',         en: 'particle',         ko: '입자',              zh: '粒子',        d: 'A very small piece of matter, such as an atom or a molecule.' },
+    { k: 'ion',              en: 'ion',              ko: '이온',              zh: '离子',        d: 'A particle with an electric charge, + or −. Salt is made of sodium ions (+) and chloride ions (−).' },
+    { k: 'lattice',          en: 'lattice',          ko: '격자 (결정 격자)',  zh: '晶格',        d: 'Particles held in a regular pattern that repeats, as in a solid crystal of salt.' },
+    { k: 'hydrogen-bond',    en: 'hydrogen bond',    ko: '수소 결합',         zh: '氢键',        d: 'A weak pull between a hydrogen atom of one water particle and the oxygen atom of another. It keeps the particles of liquid water close while they slide past each other.' },
     { k: 'solution',         en: 'solution',         ko: '용액',              zh: '溶液',        d: 'A mixture made when a solute dissolves in a solvent. You see only one phase.' },
     { k: 'solute',           en: 'solute',           ko: '용질',              zh: '溶质',        d: 'The substance that dissolves.' },
     { k: 'solvent',          en: 'solvent',          ko: '용매',              zh: '溶剂',        d: 'The liquid that does the dissolving.' },
@@ -27,6 +30,10 @@ window.WORDS = [
     { k: 'miscible',         en: 'miscible',         ko: '서로 섞이는',       zh: '互溶的',      d: 'Liquids that mix completely, such as ethanol and water.' },
     { k: 'immiscible',       en: 'immiscible',       ko: '서로 섞이지 않는',  zh: '不互溶的',    d: 'Liquids that do not mix and form layers, such as oil and water.' },
     { k: 'alloy',            en: 'alloy',            ko: '합금',              zh: '合金',        d: 'A mixture of a metal with other elements, such as brass (copper and zinc).' },
+    { k: 'fat',              en: 'fat',              ko: '지방',              zh: '脂肪',        d: 'The oily part of food, such as butter or the cream in milk.' },
+    { k: 'protein',          en: 'protein',          ko: '단백질',            zh: '蛋白质',      d: 'A substance in food that the body uses to grow and repair itself, such as egg white.' },
+    { k: 'droplet',          en: 'droplet',          ko: '작은 방울',         zh: '小液滴',      d: 'A very small drop of a liquid.' },
+    { k: 'tyndall',          en: 'Tyndall effect',   ko: '틴들 현상',         zh: '丁达尔效应',  d: 'A beam of light shows as it passes through a colloid, because its tiny bits scatter the light.' },
     { k: 'colloid',          en: 'colloid',          ko: '콜로이드',          zh: '胶体',        d: 'A mixture with very small droplets or bits spread through a liquid. The bits do not settle. Milk is a colloid.' }
   ]},
   { g: 'Methods', w: [
@@ -64,6 +71,7 @@ window.WORDS = [
     { k: 'solvent-front',    en: 'solvent front',    ko: '용매 전선',         zh: '溶剂前沿',    d: 'The line the solvent has reached at the top of its path up the paper.' },
     { k: 'stationary',       en: 'stationary phase', ko: '고정상',            zh: '固定相',      d: 'The part that does not move: in paper chromatography, the paper.' },
     { k: 'mobile',           en: 'mobile phase',     ko: '이동상',            zh: '流动相',      d: 'The part that moves: in paper chromatography, the solvent.' },
+    { k: 'rf',               en: 'Rf value',         ko: 'Rf 값',             zh: '比移值（Rf值）', d: 'Distance moved by a dye ÷ distance moved by the solvent, both from the start line. It has no unit.' },
     { k: 'dye',              en: 'dye',              ko: '염료 (색소)',       zh: '染料',        d: 'A coloured substance. An ink is often a mixture of dyes.' }
   ]},
   { g: 'Properties', w: [

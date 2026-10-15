@@ -39,23 +39,25 @@
     for (let x = -38; x <= 38; x += 8) S('line', { x1: x, y1: 174, x2: x, y2: 200, stroke: '#C77B2E', 'stroke-width': 4 }, mag);
     const glow = S('rect', { x: -48, y: 168, width: 96, height: 38, rx: 7, fill: 'none', stroke: '#F2C230', 'stroke-width': 3, opacity: 0 }, mag);
     let mx = MX; mag.setAttribute('transform', `translate(${mx} 0)`);
-    k.label('electromagnet', MX - 70, 190, MX - 48, 190, { anchor: 'end', layer: g, fade: false });
+    k.label('electromagnet', -70, 187, -46, 187, { anchor: 'end', layer: mag, fade: false });   /* moves with the magnet */
     /* the cans */
     const types = ['steel', 'al', 'al', 'steel', 'al', 'steel', 'al', 'steel'];
     const alCols = ['#C8322F', '#2E9E5B', '#2F6FCA', '#D9A520'];
-    const cans = types.map((t, i) => { const e = can(g, t === 'steel' ? 'steel' : 'al', alCols[i % 4]); return { e, t, x: -40 - i * 74, y: BELT, s: 'belt', vy: 0 }; });
+    /* the cans wait on the belt from the first moment, the first one just before the magnet */
+    const START = i => 300 - i * 74;
+    const cans = types.map((t, i) => { const e = can(g, t === 'steel' ? 'steel' : 'al', alCols[i % 4]); return { e, t, x: START(i), y: BELT, s: 'belt', vy: 0 }; });
     const put = c => c.e.setAttribute('transform', `translate(${c.x} ${c.y})`);
     cans.forEach(put);
     let on = false, running = false, stuck = 0, inAl = { steel: 0, al: 0 };
     const tick = dt => {
       cans.forEach(c => {
         if (c.s === 'belt' && running) { c.x += 120 * dt; if (on && c.t === 'steel' && Math.abs(c.x - mx) < 40) { c.s = 'lift'; c.slot = stuck++; } if (c.x > 625) { c.s = 'fall'; c.vy = 0; } }
-        else if (c.s === 'lift') { const tx = mx - 45 + c.slot * 30, ty = 252; c.x += (tx - c.x) * Math.min(1, dt * 10); c.y += (ty - c.y) * Math.min(1, dt * 10); }
+        else if (c.s === 'lift') { const tx = mx - 45 + c.slot * 30, ty = 243;   /* the can's top touches the magnet (its face is at y 204) */ c.x += (tx - c.x) * Math.min(1, dt * 10); c.y += (ty - c.y) * Math.min(1, dt * 10); }
         else if (c.s === 'stuck') { c.x = mx - 45 + c.slot * 30; }
         else if (c.s === 'fall') { c.vy += 900 * dt; c.y += c.vy * dt; c.x += 60 * dt; if (c.y > 438) { const n = inAl.steel + inAl.al; c.y = 438 - (n > 3 ? 14 : 0); c.x = 656 + (n % 4) * 22; c.s = 'bin'; inAl[c.t === 'steel' ? 'steel' : 'al']++; } }
         put(c);
       });
-      cans.forEach(c => { if (c.s === 'lift' && Math.abs(c.y - 252) < 2) c.s = 'stuck'; });
+      cans.forEach(c => { if (c.s === 'lift' && Math.abs(c.y - 243) < 2) c.s = 'stuck'; });
       return true;
     };
     const setOn = v => { on = v; glow.setAttribute('opacity', v ? 1 : 0); };
@@ -66,16 +68,16 @@
       const c = await k.choose((on ? [] : [{ id: 'on', x: MX + 70, y: 186, label: 'Switch on the magnet', side: 'r' }]).concat([{ id: 'go', x: 160, y: 300, label: 'Start the belt' }]));
       if (c === 'on') { setOn(true); continue; }
       running = true;
-      if (k.FAST) fastRun(); else await k.tween(11000, () => {});
+      if (k.FAST) fastRun(); else await k.tween(8500, () => {});
       running = false;
       if (inAl.steel) {
         await k.oops('Steel cans went into the aluminium bin, because the magnet was <b>off</b> when they passed. Switch the magnet on <b>before</b> you start the belt.');
-        cans.forEach((c, i) => { c.x = -40 - i * 74; c.y = BELT; c.s = 'belt'; put(c); }); stuck = 0; inAl = { steel: 0, al: 0 }; setOn(false);
+        cans.forEach((c, i) => { c.x = START(i); c.y = BELT; c.s = 'belt'; put(c); }); stuck = 0; inAl = { steel: 0, al: 0 }; setOn(false);
         continue;
       }
       break;
     }
-    k.label('steel cans', MX + 80, 262, MX + 48, 262, { anchor: 'start' });
+    k.label('steel cans', MX + 84, 226, MX + 58, 226, { anchor: 'start' });
     k.step(2, 3, 'The magnet pulled out every steel can; the aluminium cans went on into the bin. Does the magnet attract aluminium? Try it.');
     await k.choose([{ id: 'al', x: 650, y: 320, label: 'Move the magnet over the aluminium bin', side: 'l' }]);
     k.clearLabels();
@@ -84,18 +86,20 @@
     k.say('The magnet is on, right over the aluminium cans.');
     await k.wait(1300);
     k.label('nothing moves', 600, 330, 660, 400, { anchor: 'end' });
-    k.step(3, 3, 'Not one aluminium can moved. Put the steel cans in their own bin.');
-    await k.choose([{ id: 'drop', x: 640, y: 300, label: 'Switch off over the steel bin', side: 'l' }]);
-    k.clearLabels();
+    /* the steel bin stands IN FRONT of the belt, its rim above the belt (y 360), so the cans drop into it, not through the
+       belt; it comes only now, so it never hides the cans riding the belt */
     const sb = S('g', null, g);
-    S('path', { d: `M${458},${380} L${466},${446} L${554},${446} L${562},${380} Z`, fill: '#6D747B', stroke: 'rgba(0,0,0,.35)', 'stroke-width': 1.5 }, sb);
+    S('path', { d: `M${458},${322} L${466},${446} L${554},${446} L${562},${322} Z`, fill: '#6D747B', stroke: 'rgba(0,0,0,.35)', 'stroke-width': 1.5 }, sb);
     S('text', { x: 510, y: 472, 'text-anchor': 'middle', 'font-size': 14, 'font-weight': 900, fill: '#fff' }, sb, 'steel');
     g.insertBefore(sb, cans[0].e);
+    k.step(3, 3, 'Not one aluminium can moved. Put the steel cans in their own bin.');
+    await k.choose([{ id: 'drop', x: 600, y: 240, label: 'Switch off over the steel bin', side: 'l' }]);
+    k.clearLabels();
     await k.tween(1000, t => { mx = 690 + (510 - 690) * t; mag.setAttribute('transform', `translate(${mx} 0)`); if (k.FAST) tick(0); });
     setOn(false);
     const steel = cans.filter(c => c.t === 'steel');
     steel.forEach(c => { c.s = 'drop'; c.y0 = c.y; });
-    await k.tween(700, t => steel.forEach((c, i) => { c.y = c.y0 + (430 - c.y0) * t * t; c.x = 482 + i * 16; put(c); }));
+    await k.tween(700, t => steel.forEach((c, i) => { c.y = c.y0 + (440 - c.y0) * t * t; c.x = 474 + i * 24; put(c); }));
     k.finish('Steel is <b>magnetic</b>: the magnet attracted it. Aluminium is not, so it stayed. Only a few metals are magnetic: iron, steel, nickel and cobalt.');
   }
 
@@ -106,17 +110,22 @@
     S('path', { d: 'M250,402 L262,446 L538,446 L550,402 Z', fill: '#7D6B55', stroke: '#4F4234', 'stroke-width': 1.6 }, tray);
     const heap = S('path', { d: '', fill: '#6B4A2B' }, tray);
     const sv = S('g', null, g);
+    /* a round garden sieve seen from the side: an open wooden rim (its far edge an ellipse), a wire mesh bottom */
     const RIMY = 250, MESH = 300;
-    S('rect', { x: 240, y: RIMY, width: 320, height: MESH - RIMY, fill: 'none', stroke: '#9C7A4C', 'stroke-width': 10, rx: 6 }, sv);
+    S('ellipse', { cx: 400, cy: RIMY, rx: 162, ry: 11, fill: 'none', stroke: '#9C7A4C', 'stroke-width': 5 }, sv);
+    S('path', { d: `M238,${RIMY} L246,${MESH} M562,${RIMY} L554,${MESH}`, stroke: '#9C7A4C', 'stroke-width': 6, 'stroke-linecap': 'round' }, sv);
     const mesh = S('g', null, sv);
-    for (let x = 246; x <= 554; x += 9) S('line', { x1: x, y1: MESH - 4, x2: x + 4, y2: MESH + 4, stroke: '#6E6E6E', 'stroke-width': 1.2 }, mesh);
-    S('line', { x1: 240, y1: MESH, x2: 560, y2: MESH, stroke: '#6E6E6E', 'stroke-width': 2 }, mesh);
+    for (let x = 252; x <= 548; x += 9) S('line', { x1: x, y1: MESH - 4, x2: x + 4, y2: MESH + 4, stroke: '#6E6E6E', 'stroke-width': 1.2 }, mesh);
+    S('line', { x1: 246, y1: MESH, x2: 554, y2: MESH, stroke: '#6E6E6E', 'stroke-width': 2 }, mesh);
     const soil = S('g', null, sv), stones = S('g', null, sv);
+    const front = () => S('path', { d: `M238,${RIMY} Q400,${RIMY + 22} 562,${RIMY} L554,${MESH} Q400,${MESH + 14} 246,${MESH} Z`, fill: 'none', stroke: '#9C7A4C', 'stroke-width': 6, 'stroke-linejoin': 'round' }, sv);
     const fine = [];
     for (let i = 0; i < 160; i++) fine.push(S('circle', { cx: 252 + Math.random() * 296, cy: MESH - 4 - Math.random() * 30, r: 1.8 + Math.random() * 1.4, fill: i % 3 ? '#6B4A2B' : '#7D5A36' }, soil));
     [[300, 284, 14], [350, 288, 10], [410, 282, 17], [470, 289, 12], [520, 285, 15], [380, 290, 9]].forEach(([x, y, r]) => S('ellipse', { cx: x, cy: y, rx: r, ry: r * .7, fill: '#8E9399', stroke: '#5F656B', 'stroke-width': 1.3 }, stones));
-    k.label('sieve', 214, 276, 236, 276, { anchor: 'end', layer: g, fade: false });
-    k.label('soil and stones', 620, 260, 560, 280, { anchor: 'start', layer: g, fade: false });
+    front();
+    k.label('sieve', 214, 276, 241, 276, { anchor: 'end', layer: g, fade: false });
+    /* the label says what is in the sieve now: "soil and stones", then "stones" once the soil has fallen through */
+    let inLab = k.label('soil and stones', 620, 280, 540, 280, { anchor: 'start', layer: g, fade: false }), soilGone = false;
     k.step(1, 1, 'Garden soil with stones in it. <b>Press and hold</b> to shake the sieve.');
     let shaken = 0, ph = 0, left = fine.slice();
     const falling = [];
@@ -128,6 +137,7 @@
       for (let i = falling.length - 1; i >= 0; i--) { const f = falling[i]; f.v += 700 * dt; const y = +f.c.getAttribute('cy') + f.v * dt; if (y > 432 - (fine.length - left.length) * .1) { f.c.remove(); falling.splice(i, 1); } else f.c.setAttribute('cy', y); }
       const fr = 1 - left.length / fine.length;
       heap.setAttribute('d', `M268,440 Q400,${440 - 34 * fr} 532,440 Z`);
+      if (!soilGone && left.length <= 20) { soilGone = true; inLab.remove(); inLab = k.label('stones', 620, 286, 532, 286, { anchor: 'start', layer: g, fade: false }); }
     };
     for (;;) {
       await k.choose([
@@ -137,8 +147,8 @@
       if (left.length <= 20) break;
       k.note('Most of the soil is still in the sieve: shake a bit longer.');
     }
-    falling.forEach(f => f.c.remove()); left.forEach(p => p.remove());
-    k.label('stones: too big to pass', 620, 286, 532, 286, { anchor: 'start' });
+    falling.forEach(f => f.c.remove()); left.forEach(p => p.remove()); inLab.remove();
+    k.label('stones: too big', 620, 286, 532, 286, { anchor: 'start' });
     k.label('soil', 620, 430, 500, 432, { anchor: 'start' });
     k.finish('The small soil particles fell through the holes of the sieve; the stones are too big, so they stayed. A sieve separates by <b>size</b>.');
   }

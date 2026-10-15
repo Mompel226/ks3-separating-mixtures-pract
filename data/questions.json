@@ -52,6 +52,14 @@
    "kind": "task"
   },
   {
+   "id": "p1-sim-colloid",
+   "part": 1,
+   "title": "Bench: milk, a colloid (extension)",
+   "short": "bench",
+   "kind": "task",
+   "ext": 1
+  },
+  {
    "id": "p1-sort-pure",
    "part": 1,
    "title": "Pure substance or mixture?",
@@ -79,6 +87,13 @@
    ]
   },
   {
+   "id": "p1-sort-state",
+   "part": 1,
+   "title": "Liquid water or a gas?",
+   "short": "sort 3",
+   "kind": "sort"
+  },
+  {
    "id": "p1-qc-2",
    "part": 1,
    "title": "Solute and solvent in coffee",
@@ -91,6 +106,30 @@
    ]
   },
   {
+   "id": "p1-qc-5",
+   "part": 1,
+   "title": "What happens when salt dissolves?",
+   "short": "q5",
+   "kind": "mcq",
+   "opts": [
+    "Water particles crowd round each ion and carry it away, so the ions spread out between the water particles.",
+    "The ions break into smaller and smaller pieces until each piece is too small to see, then the pieces disappear.",
+    "The ions join with the water particles and make one new compound, so the salt no longer exists in the beaker.",
+    "The ions sink to the bottom of the beaker and stay there as a thin layer that is too thin to see."
+   ]
+  },
+  {
+   "id": "p1-qc-4",
+   "part": 1,
+   "title": "Water round each ion",
+   "short": "q4",
+   "kind": "gaps",
+   "gaps": [
+    "oxygen",
+    "hydrogen"
+   ]
+  },
+  {
    "id": "p1-qc-3",
    "part": 1,
    "title": "Soluble, insoluble, saturated",
@@ -100,6 +139,19 @@
     "soluble",
     "insoluble",
     "saturated"
+   ]
+  },
+  {
+   "id": "p1-qc-6",
+   "part": 1,
+   "title": "Why does the third spoon not dissolve?",
+   "short": "q6",
+   "kind": "mcq",
+   "opts": [
+    "Most water particles are already holding an ion, so too few are free to carry more ions away.",
+    "The salt particles are too big to fit into the gaps between the water particles in the beaker.",
+    "The salt water has become a solid, and a solid cannot dissolve anything that is put into it.",
+    "Stirring breaks the hydrogen bonds, so the water particles can no longer hold any ions at all."
    ]
   },
   {
@@ -332,6 +384,14 @@
    "title": "Bench: made the chromatogram of the five inks",
    "short": "bench",
    "kind": "task"
+  },
+  {
+   "id": "p5-sim-rf",
+   "part": 5,
+   "title": "Bench: worked out an Rf value (extension)",
+   "short": "bench",
+   "kind": "task",
+   "ext": 1
   },
   {
    "id": "p5-qc-1",

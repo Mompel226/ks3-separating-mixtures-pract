@@ -198,11 +198,13 @@
     initTabs();
     progress();
     /* ?demo=<part>: the bench clicks itself through that part's right answers, for the README's screenshot (with ?still=1) */
-    const DEMO = { 4: ['IN at the lower', 'Light', 'Turn off'], 5: ['A pencil', 'Spot the five', 'Below', 'Cover it', 'Remove it'], 3: ['Pour it', 'Light', 'Heat for 2', 'Heat for 2', 'Heat for 2', 'Test with'] };
+    const DEMO = { 4: ['IN at the lower', 'Light', 'Turn off'], 5: ['A pencil', 'Spot the five', 'Below', 'Cover it', 'Remove it'], 55: ['A pencil', 'Spot the five', 'Below', 'Cover it', 'Remove it', '#Real-life'], 3: ['Pour it', 'Light', 'Heat for 2', 'Heat for 2', 'Heat for 2', 'Test with'] };
     if (params.has('demo') && DEMO[+params.get('demo')]) {
-      openPart(+params.get('demo'));
-      (async () => { for (const t of DEMO[+params.get('demo')]) { await new Promise(r => setTimeout(r, 400)); const b = $$('.hot').find(x => x.textContent.indexOf(t) >= 0); if (b) b.click(); } })();
+      openPart(+params.get('demo') % 10 || 5);
+      (async () => { for (const t of DEMO[+params.get('demo')]) { await new Promise(r => setTimeout(r, 400)); const b = t[0] === '#' ? $$('.tog').find(x => x.textContent.indexOf(t.slice(1)) >= 0) : $$('.hot').find(x => x.textContent.indexOf(t) >= 0); if (b) b.click(); } })();
     }
+    /* ?audit=1&still=1: tools/overlap-audit.js walks every bench and measures it (tools/overlap-audit.mjs reads the result) */
+    if (params.has('audit')) { const sc = document.createElement('script'); sc.src = 'tools/overlap-audit.js?v=' + Date.now(); document.body.appendChild(sc); }
     if (params.has('manifest')) {
       const pre = h('pre', { id: 'manifest' }); pre.textContent = JSON.stringify(manifest());
       document.body.appendChild(pre);

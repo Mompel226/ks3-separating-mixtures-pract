@@ -60,67 +60,86 @@
     K.stand(g, 112, 446, 330, 226, FX - 14);
     const fl = K.rbFlask(g, FX, FY, FR, 214, { color: C.sea, level: .62 });
     const salt = S('g', null, fl.g);
+    /* salt left in the flask as the water boils off: a crust on the curved bottom, n specks in all */
+    const saltTo = n => { while (salt.childNodes.length < n) { const dx = (Math.random() - .5) * 2 * (FR - 14); S('rect', { x: FX + dx - 1.5, y: FY + Math.sqrt(Math.max(0, (FR - 4) * (FR - 4) - dx * dx)) - 4 - Math.random() * 3, width: 3, height: 3, fill: C.salt, stroke: '#999', 'stroke-width': .4 }, salt); } };
     /* the side arm, the stopper and the thermometer (its bulb level with the side arm) */
     S('path', { class: 'glass-line', d: `M${FX + 13},${232} L${FX + 64},${254}` }, g);
     S('path', { class: 'glass-line', d: `M${FX + 13},${244} L${FX + 60},${264}` }, g);
     S('rect', { x: FX - 16, y: 204, width: 32, height: 14, rx: 3, fill: '#5A5F66' }, g);
     const th = K.thermometer(g, FX, 112, 240, { max: 110 });
     k.readout('t', FX + 46, 132, '20 °C');
-    const cd = condenser(g, FX + 62, 258, 540, 374);
-    const rec = K.conical(g, 612, 446, 100, 96, { neck: 34, color: C.water });
-    S('path', { class: 'glass-line', d: `M540,374 Q584,390 606,404` }, g);
-    K.stand(g, 440, 446, 250, 328, 410);
-    k.label('thermometer', FX - 36, 128, FX - 6, 128, { anchor: 'end', layer: g, fade: false });
-    k.label('round-bottomed flask', FX + 66, 376, FX + 36, 360, { anchor: 'start', layer: g, fade: false });
+    /* the condenser's lower end is above the receiving flask's mouth, so the outlet drops straight into it */
+    const cd = condenser(g, FX + 62, 258, 520, 350);
+    const rec = K.conical(g, 604, 446, 96, 72, { neck: 30, color: '#CFE6F6' });
+    S('path', { class: 'glass-line', d: `M520,350 Q596,348 604,364 L604,394` }, g);
+    K.stand(g, 440, 446, 250, 314, 420);
+    k.label('thermometer', FX - 36, 128, FX - 5, 128, { anchor: 'end', layer: g, fade: false });
+    k.label('round-bottomed flask', FX + 66, 384, FX + 32, FY + 38, { anchor: 'start', layer: g, fade: false });
     k.label('condenser', 390, 248, 390, 292, { anchor: 'middle', layer: g, fade: false });
-    k.label('distillate', 676, 424, 650, 424, { anchor: 'start', layer: g, fade: false });
-    k.label('seawater', FX - 64, 338, FX - 40, 338, { anchor: 'end', layer: g, fade: false });
+    k.label('distillate', 676, 432, 638, 432, { anchor: 'start', layer: g, fade: false });
+    let seaLab = k.label('seawater', FX - 64, 338, FX - 40, 338, { anchor: 'end', layer: g, fade: false });
+    /* the label follows the liquid down as it boils away: level with the middle of what is left, its line ending inside it */
+    const relabelSea = text => { seaLab.remove(); const y = (fl.liq.y() + FY + FR - 2) / 2, hw = Math.sqrt(Math.max(0, FR * FR - (y - FY) * (y - FY))); seaLab = k.label(text, FX - 64, y, FX - hw + 6, y, { anchor: 'end', layer: g, fade: false }); };
 
-    /* step 1: which way does the cold water go? */
+    /* step 1: which way does the cold water go? A wrong choice runs on to its real outcome (Daniel, 15 Oct 2026: "make sure
+       that the wrong decisions lead to the wrong outcomes"): steam leaves the end of the condenser, almost no distillate. */
     const low = cd.lowNozzle, high = cd.highNozzle;
-    for (;;) {
-      k.step(1, 4, 'The condenser has a jacket for cold tap water. Which end does the cold water go IN?');
-      const c = await k.choose([
-        { id: 'low', x: low[0], y: low[1] + 34, label: 'IN at the lower end', side: 'b' },
-        { id: 'high', x: high[0], y: high[1] - 30, label: 'IN at the upper end', side: 't' }
-      ]);
-      const hoses = S('g', null, g);
-      const lowHose = [low, [low[0], 430], [low[0] - 70, 430]], highHose = [high, [high[0], high[1] - 36], [high[0] + 70, high[1] - 36]];
-      hose(hoses, lowHose); hose(hoses, highHose);
-      if (c === 'high') {
-        const tIn = k.label('cold water in', high[0] + 76, high[1] - 32, null, null, { anchor: 'start' });
-        const tOut = k.label('water out', low[0] - 76, 434, null, null, { anchor: 'end' });
-        await k.tween(1500, t => cd.trickle(t));
-        await k.oops('The water runs straight down along the bottom and out. The jacket <b>never fills</b>, so most of the vapour is not cooled and escapes. Cold water must go in at the <b>lower</b> end.');
-        hoses.remove(); tIn.remove(); tOut.remove(); cd.trickle(0); cd.fill(0);
-        continue;
-      }
-      k.label('cold water in', low[0] - 76, 434, null, null, { anchor: 'end', layer: g });
-      k.label('water out', high[0] + 76, high[1] - 32, null, null, { anchor: 'start', layer: g });
-      await k.tween(1600, t => cd.fill(t));
-      break;
-    }
-    k.step(2, 4, 'The jacket is full of cold water. Light the Bunsen and heat the seawater. Watch the thermometer.');
-    await k.choose([{ id: 'l', x: FX + 52, y: 420, label: 'Light the Bunsen', side: 'r' }]);
+    k.step(1, 4, 'The condenser has a jacket for cold tap water. Which end does the cold water go IN?');
+    const c = await k.choose([
+      { id: 'low', x: low[0], y: low[1] + 34, label: 'IN at the lower end', side: 'b' },
+      { id: 'high', x: high[0], y: high[1] - 30, label: 'IN at the upper end', side: 't' }
+    ]);
+    const wrong = c === 'high';
+    const hoses = S('g', null, g);
+    hose(hoses, [low, [low[0], 430], [low[0] - 70, 430]]); hose(hoses, [high, [high[0], high[1] - 36], [high[0] + 70, high[1] - 36]]);
+    k.label(wrong ? 'water out' : 'cold water in', low[0] - 76, 434, null, null, { anchor: 'end', layer: g });
+    k.label(wrong ? 'cold water in' : 'water out', high[0] + 76, high[1] - 32, null, null, { anchor: 'start', layer: g });
+    if (wrong) await k.tween(1500, t => cd.trickle(t)); else await k.tween(1600, t => cd.fill(t));
+    k.step(2, 4, (wrong ? 'Cold water is running through the condenser.' : 'The jacket is full of cold water.') + ' Light the Bunsen and heat the seawater. Watch the thermometer.');
+    await k.choose([{ id: 'l', x: FX, y: 484, label: 'Light the Bunsen' }]);
     bun.on(true);
     let T = 20;
     await k.tween(2500, t => { T = 20 + 80 * t; th.set(T); k.readout('t', FX + 46, 132, Math.round(T) + ' °C'); });
     const bub = K.bubbles(g, k, FX - 30, FX + 30, FY + FR - 8, () => fl.liq.y());
+    const path = [[FX, FY - 10], [FX, 240], [FX + 30, 248], [FX + 64, 260], cd.W(150, 0), cd.W(cd.L, 0), [520, 350], [594, 351], [604, 366], [604, 404]];
+    if (wrong) {
+      k.step(3, 4, 'The water boils and the vapour goes into the condenser. Watch the end of the condenser.');
+      const fw = flow(k, g, path.slice(0, 7), { cond: 2, speed: .3 });
+      const puff = K.steam(g, k, 528, 346, { spread: 12, drift: 40, every: .06, speed: 30 });
+      const few = K.drips(g, k, 604, 400, () => rec.liq.y(), { color: C.water, every: 2.2 });
+      k.lapse('30 minutes in a few seconds');
+      await k.tween(4000, t => { fl.liq.set(.62 - .35 * t); rec.liq.set(.03 * t); });
+      k.lapse(null); fw.stop(); puff.stop(); few.stop(); bun.on(false); bub.stop(); relabelSea('seawater');
+      k.label('steam escaping', 600, 306, 532, 338, { anchor: 'start' });
+      await k.oops('Steam came out of the end of the condenser and only a few drops of distillate were collected. The jacket never filled, so the vapour was not cooled. Cold water must go IN at the <b>lower</b> end.');
+      k.restart(); return;
+    }
     k.step(3, 4, 'The water boils. The vapour rises, passes the thermometer and goes into the condenser, where it condenses. The distillate drips into the flask.');
-    const fw = flow(k, g, [[FX, FY - 10], [FX, 240], [FX + 30, 248], [FX + 64, 260], cd.W(150, 0), cd.W(cd.L, 0), [540, 374], [590, 394], [606, 412]],
-      { cond: .45, speed: .28 });
+    const fw = flow(k, g, path, { cond: .45, speed: .28 });
     k.lapse('30 minutes in a few seconds');
     await k.tween(5000, t => {
-      fl.liq.set(.62 - .4 * t); rec.liq.set(.32 * t);
-      if (Math.random() < .25 && salt.childNodes.length < 40) S('rect', { x: FX - 30 + Math.random() * 60, y: FY + FR - 8 - Math.random() * 8, width: 3, height: 3, fill: C.salt, stroke: '#999', 'stroke-width': .4 }, salt);
+      fl.liq.set(.62 - .4 * t); rec.liq.set(.32 * t); saltTo(Math.floor(14 * t));
     });
-    k.lapse(null);
-    k.say('Drops of distillate are falling. Read the thermometer (the red box) while they fall. The seawater in the flask is getting saltier.');
-    await k.choose([{ id: 'off', x: FX + 52, y: 420, label: 'Turn off the Bunsen', sub: 'before the flask boils dry', side: 'r' }]);
+    k.lapse(null); relabelSea('salty water');
+    k.say('Drops of distillate are falling. Read the thermometer (the red box) while they fall. The seawater in the flask is getting saltier. What now?');
+    const c2 = await k.choose([
+      { id: 'off', x: FX + 56, y: 486, label: 'Turn off the Bunsen', sub: 'while some is left', side: 'l' },
+      { id: 'dry', x: FX + 72, y: 486, label: 'Keep heating', sub: 'until the flask is dry', side: 'r' }
+    ]);
+    if (c2 === 'dry') {
+      await k.tween(2600, t => { fl.liq.set(.22 * (1 - t)); rec.liq.set(.32 + .1 * t); T = 100 + 60 * Math.max(0, t - .7) / .3; th.set(Math.min(110, T)); k.readout('t', FX + 46, 132, Math.round(T) + ' °C'); saltTo(14 + Math.floor(70 * t)); });
+      seaLab.remove(); k.label('salt baked onto the glass', FX + 66, 404, FX + 24, FY + FR - 6, { anchor: 'start' });
+      fw.stop(); bub.stop();
+      S('path', { d: `M${FX - 30},${FY + 20} l10,8 l-4,10 l12,6 l-2,9 M${FX + 18},${FY + 30} l-8,6 l6,8`, stroke: '#1B1B1B', 'stroke-width': 2, fill: 'none', 'stroke-linejoin': 'round' }, g);
+      bun.on(false);
+      const dz = K.danger(k.top, 556, 84, 'DANGER: a flask heated\ndry can crack');
+      await k.oops('<b>Crack!</b> The flask boiled dry: the salt baked onto the glass, and the hot, empty flask cracked. Turn off the Bunsen while some liquid is still in the flask.');
+      dz.remove(); k.restart(); return;
+    }
     bun.on(false); bub.stop(); fw.stop();
     await k.tween(1500, t => { T = 100 - 60 * t; th.set(T); k.readout('t', FX + 46, 132, Math.round(T) + ' °C'); });
     k.step(4, 4, 'Is the distillate pure water? Put a drop on a watch glass and let it evaporate.');
-    await k.choose([{ id: 't', x: 612, y: 320, label: 'Test a drop of the distillate', side: 't' }]);
+    await k.choose([{ id: 't', x: 640, y: 318, label: 'Test a drop of the distillate', side: 't' }]);
     const lz = K.lens(k.top, 640, 186, 70, 'Nothing left on the glass', 'the distillate is pure water');
     S('rect', { x: 570, y: 116, width: 140, height: 140, fill: '#EAF3FB' }, lz.inner);
     S('path', { d: 'M592,190 Q640,214 688,190', fill: 'none', stroke: '#6E8296', 'stroke-width': 3 }, lz.inner);
@@ -155,8 +174,9 @@
     const bA = K.beaker(g, 500, 446, 70, 84, { color: '#CFE9F7' }), bBw = S('g', null, g), bB = K.beaker(bBw, 600, 446, 70, 84, { color: C.water });
     S('text', { x: 500, y: 350, 'text-anchor': 'middle', class: 'lbl' }, bA.g, 'beaker 1');
     S('text', { x: 600, y: 350, 'text-anchor': 'middle', class: 'lbl' }, bB.g, 'beaker 2');
-    k.label('fractionating column', FX + 30, 256, FX + 14, 256, { anchor: 'start', layer: g, fade: false });
-    k.label('ethanol and water', FX + 60, 348, FX + 40, 348, { anchor: 'start', layer: g, fade: false });
+    k.label('fractionating column', FX + 30, 256, FX + 13, 256, { anchor: 'start', layer: g, fade: false });
+    let mixLab = k.label('ethanol and water', FX + 60, 348, FX + 40, 348, { anchor: 'start', layer: g, fade: false });
+    const relabelMix = text => { mixLab.remove(); const y = (fl.liq.y() + FY + FR - 2) / 2, hw = Math.sqrt(Math.max(0, FR * FR - (y - FY) * (y - FY))); mixLab = k.label(text, FX + 60, y, FX + hw - 6, y, { anchor: 'start', layer: g, fade: false }); };
     /* the graph */
     const GX = 560, GY = 70, GW = 210, GH = 150;
     const gr = S('g', null, g);
@@ -175,11 +195,11 @@
     k.step(1, 3, 'Ethanol boils at 78 °C, water at 100 °C. Light the Bunsen and watch the thermometer and the graph.');
     await k.choose([{ id: 'l', x: FX + 70, y: 420, label: 'Light the Bunsen', side: 'r' }]);
     bun.on(true);
-    if (k.FAST) { draw(TT); th.set(100); k.readout('t', FX + 44, 80, '100 °C'); bA.liq.set(.3); bB.liq.set(.3); k.finish('Ethanol collected first, at 78 °C; water came over at 100 °C.'); return; }
+    if (k.FAST) { draw(TT); th.set(100); k.readout('t', FX + 44, 80, '100 °C'); bA.liq.set(.3); bB.liq.set(.3); fl.liq.set(.3); relabelMix('water left'); k.finish('Ethanol collected first, at 78 °C; water came over at 100 °C.'); return; }
     for (;;) {
       let t = 0, swapped = false, late = null;
       const lateP = new Promise(res => { late = res; });
-      bA.liq.set(0); bB.liq.set(0); bBw.setAttribute('transform', ''); bA.g.setAttribute('transform', '');
+      bA.liq.set(0); bB.liq.set(0); fl.liq.set(.6); bBw.setAttribute('transform', ''); bA.g.setAttribute('transform', ''); relabelMix('ethanol and water');
       const drip = K.drips(g, k, 496, 332, () => (swapped ? bB : bA).liq.y(), { color: '#CFE9F7', every: .3 });
       k.lapse('40 minutes in 15 seconds');
       k.step(2, 3, 'When the ethanol has all boiled off, the temperature starts to rise. Change the beaker <b>then</b>, not before.');
@@ -188,12 +208,13 @@
         t += dt; const T = temp(t);
         th.set(T); k.readout('t', FX + 44, 80, Math.round(T) + ' °C'); draw(Math.min(t, TT));
         if (t > 3 && t < 8) bA.liq.set(Math.min(.42, (t - 3) / 5 * .42));
+        if (t > 3) fl.liq.set(.6 - .3 * Math.min(1, (t - 3) / (TT - 3)));      /* the flask empties as both liquids boil off */
         if (T > 95 && !swapped) { swapped = 'late'; late(); return false; }
         return t < TT + 1;
       });
       const r = await Promise.race([k.choose([{ id: 'swap', x: 550, y: 330, label: 'Change the beaker', side: 'r' }]).then(() => 'press'), lateP.then(() => 'late')]);
       if (r === 'late' || t < 8) {
-        swapped = 'done'; drip.stop(); k.clearHots(); k.lapse(null);
+        swapped = 'done'; drip.stop(); k.clearHots(); k.lapse(null); relabelMix(r === 'late' ? 'water left' : 'ethanol and water');
         if (r === 'late') bA.liq.color('#A6D2F0');
         await k.oops(r === 'late'
           ? 'Too late: the temperature passed 78 °C and water vapour came over too. Beaker 1 now holds ethanol <b>and</b> water.'
@@ -205,7 +226,7 @@
       await k.tween(900, x => { bA.g.setAttribute('transform', `translate(${200 * Math.min(1, x * 2)} 0)`); bBw.setAttribute('transform', `translate(${-100 * Math.max(0, x * 2 - 1)} 0)`); });
       k.step(3, 3, 'Good timing. Now water collects in beaker 2 at 100 °C.');
       await k.tween(4500, x => bB.liq.set(.3 * x));
-      swapped = 'done'; drip.stop(); k.lapse(null);
+      swapped = 'done'; drip.stop(); k.lapse(null); relabelMix('water left');
       break;
     }
     bun.on(false);
