@@ -22,7 +22,7 @@ window.QS = {
     items: [['Gold', 0], ['Distilled water', 0], ['Salt', 0], ['Mineral water', 1], ['Black coffee', 1], ['Brass', 1], ['Muddy water', 1], ['Air', 1]],
     why: 'Gold is one element. Distilled water and salt are each one compound. The others have two or more substances that are not chemically joined.' },
   'p1-sort-kind': { part: 1, kind: 'sort', title: 'Solution or mechanical mixture?', short: 'sort 2',
-    look: '<b>Zoom in</b>: press <b>👁 Show what you see</b> above the lens. Look at each mixture close up, as your eyes see it: does it look the same all through, or can you see separate parts?', label: 'Sort',
+    look: '<b>Zoom in</b>: press <b>👁 Show what you see</b> above the lens, then press each mixture: the lens shows it close up, as your eyes see it (oil and water, and granite, are beside the lens). Press <b>＋</b> to look closer. Does it look the same all through, or can you see separate parts?', label: 'Sort',
     stem: 'Now sort these mixtures by what your eyes can see, not by their particles.',
     bins: [{ t: 'Only one phase', s: 'homogeneous: solutions, alloys, gas mixtures' }, { t: 'More than one phase', s: 'heterogeneous: mechanical mixtures' }],
     items: [['Mineral water', 0], ['Black coffee', 0], ['Brass', 0], ['Air', 0], ['Muddy water', 1], ['Oil and water', 1], ['Granite (a rock with grains)', 1]],

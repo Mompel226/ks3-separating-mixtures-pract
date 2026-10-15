@@ -95,91 +95,81 @@
         if (d > R - 18) { const ux = dx / d, uy = dy / d, dot = m.vx * ux + m.vy * uy; if (dot > 0) { m.vx -= 2 * dot * ux; m.vy -= 2 * dot * uy; } }
         m.g.setAttribute('transform', `translate(${m.x} ${m.y}) rotate(${m.a})`);
       });
-      return lz.g.isConnected;
+      return movers[0].g.isConnected;                     /* stops when the lens is drawn again */
     });
     movers.forEach(m => m.g.setAttribute('transform', `translate(${m.x} ${m.y}) rotate(${m.a})`));
   }
 
-  /* ---------------- what you see: the samples close up, with your eyes (15 Oct 2026, Daniel: pupils "were still looking
-     at … the magnification" when sorting by phases; "add a clear toggle … between molecular level and just visible
-     level", with real close-up photos, "making sure that there are not two phases if it's homogeneous and two or more if
-     heterogeneous, particularly … the rock"). Ten close-ups side by side: the eight samples on the bench, and the two
-     mixtures of the second sort that are not on it (oil and water, granite). Real photos from Wikimedia Commons (credits
-     in img/photos/CREDITS.json and the footer); muddy water and air are drawings, marked so: no clear photo of them was
-     found (air cannot be seen). Oil and water: olive oil floating on water, its drops separate (Daniel: "please provide an
-     image"). Names only, never the number of phases: the pupil decides. */
-  const LOOKS = [
-    { name: 'Gold', img: 'gold' }, { name: 'Distilled water', img: 'water2' }, { name: 'Salt', img: 'salt' },
-    { name: 'Mineral water', img: 'water2' }, { name: 'Black coffee', img: 'coffee' }, { name: 'Brass', img: 'brass' },
-    { name: 'Muddy water', draw: 'mud' }, { name: 'Air', draw: 'air' }, { name: 'Oil and water', img: 'oil' }, { name: 'Granite (a rock)', img: 'granite' }
-  ];
-  function drawLook(p, kind, x, y, w, h) {
-    const glass = (inner) => {      /* a straight glass seen from the side, filling the tile */
-      const gx = x + w * .26, gw = w * .48, gt = y + 10, gb = y + h - 8;
-      inner(gx + 3, gw - 6, gt, gb - 3);
-      S('path', { d: `M${gx},${gt} L${gx},${gb - 6} Q${gx},${gb} ${gx + 6},${gb} L${gx + gw - 6},${gb} Q${gx + gw},${gb} ${gx + gw},${gb - 6} L${gx + gw},${gt}`, fill: 'none', stroke: '#7A8A99', 'stroke-width': 2 }, p);
-      S('line', { x1: gx + 7, y1: gt + 6, x2: gx + 7, y2: gb - 10, stroke: '#FFFFFF', 'stroke-width': 3, opacity: .7 }, p);
-    };
-    S('rect', { x, y, width: w, height: h, fill: '#EEF2F5' }, p);
-    if (kind === 'mud') glass((gx, gw, gt, gb) => {
-      const top = gt + 12, sand = gb - 16;
-      S('rect', { x: gx, y: top, width: gw, height: sand - top, fill: '#9B7A52', opacity: .85 }, p);     /* cloudy brown water */
-      S('rect', { x: gx, y: sand, width: gw, height: gb - sand, fill: '#C9A66B' }, p);                  /* sand settled at the bottom */
-      let q = 7; const r = () => (q = (q * 9301 + 49297) % 233280) / 233280;                            /* scattered, never in rows */
-      for (let i = 0; i < 26; i++) S('circle', { cx: gx + 3 + r() * (gw - 6), cy: sand + 3 + r() * 11, r: 1.2 + r() * .8, fill: '#8A6A3A' }, p);
-      for (let i = 0; i < 9; i++) S('circle', { cx: gx + 6 + r() * (gw - 12), cy: top + 8 + r() * (sand - top - 14), r: 1.2 + r() * .6, fill: '#6B4E2E' }, p);
-    });
-    if (kind === 'air') glass(() => {});                                                                 /* a glass of air: nothing to see */
-  }
-  function showLooks(p) {
+  /* ---------------- what you see: the same lens, on the sample itself (16 Oct 2026, Daniel, after a gallery of ten photos
+     taken from far away: "within the circle … you show water up close, not a glass with water … you should be able to
+     zoom a little bit"). 👁 Show what you see turns the lens from particles into a real close-up of the sample pressed,
+     and back, keeping the sample: each photo is a square cut from the material only (no glass, cup, edge or corner, so a
+     sample with one phase never shows two parts; Daniel, 16 Oct 2026: in the first gold and salt photos "a student might
+     think … I see darker and lighter colours, so it's made of several things", so each is an evenly lit square: the
+     front face of the bar, the middle of a heap of fine table salt); ＋ and − beside the lens go closer. Water is a
+     drawing, clear and even, the same for distilled and mineral water (your eyes cannot tell them apart): every photo
+     of water shows light and dark reflections. Oil and water, and granite (in the second sort, not on
+     the bench), have their own buttons beside the lens in this view. Muddy water and air are drawings too, marked so: no
+     free close-up photo of muddy water was found, and air cannot be seen. Names only, never the number of phases: the pupil
+     decides. Photos from Wikimedia Commons, credits in img/photos/CREDITS.json and the footer. */
+  const WATER = 'Water is clear and colourless: you see straight through it.';
+  const SEE = {
+    gold: { img: 'gold', by: 'Szaaman, public domain' }, dist: { draw: 'water', note: WATER },
+    salt: { img: 'salt', by: 'Stock Catalog, CC BY 2.0' }, mineral: { draw: 'water', note: WATER },
+    coffee: { img: 'coffee', by: 'Misaochan, CC BY 3.0' }, brass: { img: 'brass', by: 'Splarka, public domain' },
+    mud: { draw: 'mud' }, air: { draw: 'air', note: 'Air is clear: you see straight through it.' },
+    oil: { img: 'oil', by: 'Rolf Dietrich Brecher, CC BY 2.0' }, granite: { img: 'granite', by: 'James St. John, CC BY 2.0' }
+  };
+  const EXTRA = [{ id: 'oil', name: 'Oil and water', x: 478, y: 318 }, { id: 'granite', name: 'Granite (a rock)', x: 672, y: 318 }];
+  const ZOOM = [1, 1.5, 2.2];
+  function seeLens(lz, id, z) {
+    const p = lz.inner, cx = lz.x, cy = lz.y, R = lz.r, L = SEE[id];
     p.innerHTML = '';
-    const W = 140, H = 93, GAP = 12, X0 = 400 - (5 * W + 4 * GAP) / 2;
-    LOOKS.forEach((L, i) => {
-      const x = X0 + (i % 5) * (W + GAP), y = 72 + Math.floor(i / 5) * (H + 40), cid = K.id('look'), t = S('g', null, p);
-      S('rect', { x, y, width: W, height: H, rx: 8 }, S('clipPath', { id: cid }, S('defs', null, t)));
-      const inner = S('g', { 'clip-path': `url(#${cid})` }, t);
-      if (L.img) S('image', { href: `img/photos/visible/${L.img}.jpg`, x, y, width: W, height: H, preserveAspectRatio: 'xMidYMid slice' }, inner);
-      else drawLook(inner, L.draw, x, y, W, H);
-      S('rect', { x, y, width: W, height: H, rx: 8, fill: 'none', stroke: 'var(--rule)', 'stroke-width': 1.5 }, t);
-      if (L.draw) { S('rect', { x: x + 5, y: y + 5, width: 50, height: 15, rx: 7.5, fill: 'rgba(255,255,255,.9)' }, t); S('text', { x: x + 30, y: y + 16, 'text-anchor': 'middle', 'font-size': 10, 'font-weight': 800, fill: '#5A6672' }, t, 'drawing'); }
-      S('text', { x: x + W / 2, y: y + H + 18, 'text-anchor': 'middle', 'font-size': 13.5, 'font-weight': 800, fill: 'var(--ink)' }, t, L.name);
-    });
+    S('rect', { x: cx - R, y: cy - R, width: 2 * R, height: 2 * R, fill: id === 'air' ? '#F7FAFD' : L.draw === 'water' ? '#E4F1FA' : '#EEF2F5' }, p);
+    const zg = S('g', { class: 'see-zoom', style: `transform-origin:${cx}px ${cy}px;transform:scale(${z})` }, p);
+    if (L.img) S('image', { href: `img/photos/visible/${L.img}.jpg`, x: cx - R, y: cy - R, width: 2 * R, height: 2 * R, preserveAspectRatio: 'xMidYMid slice' }, zg);
+    else if (L.draw === 'mud') drawMud(zg, cx, cy, R);
+    if (L.draw) { S('rect', { x: cx - 34, y: cy - R + 16, width: 68, height: 20, rx: 10, fill: 'rgba(255,255,255,.92)' }, p); S('text', { x: cx, y: cy - R + 30.5, 'text-anchor': 'middle', 'font-size': 12.5, 'font-weight': 800, fill: '#5A6672' }, p, 'drawing'); }
+    return zg;
+  }
+  /* muddy water close up: cloudy brown water with small grains floating in it, and sand settled at the bottom */
+  function drawMud(p, cx, cy, R) {
+    let q = 11; const r = () => (q = (q * 9301 + 49297) % 233280) / 233280;          /* scattered, never in rows */
+    S('rect', { x: cx - R, y: cy - R, width: 2 * R, height: 2 * R, fill: '#8C6A43' }, p);
+    for (let i = 0; i < 70; i++) S('circle', { cx: cx - R + r() * 2 * R, cy: cy - R + r() * 1.5 * R, r: 1.2 + r() * 2.6, fill: r() < .5 ? '#5E4429' : '#B8935F', opacity: .85 }, p);
+    const top = cy + R * .48;
+    S('path', { d: `M${cx - R},${top + 6} Q${cx - R * .4},${top - 6} ${cx},${top + 2} T${cx + R},${top - 2} L${cx + R},${cy + R} L${cx - R},${cy + R} Z`, fill: '#C2A06A' }, p);
+    for (let i = 0; i < 160; i++) S('circle', { cx: cx - R + r() * 2 * R, cy: top + 4 + r() * R * .52, r: 2 + r() * 3.5, fill: ['#A8834F', '#D4B583', '#8A6A3A', '#C9A66B'][Math.floor(r() * 4)] }, p);
   }
 
   async function zoomRun(k) {
     const g = k.svg;
     SAMPLES.forEach(s => drawSample(S('g', null, g), s));
     const lz = K.lens(g, 230, 200, 128);
-    const cap = S('g', null, g), looks = S('g', { style: 'display:none' }, g);
+    const cap = S('g', null, g), zt = S('g', null, g);
+    const seen = new Set(), looked = new Set();
+    let mode = 'particles', last = null, finished = false, zi = 0, zg = null;
+    const name = s => (s.name + ' ' + (s.sub || '')).trim();
+    const PART_SAY = 'Press a sample to see its particles. Look at all eight, then sort them in the first check. Press <b>👁 Show what you see</b> to look at a sample as your eyes see it.';
+    const SEE_SAY = '<b>What you see</b>: press a sample to see it close up, as your eyes see it. Oil and water, and granite, are beside the lens. Which look the same all through (one phase)? In which can you see different parts (more than one phase)? Press <b>🔬 Show the particles</b> to zoom back in.';
+    const lines = (arr, y0) => arr.forEach((t, i) => S('text', { x: 400, y: y0 + i * 22, 'font-size': 17, 'font-weight': 700, fill: 'var(--ink2)' }, cap, t));
+    const more = () => S('text', { x: 400, y: 290, 'font-size': 15, 'font-weight': 800, fill: 'var(--ink)' }, cap, 'More mixtures to look at:');
     /* before the first press: the lens says what it is for (an empty first frame reads as broken) */
-    S('rect', { x: 102, y: 72, width: 256, height: 256, fill: '#EAF3FB' }, lz.inner);
-    S('circle', { cx: 218, cy: 186, r: 34, fill: 'none', stroke: 'var(--accent)', 'stroke-width': 7 }, lz.inner);
-    S('line', { x1: 243, y1: 211, x2: 272, y2: 240, stroke: 'var(--accent)', 'stroke-width': 10, 'stroke-linecap': 'round' }, lz.inner);
-    S('text', { x: 230, y: 284, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 800, fill: '#1F4E79' }, lz.inner, 'Press a sample below');
-    S('text', { x: 400, y: 150, 'font-size': 26, 'font-weight': 900, fill: 'var(--ink)' }, cap, 'What is it made of?');
-    ['Everything is made of particles.', 'Press each sample on the bench', 'to see its particles in the lens.'].forEach((t, i) => S('text', { x: 400, y: 184 + i * 24, 'font-size': 17, 'font-weight': 700, fill: 'var(--ink2)' }, cap, t));
-    const seen = new Set();
-    let mode = 'particles', last = null, finished = false;
-    const PART_SAY = 'Press a sample to see its particles. Look at all eight, then sort them in the first check. Press <b>👁 Show what you see</b> to look at them as your eyes see them.';
-    const LOOK_SAY = '<b>What you see</b>: each sample close up, as your eyes see it. Its particles are far too small to see. Which mixtures look the same all through (one phase)? In which can you see separate parts (more than one phase)? Press <b>🔬 Show the particles</b> to zoom back in.';
-    k.step('Zoom in', 0, PART_SAY);
-    for (;;) {
-      const toggle = { id: 'mode', x: 230, y: 36, label: mode === 'particles' ? '👁 Show what you see' : '🔬 Show the particles' };
-      const id = await k.choose(mode === 'particles' ? [toggle].concat(SAMPLES.map(s => ({ id: s.id, x: s.x, y: 478, label: s.name, sub: s.sub, quiet: true, done: seen.has(s.id) }))) : [toggle]);
-      if (id === 'mode') {
-        mode = mode === 'particles' ? 'looks' : 'particles';
-        const look = mode === 'looks';
-        lz.g.style.display = look ? 'none' : ''; cap.style.display = look ? 'none' : ''; looks.style.display = look ? '' : 'none';
-        if (look) { showLooks(looks); k.say(LOOK_SAY); }
-        else k.say(last ? `<b>${(last.name + ' ' + (last.sub || '')).trim()}</b>: ${last.say} <span style="color:var(--ink3)">Seen ${seen.size} of 8.</span>` : PART_SAY);
-        continue;
-      }
-      const s = SAMPLES.find(x => x.id === id); seen.add(id); last = s;
-      fillLens(k, lz, id);
-      cap.innerHTML = '';
-      S('path', { d: `M${s.x},${400} L${230 + (s.x - 230) * .25},${330}`, stroke: 'var(--accent)', 'stroke-width': 2.5, 'stroke-dasharray': '5 5', fill: 'none' }, cap);
-      S('text', { x: 400, y: 112, 'font-size': 26, 'font-weight': 900, fill: 'var(--ink)' }, cap, (s.name + ' ' + (s.sub || '')).trim());
-      const words = wrap(s.say, 34); words.forEach((ln, i) => S('text', { x: 400, y: 146 + i * 22, 'font-size': 17, 'font-weight': 700, fill: 'var(--ink2)' }, cap, ln));
+    const intro = see => {
+      const p = lz.inner; p.innerHTML = ''; cap.innerHTML = '';
+      S('rect', { x: 102, y: 72, width: 256, height: 256, fill: '#EAF3FB' }, p);
+      S('circle', { cx: 218, cy: 186, r: 34, fill: 'none', stroke: 'var(--accent)', 'stroke-width': 7 }, p);
+      S('line', { x1: 243, y1: 211, x2: 272, y2: 240, stroke: 'var(--accent)', 'stroke-width': 10, 'stroke-linecap': 'round' }, p);
+      S('text', { x: 230, y: 284, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 800, fill: '#1F4E79' }, p, 'Press a sample below');
+      S('text', { x: 400, y: 150, 'font-size': 26, 'font-weight': 900, fill: 'var(--ink)' }, cap, see ? 'What do you see?' : 'What is it made of?');
+      lines(see ? ['Your eyes cannot see particles.', 'Press a sample on the bench', 'to see it close up.'] : ['Everything is made of particles.', 'Press each sample on the bench', 'to see its particles in the lens.'], 184);
+      if (see) more();
+    };
+    const pointer = s => S('path', { d: `M${s.x},${400} L${230 + (s.x - 230) * .25},${330}`, stroke: 'var(--accent)', 'stroke-width': 2.5, 'stroke-dasharray': '5 5', fill: 'none' }, cap);
+    const partCap = s => {
+      cap.innerHTML = ''; pointer(s);
+      S('text', { x: 400, y: 112, 'font-size': 26, 'font-weight': 900, fill: 'var(--ink)' }, cap, name(s));
+      const words = wrap(s.say, 34); lines(words, 146);
       /* each row of the key draws exactly what it names: a whole water particle, one atom, or a pair of joined atoms
          (15 Oct 2026: pupils saw a water particle labelled "oxygen") */
       s.key.forEach(([c, t], i) => { const y = 160 + words.length * 22 + i * 26;
@@ -190,7 +180,50 @@
         else atom(cap, 412, y - 5, 8, c);
         S('text', { x: 436, y, 'font-size': 15, 'font-weight': 800, fill: 'var(--ink)' }, cap, t); });
       S('text', { x: 400, y: 172 + words.length * 22 + s.key.length * 26, class: 'zoom-sub', stroke: 'var(--wall)', 'stroke-width': 5, 'paint-order': 'stroke' }, cap, 'particles, not to scale');
-      k.say(`<b>${(s.name + ' ' + (s.sub || '')).trim()}</b>: ${s.say} <span style="color:var(--ink3)">Seen ${seen.size} of 8.</span>`);
+    };
+    const seeCap = s => {
+      cap.innerHTML = ''; if (!EXTRA.includes(s)) pointer(s);
+      const L = SEE[s.id], words = wrap(L.note || 'Close up, as your eyes see it.', 34).concat(wrap('Does it look the same all through, or can you see different parts?', 34));
+      S('text', { x: 400, y: 112, 'font-size': 26, 'font-weight': 900, fill: 'var(--ink)' }, cap, name(s));
+      lines(words, 146);
+      S('text', { x: 400, y: 152 + words.length * 22, class: 'zoom-sub' }, cap, L.img ? 'Photo: ' + L.by : 'A drawing, not a photo');
+      more();
+    };
+    /* ＋ and −: the photo grows round the middle of the lens; the number says how much */
+    const zoomShow = () => {
+      zt.innerHTML = '';
+      if (!zg) return;
+      zg.style.transform = `scale(${ZOOM[zi]})`;
+      S('text', { x: 58, y: 211, 'text-anchor': 'middle', 'font-size': 17, 'font-weight': 900, fill: 'var(--ink)' }, zt, '×' + ZOOM[zi]);
+    };
+    const draw = () => {
+      zt.innerHTML = ''; zg = null;
+      if (!last) { intro(mode === 'see'); return; }
+      if (mode === 'see') { zg = SEE[last.id].img ? seeLens(lz, last.id, ZOOM[zi]) : (seeLens(lz, last.id, 1), null); seeCap(last); zoomShow(); }
+      else { fillLens(k, lz, last.id); partCap(last); }
+    };
+    const say = () => {
+      if (!last) return k.say(mode === 'see' ? SEE_SAY : PART_SAY);
+      if (mode === 'see') k.say(`<b>${name(last)}</b>, close up, as your eyes see it. Does it look the same all through, or can you see different parts?${SEE[last.id].img ? ' Press <b>＋</b> to look closer.' : ''} <span style="color:var(--ink3)">Looked at ${looked.size} of 10.</span>`);
+      else k.say(`<b>${name(last)}</b>: ${last.say} <span style="color:var(--ink3)">Seen ${seen.size} of 8.</span>`);
+    };
+    intro(false);
+    k.step('Zoom in', 0, PART_SAY);
+    for (;;) {
+      const see = mode === 'see', photo = see && last && SEE[last.id].img;
+      const list = [{ id: 'mode', x: 230, y: 36, label: see ? '🔬 Show the particles' : '👁 Show what you see' }]
+        .concat(SAMPLES.map(s => ({ id: s.id, x: s.x, y: 478, label: s.name, sub: s.sub, quiet: true, done: (see ? looked : seen).has(s.id) })));
+      if (see) EXTRA.forEach(e => list.push({ id: e.id, x: e.x, y: e.y, label: e.name, quiet: true, done: looked.has(e.id) }));
+      if (photo && zi < ZOOM.length - 1) list.push({ id: 'zin', x: 58, y: 160, label: '＋', quiet: true });
+      if (photo && zi > 0) list.push({ id: 'zout', x: 58, y: 262, label: '−', quiet: true });
+      const id = await k.choose(list);
+      if (id === 'zin' || id === 'zout') { zi += id === 'zin' ? 1 : -1; zoomShow(); continue; }
+      if (id === 'mode') {
+        mode = see ? 'particles' : 'see';
+        if (last && mode === 'particles' && EXTRA.includes(last)) last = null;       /* oil and water, granite: no particle view */
+      } else last = SAMPLES.find(x => x.id === id) || EXTRA.find(x => x.id === id);
+      if (last) (mode === 'see' ? looked : seen).add(last.id);
+      draw(); say();
       /* all eight seen: the bench is done (the task is recorded), and the samples and the switch stay to explore */
       if (seen.size === SAMPLES.length && !finished) { finished = true; k.finish('You have seen all eight. Now sort them in the first check: one substance only, or more than one substance? For the second sort, press <b>👁 Show what you see</b>.'); }
     }

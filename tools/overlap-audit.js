@@ -9,7 +9,7 @@
   'use strict';
   const S = window.SEP, B = window.BENCH;
   const RUNS = [
-    [1, 'zoom', ['Gold', 'Distilled', 'Salt', 'Mineral', 'Black', 'Brass', 'Muddy', 'Air', 'Show what you see', 'Show the particles']],
+    [1, 'zoom', ['Gold', 'Distilled', 'Salt', 'Mineral', 'Black', 'Brass', 'Muddy', 'Air', 'Show what you see', 'Gold', '＋', '＋', '−', 'Salt', 'Distilled', 'Brass', 'Muddy', 'Air', 'Oil and water', 'Granite', 'Black', 'Show the particles']],
     [1, 'dissolve', ['Add a spoon of salt', 'Stir', 'Add a spoon of salt', 'Stir', 'Add a spoon of salt', 'Stir', 'Add a spoon of sand', 'Stir']],
     [1, 'colloid', ['Zoom into the milk', 'Leave them', 'Shine the torch']],
     [2, 'filter', ['Fold it in half', 'Fold it in half again', 'Open it', 'Put the cone', 'all in at once', '#oops', 'Pour slowly', 'Look closer', 'Try salt water', 'Pour slowly', 'Test a drop']],

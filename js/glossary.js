@@ -25,7 +25,7 @@
       { k: 'chemical-symbol', en: 'chemical symbol', ko: '원소 기호',         zh: '元素符号',    src: 'Y7 L2', d: 'One or two letters that stand for an element, such as O for oxygen or Na for sodium.' },
       { k: 'bond',            en: 'bond',            ko: '결합',              zh: '化学键',      src: 'Y7 L2', d: 'A force that holds atoms or ions together.' },
       { k: 'molecule',        en: 'molecule',        ko: '분자',              zh: '分子',        src: 'Y7 L2', d: 'A particle made of two or more atoms joined by bonds, such as water (H₂O) or oxygen (O₂).' },
-      { k: 'compound',        en: 'compound',        ko: '화합물',            zh: '化合物',      src: 'Y7 L2', d: 'A substance made of two or more different elements chemically joined together, always in the same ratio, such as water (H₂O) or salt (NaCl).' },
+      { k: 'compound',        en: 'compound',        ko: '화합물',            zh: '化合物',      src: 'Y7 L2', d: 'A substance made of two or more different elements chemically joined together, always in the same ratio, such as water (H₂O) or salt (NaCl). Water is made of molecules; salt is an ionic compound, made of ions in a lattice.' },
       { k: 'ion',             en: 'ion',             ko: '이온',              zh: '离子',        src: 'Y7 L2', d: 'A particle with an electric charge, + or −. Salt is made of sodium ions (+) and chloride ions (−).' },
       { k: 'lattice',         en: 'lattice',         ko: '격자 (결정 격자)',  zh: '晶格',        src: 'Y7 L2', d: 'Particles held in a regular pattern that repeats, as in a crystal of salt.' },
       { k: 'state',           en: 'state of matter', ko: '물질의 상태',       zh: '物质的状态',  also: ['states of matter', 'state'], d: 'The form a substance is in: solid, liquid or gas.' },

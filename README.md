@@ -32,9 +32,10 @@ that the water cannot pull apart. When a pupil scrolls to a question about an an
 and the question says where to look ("👀 On the bench · …"). Every word a question uses is explained, as a word to tap,
 in the text above it.
 
-**Real photos.** A 📷 Real photo switch above each bench shows the real apparatus. On Zoom in, **👁 Show what you see** swaps
-the particle lens for ten close-ups as your eyes see them (real photos; muddy water and air drawn), so pupils
-sort mixtures by phases at the visible level, not by their particles.
+**Real photos.** A 📷 Real photo switch above each bench shows the real apparatus. On Zoom in, **👁 Show what you see** turns
+the lens on the sample pressed from its particles to a close-up of the material itself, as your eyes see it (real photos;
+water, muddy water and air drawn), with ＋ and − to look closer, so pupils sort mixtures by phases at the visible level, not by
+their particles.
 
 **About 50 minutes.** Purple boxes are extension. Key words are typed (spelling counts; capitals do not), with one
 word bank for the page in **English, Korean and Chinese**. Methods, apparatus and the order of steps are chosen,
