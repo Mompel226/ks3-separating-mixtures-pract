@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap">
-<link rel="stylesheet" href="css/app.css?v=202610151602">
+<link rel="stylesheet" href="css/app.css?v=202610151731">
 <!-- Bright or dark: the reader's choice for the whole site (biology.theme), else the computer's setting. -->
 <script>(function () { try { var t = localStorage.getItem('biology.theme'); if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); } catch (e) {} })();</script>
 </head>
@@ -45,7 +45,7 @@
 <aside class="wb" id="wb" hidden aria-labelledby="wb-h" data-lang="all">
   <div class="wb__top">
     <h2 id="wb-h">Word bank <button class="close-x" id="wbClose" type="button" aria-label="Close the word bank">×</button></h2>
-    <p>Words for the answers you type. Spelling counts; capitals do not.</p>
+    <p>Tap a word to see what it means. Words for the answers you type: spelling counts; capitals do not.</p>
     <div class="langs" role="group" aria-label="Translations">
       <button type="button" data-l="all" aria-pressed="true">한국어 + 中文</button>
       <button type="button" data-l="ko" aria-pressed="false" lang="ko">한국어</button>
@@ -265,28 +265,29 @@
 <footer>
   Something wrong, or a suggestion? Please contact me: <a href="mailto:dmompelriera@nlcsjeju.kr">dmompelriera@nlcsjeju.kr</a>.<br>
   The apparatus, the particles and the results on the bench are a simulation drawn for this page. The words of the checks follow the department's Year 7 lesson on separating mixtures.<br>
-  <details><summary>Photo credits</summary>The real photos come from Wikimedia Commons:<ul><li>filtration: <a href="https://commons.wikimedia.org/wiki/File:Filtra%C4%8Dn%C3%AD_aparatura.jpg" target="_blank" rel="noopener">David Rouzek</a>, CC BY-SA 4.0</li><li>evaporating basins: <a href="https://commons.wikimedia.org/wiki/File:Abdampfschalen,_porzellan_innen_glasiert.jpg" target="_blank" rel="noopener">Lysippos</a>, CC0</li><li>salt pans: <a href="https://commons.wikimedia.org/wiki/File:Woman_working_the_salt_fields_in_Kampot.jpg" target="_blank" rel="noopener">douglasjonesjr</a>, CC BY 2.0</li><li>copper sulfate crystals: <a href="https://commons.wikimedia.org/wiki/File:%D0%A1opper_sulfate_crystals_IMG_6330%D0%BE%D0%B1%D1%80_01.jpg" target="_blank" rel="noopener">Дарья Могилевцева</a>, CC BY 4.0</li><li>distillation: <a href="https://commons.wikimedia.org/wiki/File:Distillation_2-3.jpg" target="_blank" rel="noopener">Arlen (derivative work: Mario Link)</a>, CC BY 2.0</li><li>fractional distillation: <a href="https://commons.wikimedia.org/wiki/File:Fraktionierte_Destillation_-_Laboratory_Fractional_distillation_apparatus.jpg" target="_blank" rel="noopener">Chemie-Verbände Baden-Württemberg</a>, CC BY 2.0</li><li>chromatogram: <a href="https://commons.wikimedia.org/wiki/File:Paper_Chromatography_1.jpg" target="_blank" rel="noopener">Pbak4622</a>, CC BY 4.0</li><li>decanting 1850s: <a href="https://commons.wikimedia.org/wiki/File:Decantation_with_a_Guiding-Rod.png" target="_blank" rel="noopener">Mohr Francis (1808? — 1861?), Redwood Theophilus (1806—1892)</a>, Public domain</li><li>separating funnel: <a href="https://commons.wikimedia.org/wiki/File:Separatory_funnel.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, Public domain</li><li>scrap magnet: <a href="https://commons.wikimedia.org/wiki/File:Allegheny_Ludlum_Steel_Corp_Scrap_Piles.jpg" target="_blank" rel="noopener">Palmer, Alfred T.</a>, Public domain</li><li>sieving soil: <a href="https://commons.wikimedia.org/wiki/File:Sieving_the_compost_with_a_coarse_sieve_(8915941421).jpg" target="_blank" rel="noopener">SuSanA Secretariat</a>, CC BY 2.0</li></ul></details>
+  <details><summary>Photo credits</summary>The real photos come from Wikimedia Commons:<ul><li>filtration: <a href="https://commons.wikimedia.org/wiki/File:Filtra%C4%8Dn%C3%AD_aparatura.jpg" target="_blank" rel="noopener">David Rouzek</a>, CC BY-SA 4.0</li><li>evaporating basins: <a href="https://commons.wikimedia.org/wiki/File:Abdampfschalen,_porzellan_innen_glasiert.jpg" target="_blank" rel="noopener">Lysippos</a>, CC0</li><li>salt pans: <a href="https://commons.wikimedia.org/wiki/File:Woman_working_the_salt_fields_in_Kampot.jpg" target="_blank" rel="noopener">douglasjonesjr</a>, CC BY 2.0</li><li>copper sulfate crystals: <a href="https://commons.wikimedia.org/wiki/File:%D0%A1opper_sulfate_crystals_IMG_6330%D0%BE%D0%B1%D1%80_01.jpg" target="_blank" rel="noopener">Дарья Могилевцева</a>, CC BY 4.0</li><li>distillation: <a href="https://commons.wikimedia.org/wiki/File:Distillation_2-3.jpg" target="_blank" rel="noopener">Arlen (derivative work: Mario Link)</a>, CC BY 2.0</li><li>fractional distillation: <a href="https://commons.wikimedia.org/wiki/File:Fraktionierte_Destillation_-_Laboratory_Fractional_distillation_apparatus.jpg" target="_blank" rel="noopener">Chemie-Verbände Baden-Württemberg</a>, CC BY 2.0</li><li>chromatogram: <a href="https://commons.wikimedia.org/wiki/File:Paper_Chromatography_1.jpg" target="_blank" rel="noopener">Pbak4622</a>, CC BY 4.0</li><li>decanting 1850s: <a href="https://commons.wikimedia.org/wiki/File:Decantation_with_a_Guiding-Rod.png" target="_blank" rel="noopener">Mohr Francis (1808? — 1861?), Redwood Theophilus (1806—1892)</a>, Public domain</li><li>separating funnel: <a href="https://commons.wikimedia.org/wiki/File:Separatory_funnel.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, Public domain</li><li>scrap magnet: <a href="https://commons.wikimedia.org/wiki/File:Allegheny_Ludlum_Steel_Corp_Scrap_Piles.jpg" target="_blank" rel="noopener">Palmer, Alfred T.</a>, Public domain</li><li>sieving soil: <a href="https://commons.wikimedia.org/wiki/File:Sieving_the_compost_with_a_coarse_sieve_(8915941421).jpg" target="_blank" rel="noopener">SuSanA Secretariat</a>, CC BY 2.0</li><li>gold (close-up): <a href="https://commons.wikimedia.org/wiki/File:Gold_Ingot_on_white_background.jpg" target="_blank" rel="noopener">Szaaman</a>, Public domain</li><li>a glass of water (close-up): <a href="https://commons.wikimedia.org/wiki/File:Glass_of_Water_(50838445027).jpg" target="_blank" rel="noopener">Alabama Extension</a>, CC0</li><li>salt (close-up): <a href="https://commons.wikimedia.org/wiki/File:Salt-crystals.jpg" target="_blank" rel="noopener">Nate Steiner</a>, CC0</li><li>black coffee (close-up): <a href="https://commons.wikimedia.org/wiki/File:Black_Coffee_for_Breakfast_in_White_Porcelain_Cup.jpg" target="_blank" rel="noopener">epSos.de</a>, CC BY 2.0</li><li>brass (close-up): <a href="https://commons.wikimedia.org/wiki/File:Brass.jpg" target="_blank" rel="noopener">Splarka</a>, Public domain</li><li>olive oil on water (close-up): <a href="https://commons.wikimedia.org/wiki/File:Olive_Oil_on_Water_(47993245783).jpg" target="_blank" rel="noopener">Rolf Dietrich Brecher from Germany</a>, CC BY 2.0</li><li>granite (close-up): <a href="https://commons.wikimedia.org/wiki/File:Westerly_Granite_(Early_Permian,_276_to_279_Ma;_near_Westerly,_Rhode_Island,_USA)_1.jpg" target="_blank" rel="noopener">James St. John</a>, CC BY 2.0</li></ul></details>
   Code: AGPL-3.0 · Teaching material: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> — free for teaching, not for selling.
 </footer>
 
 <script src="https://accounts.google.com/gsi/client?hl=en-GB" async defer></script>
-<script src="js/config.js?v=202610151602"></script>
-<script src="js/signin.js?v=202610151602"></script>
-<script src="js/lesson.js?v=202610151602"></script>
-<script src="js/words.js?v=202610151602"></script>
-<script src="js/questions.js?v=202610151602"></script>
-<script src="js/core.js?v=202610151602"></script>
-<script src="js/checks.js?v=202610151602"></script>
-<script src="js/bench.js?v=202610151602"></script>
-<script src="js/photos.js?v=202610151602"></script>
-<script src="js/kit.js?v=202610151602"></script>
-<script src="js/sims/mixtures.js?v=202610151602"></script>
-<script src="js/sims/filtration.js?v=202610151602"></script>
-<script src="js/sims/evaporation.js?v=202610151602"></script>
-<script src="js/sims/distillation.js?v=202610151602"></script>
-<script src="js/sims/chromatography.js?v=202610151602"></script>
-<script src="js/sims/funnel.js?v=202610151602"></script>
-<script src="js/sims/magnet.js?v=202610151602"></script>
-<script src="js/sims/finder.js?v=202610151602"></script>
+<script src="js/config.js?v=202610151731"></script>
+<script src="js/signin.js?v=202610151731"></script>
+<script src="js/lesson.js?v=202610151731"></script>
+<script src="js/glossary.js?v=202610151731"></script>
+<script src="js/words.js?v=202610151731"></script>
+<script src="js/questions.js?v=202610151731"></script>
+<script src="js/core.js?v=202610151731"></script>
+<script src="js/checks.js?v=202610151731"></script>
+<script src="js/bench.js?v=202610151731"></script>
+<script src="js/photos.js?v=202610151731"></script>
+<script src="js/kit.js?v=202610151731"></script>
+<script src="js/sims/mixtures.js?v=202610151731"></script>
+<script src="js/sims/filtration.js?v=202610151731"></script>
+<script src="js/sims/evaporation.js?v=202610151731"></script>
+<script src="js/sims/distillation.js?v=202610151731"></script>
+<script src="js/sims/chromatography.js?v=202610151731"></script>
+<script src="js/sims/funnel.js?v=202610151731"></script>
+<script src="js/sims/magnet.js?v=202610151731"></script>
+<script src="js/sims/finder.js?v=202610151731"></script>
 </body>
 </html>
