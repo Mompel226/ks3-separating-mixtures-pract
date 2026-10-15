@@ -209,6 +209,8 @@ footer ul{margin:4px 0 6px;padding-left:20px}
 .q__k .st{letter-spacing:0;text-transform:none;font-size:13px;font-weight:800}
 .q.ok .q__k .st{color:var(--good)}
 .q__stem{margin:0 0 10px;font-size:16px}
+.q__look{display:flex;gap:8px;align-items:flex-start;margin:0 0 10px;padding:8px 12px;border-left:4px solid var(--accent);border-radius:8px;background:var(--surface);font-size:14.5px;line-height:1.45;color:var(--ink2)}
+.q__look b{color:var(--ink)}
 .q__stem.gapline{line-height:2.25}
 input.gap{font:700 16px/1.2 var(--sans);color:var(--ink);background:var(--surface);border:1.5px solid var(--rule2);border-radius:8px;padding:5px 8px;min-width:6ch;vertical-align:baseline}
 input.gap:focus{border-color:var(--focus);outline:none;background:var(--sheet)}

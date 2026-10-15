@@ -155,6 +155,8 @@
     btn.addEventListener('click', () => open(wb.hidden));
     $('#wbClose').addEventListener('click', () => { open(false); btn.focus(); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && !wb.hidden) { open(false); btn.focus(); } });
+    /* a click or tap anywhere outside the word bank closes it too (15 Oct 2026, Daniel), not only the × */
+    document.addEventListener('pointerdown', e => { if (!wb.hidden && !wb.contains(e.target) && !btn.contains(e.target)) open(false); });
     find.addEventListener('input', () => {
       const v = find.value.trim().toLowerCase();
       $$('.wb__row', list).forEach(r => r.classList.toggle('hide', !!v && r.dataset.s.indexOf(v) < 0));

@@ -9,7 +9,7 @@
 window.WORDS = [
   { g: 'Mixtures', w: [
     { k: 'mixture',          en: 'mixture',          ko: '혼합물',            zh: '混合物',      d: 'Two or more substances that are not chemically joined together.' },
-    { k: 'pure',             en: 'pure substance',   ko: '순물질',            zh: '纯净物',      d: 'A substance with only one kind of particle: one element or one compound.' },
+    { k: 'pure',             en: 'pure substance',   ko: '순물질',            zh: '纯净物',      d: 'Only one substance, with nothing mixed in: one element or one compound.' },
     { k: 'element',          en: 'element',          ko: '원소',              zh: '元素（单质）', d: 'A substance made of only one kind of atom.' },
     { k: 'compound',         en: 'compound',         ko: '화합물',            zh: '化合物',      d: 'A substance made of atoms of different elements chemically joined together.' },
     { k: 'particle',         en: 'particle',         ko: '입자',              zh: '粒子',        d: 'A very small piece of matter, such as an atom or a molecule.' },

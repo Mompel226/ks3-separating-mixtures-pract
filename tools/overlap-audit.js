@@ -16,7 +16,7 @@
     [3, 'evap', ['Pour it', 'Light', 'Keep heating hard', '#oops', 'Turn the Bunsen off']],
     [3, 'cryst', ['Pour it', 'Light', 'Test with', 'Stop and leave', '#oops', 'Heat for 2', 'Heat for 2', 'Heat for 2', 'Test with', 'Stop and leave', 'Filter and dry']],
     [4, 'simple', ['IN at the upper', 'Light', '#oops', 'IN at the lower', 'Light', 'Keep heating', '#oops', 'IN at the lower', 'Light', 'Turn off', 'Test a drop']],
-    [4, 'frac', ['Light']],
+    [4, 'frac', ['Switch on']],
     [5, 'chrom', ['A black pen', 'Spot the five', 'Above', '#oops', 'Below', 'Cover it', '#oops', 'A pencil', 'Spot the five', 'Below', 'Cover it', 'Remove it', '#tog:Real-life view']],
     [5, 'rf', ['Measure the dye', 'Measure the solvent', 'Divide']],
     [6, 'decant', ['Wait for', 'Hold to tip', 'Finished pouring']],
@@ -89,8 +89,9 @@
     for (const [part, scene] of [[1, 'Milk: a colloid'], [4, 'Fractional distillation of ethanol and water'], [5, 'Working out an Rf value']]) {
       S.openPart(part); scrollTo(0, 0); await sleep(300);
       const before = title();
-      document.querySelector(`#part-${part} .ext`).scrollIntoView({ block: 'start' }); B.checkExt(); await sleep(600);
-      const er = document.querySelector(`#part-${part} .ext`).getBoundingClientRect();
+      const box = document.querySelector(`#part-${part} .ext[data-scene="${{ 1: 'colloid', 4: 'frac', 5: 'rf' }[part]}"]`);
+      box.scrollIntoView({ block: 'start' }); B.checkExt(); await sleep(600);
+      const er = box.getBoundingClientRect();
       out.push({ part, before, after: title(), ok: title() === scene, extTop: Math.round(er.top), extH: Math.round(er.height), y: Math.round(scrollY), vh: innerHeight });
     }
     /* a question names the scene it needs: scrolling to it switches the bench, and scrolling back switches it back */
@@ -104,7 +105,7 @@
     S.openPart(2); await sleep(200); S.openPart(5); scrollTo(0, 0); await sleep(300);
     B.open(5, 'chrom'); await sleep(200);
     const pen = Array.from(document.querySelectorAll('.hot')).find(x => x.textContent.indexOf('A pencil') >= 0); if (pen) pen.click(); await sleep(300);
-    document.querySelector('#part-5 .ext').scrollIntoView({ block: 'start' }); B.checkExt(); await sleep(600);
+    document.querySelector('#part-5 .ext[data-scene="rf"]').scrollIntoView({ block: 'start' }); B.checkExt(); await sleep(600);
     out.push({ busy: true, stays: title() === 'Who wrote the note?', calls: !!document.querySelector('.scenes button.call') });
     const pre = document.createElement('pre'); pre.id = 'scroll'; pre.textContent = JSON.stringify(out); document.body.appendChild(pre);
   }

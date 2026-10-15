@@ -143,7 +143,7 @@
     await k.tween(500, t => stopper.setAttribute('transform', `translate(${60 * t} ${-40 * t})`));
     stopper.remove(); stop = false;
     for (;;) {
-      k.step(2, 3, 'Run off the bottom layer. <b>Hold</b> the tap button to open the tap; let go to close it. Close it just as the boundary reaches the tap.');
+      k.step(2, 3, 'Let the bottom layer flow out. <b>Hold</b> the tap button to open the tap; let go to close it. Close it just as the boundary reaches the tap.');
       const c = await k.choose([
         { id: 'open', x: FX + 40, y: Y1 + 44, label: 'Hold to open the tap', side: 'r', onHold: drain, onPress: v => { open = v; paint(); }, fastHold: (VW0 - 30) / 900 },
         { id: 'done', x: 610, y: 300, label: 'Tap closed at the boundary' }
@@ -157,8 +157,8 @@
       if (Vw > VW0 * .05) { k.note('Some water is still in the funnel. Open the tap a little more.'); await k.wait(1400); continue; }
       break;
     }
-    k.step(3, 3, 'The water is in the beaker; the oil is still in the funnel. Put a new beaker under the tap and run off the oil.');
-    await k.choose([{ id: 'oil', x: FX + 40, y: Y1 + 44, label: 'New beaker, run off the oil', side: 'r' }]);
+    k.step(3, 3, 'The water is in the beaker; the oil is still in the funnel. Put a new beaker under the tap and let the oil flow out.');
+    await k.choose([{ id: 'oil', x: FX + 40, y: Y1 + 44, label: 'New beaker, let the oil out', side: 'r' }]);
     await k.tween(500, t => bk.g.setAttribute('transform', `translate(${180 * t} 0)`));
     const bk2 = K.beaker(g, FX, 446, 110, 70, { color: C.oil });
     open = true;

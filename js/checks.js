@@ -55,6 +55,8 @@
   function shell(box, q, label) {
     box.innerHTML = '';
     box.appendChild(h('div', { class: 'q__k' }, `<span>${esc(label || q.label || 'Quick check')}</span><span class="st" aria-live="polite"></span>`));
+    /* where to look on the bench before answering (15 Oct 2026, Daniel: "guide to the animations that help them answer") */
+    if (q.look) box.appendChild(h('p', { class: 'q__look' }, '<span aria-hidden="true">👀</span> <span><b>On the bench</b> · ' + q.look + '</span>'));
     return {
       status(t, ok) { const s = $('.q__k .st', box); s.textContent = t || ''; box.classList.toggle('ok', !!ok); },
       say(el, text, cls) { el.className = 'say' + (cls ? ' ' + cls : ''); el.textContent = text || ''; },
@@ -84,7 +86,7 @@
       ins.forEach(i => { i.readOnly = true; }); btn.remove();
       const sb = $('.show', row); if (sb) sb.remove();
       ui.status(shown ? 'Answers shown' : RIGHT, !shown);
-      ui.say(say, shown ? 'These are the answers. Read them, then carry on.' : 'All right.', shown ? '' : 'ok');
+      ui.say(say, shown ? 'These are the answers. Read them, then continue.' : 'All right.', shown ? '' : 'ok');
       if (q.why) ui.why(q.why, shown);
     }
     function paint(ok) { ins.forEach((inp, i) => { inp.classList.toggle('right', !!ok[i]); inp.classList.toggle('wrong', !ok[i] && !!inp.value.trim()); }); }
