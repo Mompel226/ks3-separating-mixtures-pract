@@ -40,7 +40,7 @@ their particles.
 **Made for Year 7.** Big text on the page and on the bench. A choice on the bench is asked in a yellow bubble beside its
 buttons, every instruction is highlighted, and the next bench to do lights up when one is finished.
 
-**About 50 minutes.** Purple boxes are extension. Key words are typed (spelling counts; capitals do not), with one
+**About 50 minutes.** Purple boxes are extension; grey boxes recap previous lessons (states of matter). Key words are typed (spelling counts; capitals do not), with one
 word bank for the page in **English, Korean and Chinese**. Methods, apparatus and the order of steps are chosen,
 sorted or put in order. The answers are shown only after two tries.
 

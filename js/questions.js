@@ -40,7 +40,7 @@ window.QS = {
     why: 'Distilled water has only water particles, so it is pure. Mineral water also has mineral particles spread between the water particles, not joined to them.' },
   /* the particle model the pupils learned (Daniel, 15 Oct 2026): liquid = touching, sliding, held by hydrogen bonds; gas =
      far apart, fast, nothing holding them. Answered from the zoom lens (distilled water, air). */
-  'p1-sort-state': { part: 1, kind: 'sort', title: 'Liquid water or a gas?', short: 'sort 3', ext: 1, label: 'Extension',
+  'p1-sort-state': { part: 1, kind: 'sort', title: 'Liquid water or a gas?', short: 'sort 3', ext: 1, label: 'From previous lessons',
     cue: { label: 'Distilled', ask: 'Press this, then Air' },
     look: '<b>Zoom in</b>: press <b>Distilled water</b>, then <b>Air</b>. Watch how the particles move and what holds them.',
     stem: 'Look at distilled water and at air in the lens. Put each sentence in the right box.',
