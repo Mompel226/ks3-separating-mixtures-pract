@@ -55,13 +55,13 @@
           await k.choose([{ id: 'again', x: 400, y: 450, label: '↺ Find another method' }]);
           break;
         }
-        wrap(n.q, 40).forEach((ln, i) => S('text', { x: 100, y: y0 + 26 + i * 34, 'font-size': 28, 'font-weight': 900, fill: 'var(--ink)' }, card, ln));
+        wrap(n.q, 40).forEach((ln, i) => S('text', { x: 100, y: y0 + 26 + i * 38, 'font-size': 28, 'font-weight': 900, fill: 'var(--ink)' }, card, ln));
         const id = await k.choose(n.a.map((a, i) => ({ id: a[1], x: 400, y: y0 + 110 + i * 56, label: a[0], quiet: true })));
         trail.push(n.q.replace(/\?$/, '') + ': ' + n.a.find(a => a[1] === id)[0]);
         node = id;
       }
     }
   }
-  B.define(8, [{ id: 'finder', name: 'Method finder', title: 'Method finder', kicker: 'Part 8 · if you are stuck', run,
+  B.define(8, [{ id: 'finder', name: 'Method finder', title: 'Method finder', run,
                  alt: 'A card that asks questions about a mixture, one at a time, and names a method to separate it.' }]);
 })();

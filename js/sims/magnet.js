@@ -12,7 +12,7 @@
       S('rect', { x: -14, y: -38, width: 28, height: 38, rx: 3, fill: '#9AA3AC', stroke: '#5D666F', 'stroke-width': 1.4 }, g);
       for (let y = -32; y < -4; y += 6) S('line', { x1: -14, y1: y, x2: 14, y2: y, stroke: '#6F7880', 'stroke-width': 1 }, g);
       S('rect', { x: -14, y: -26, width: 28, height: 12, fill: '#E8E3D2', opacity: .9 }, g);
-      S('text', { x: 0, y: -17, 'text-anchor': 'middle', 'font-size': 7.5, 'font-weight': 900, fill: '#5D666F' }, g, 'BEANS');
+      S('text', { class: 'deco', x: 0, y: -17, 'text-anchor': 'middle', 'font-size': 7.5, 'font-weight': 900, fill: '#5D666F' }, g, 'BEANS');   /* print on a can, not a word to read */
     } else {
       S('path', { d: 'M-12,0 L-12,-36 Q-12,-41 -8,-42 L8,-42 Q12,-41 12,-36 L12,0 Z', fill: col, stroke: 'rgba(0,0,0,.4)', 'stroke-width': 1.3 }, g);
       S('rect', { x: -9, y: -45, width: 18, height: 4, rx: 1.5, fill: '#D3D9DE', stroke: '#8F969C', 'stroke-width': .8 }, g);

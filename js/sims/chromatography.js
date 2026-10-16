@@ -212,6 +212,6 @@
 
   B.define(5, [{ id: 'chrom', name: 'Chromatography', title: 'Who wrote the note?', view: [40, 70, 720], task: { id: 'p5-sim', title: 'Bench: made the chromatogram of the five inks' }, run,
                  alt: 'A strip of chromatography paper hanging in a large beaker, with a start line and five spots of black ink: the note X and pens A, B, C and D.' },
-               { id: 'rf', name: 'Rf values', ext: true, title: 'Working out an Rf value', kicker: 'Extension · the bench', view: [40, 70, 720], task: { id: 'p5-sim-rf', title: 'Bench: worked out an Rf value (extension)' }, run: rfRun,
+               { id: 'rf', name: 'Rf values', ext: true, title: 'Working out an Rf value', view: [40, 70, 720], task: { id: 'p5-sim-rf', title: 'Bench: worked out an Rf value (extension)' }, run: rfRun,
                  alt: 'The finished chromatogram hanging from a clamp, with a ruler; arrows measure pen A’s yellow dye and the solvent front, and a card divides one by the other.' }]);
 })();

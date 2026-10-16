@@ -50,7 +50,7 @@
     shot(where);
     const stage = document.querySelector('.stage').getBoundingClientRect();
     const hots = Array.from(document.querySelectorAll('.hot')).map(b => ({ n: b.textContent.trim(), r: b.getBoundingClientRect(), el: b }));
-    const texts = Array.from(document.querySelectorAll('svg.sim text')).filter(t => t.textContent.trim() && shown(t)).map(t => ({ n: t.textContent.trim(), r: t.getBoundingClientRect(), el: t }));
+    const texts = Array.from(document.querySelectorAll('svg.sim text:not(.deco)')).filter(t => t.textContent.trim() && shown(t))   /* .deco: print on a drawn object, not a word to read */.map(t => ({ n: t.textContent.trim(), r: t.getBoundingClientRect(), el: t }));
     const say = (kind, a, b) => out.push({ where, kind, a, b });
     for (let i = 0; i < hots.length; i++) {
       const h = hots[i];

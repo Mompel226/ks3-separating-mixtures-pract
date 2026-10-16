@@ -407,7 +407,7 @@
       alt: 'Eight samples on a lab bench: gold, distilled water, salt, mineral water, black coffee, brass, muddy water and air in a balloon, with a lens that shows the particles of the one chosen.' },
     { id: 'dissolve', name: 'Dissolve', title: 'Dissolve salt, then sand', task: { id: 'p1-sim-dissolve', title: 'Bench: dissolved salt until saturated; tried sand' }, run: dissolveRun,
       alt: 'A beaker of water, a jar of salt and a jar of sand, with a lens that shows the particles in the beaker.' },
-    { id: 'colloid', name: 'Milk (colloid)', ext: true, title: 'Milk: a colloid', kicker: 'Extension · the bench', task: { id: 'p1-sim-colloid', title: 'Bench: milk, a colloid (extension)' }, run: colloidRun,
+    { id: 'colloid', name: 'Milk (colloid)', ext: true, title: 'Milk: a colloid', task: { id: 'p1-sim-colloid', title: 'Bench: milk, a colloid (extension)' }, run: colloidRun,
       alt: 'Three beakers: salt water, milk in water and muddy water, a lens showing fat droplets and protein clumps in milk, and a torch whose beam shows only in the milk.' }
   ]);
 })();
