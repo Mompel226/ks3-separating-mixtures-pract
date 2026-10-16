@@ -45,11 +45,12 @@
     cap.textContent = where + ' · ' + document.querySelector('.stepbar').innerText.replace(/\s+/g, ' ').slice(0, 230);
     box.appendChild(c); box.appendChild(cap); gal.appendChild(box);
   }
+  const WORDS = { asks: new Set(), marked: new Set(), plain: new Set(), min: {}, hot: {} };
   function snap(where, out) {
     shot(where);
     const stage = document.querySelector('.stage').getBoundingClientRect();
-    const hots = Array.from(document.querySelectorAll('.hot')).map(b => ({ n: b.textContent.trim(), r: b.getBoundingClientRect() }));
-    const texts = Array.from(document.querySelectorAll('svg.sim text')).filter(t => t.textContent.trim() && shown(t)).map(t => ({ n: t.textContent.trim(), r: t.getBoundingClientRect() }));
+    const hots = Array.from(document.querySelectorAll('.hot')).map(b => ({ n: b.textContent.trim(), r: b.getBoundingClientRect(), el: b }));
+    const texts = Array.from(document.querySelectorAll('svg.sim text')).filter(t => t.textContent.trim() && shown(t)).map(t => ({ n: t.textContent.trim(), r: t.getBoundingClientRect(), el: t }));
     const say = (kind, a, b) => out.push({ where, kind, a, b });
     for (let i = 0; i < hots.length; i++) {
       const h = hots[i];
@@ -57,6 +58,22 @@
       for (let j = i + 1; j < hots.length; j++) if (area(h.r, hots[j].r) > 4) say('hot×hot', h.n, hots[j].n);
       texts.forEach(t => { if (area(h.r, t.r) > 6) say('hot×text', h.n, t.n); });
     }
+    /* the question bubble beside the buttons (16 Oct 2026) covers no button and no words, and stays on the bench */
+    document.querySelectorAll('.ask').forEach(q => {
+      const r = q.getBoundingClientRect(), n = 'bubble: ' + q.textContent.trim().slice(0, 40);
+      if (r.left < stage.left - 1 || r.right > stage.right + 1 || r.top < stage.top - 1 || r.bottom > stage.bottom + 1) say('cut', n, 'bubble past the edge');
+      hots.forEach(h => { if (area(r, h.r) > 4) say('ask×hot', n, h.n); });
+      texts.forEach(t => { if (area(r, t.r) > 6) say('ask×text', n, t.n); });
+      const drawn = Array.from(document.querySelectorAll('svg.sim g.scene *, svg.sim g.labels *')).filter(e => /^(path|rect|circle|ellipse|line|polyline|polygon|image|use)$/i.test(e.tagName) && shown(e)).map(e => e.getBoundingClientRect()).filter(d => d.width * d.height > 0 && d.width * d.height < stage.width * stage.height * .35 && area(r, d) > 0);
+      let pts = 0; for (let i = 0; i < 12; i++) for (let j = 0; j < 6; j++) { const x = r.left + (i + .5) * r.width / 12, y = r.top + (j + .5) * r.height / 6; if (drawn.some(d => x >= d.left && x <= d.right && y >= d.top && y <= d.bottom)) pts++; }
+      if (pts / 72 > .2) say('ask×drawing', n, Math.round(100 * pts / 72) + '% of the bubble is over the drawing');
+      WORDS.asks.add(q.textContent.trim());
+    });
+    /* how big the words are on screen, and which sentences under the bench are highlighted as things to do */
+    texts.forEach(t => { const el = t.el, px = el.getScreenCTM().a * parseFloat(getComputedStyle(el).fontSize); if (px < (WORDS.min[t.n] || 99)) WORDS.min[t.n] = Math.round(px * 10) / 10; });
+    hots.forEach(h => { const px = parseFloat(getComputedStyle(h.el).fontSize); if (px < (WORDS.hot[h.n] || 99)) WORDS.hot[h.n] = Math.round(px * 10) / 10; });
+    document.querySelectorAll('.stepbar mark.do').forEach(m => WORDS.marked.add(m.textContent.trim()));
+    document.querySelectorAll('.stepbar .st, .stepbar .msg > span').forEach(e => { const c = e.cloneNode(true); c.querySelectorAll('mark').forEach(m => m.remove()); c.textContent.split(/(?<=[.?!])\s+/).map(x => x.trim()).filter(x => x.length > 3).forEach(x => WORDS.plain.add(x)); });
     for (let i = 0; i < texts.length; i++) {
       const t = texts[i];
       if (area(t.r, stage) > 0 && (t.r.left < stage.left - 1 || t.r.right > stage.right + 1)) say('cut', t.n, 'words past the edge');
@@ -79,7 +96,7 @@
       snap(`${part}/${id}/end`, out);
     }
     const pre = document.createElement('pre'); pre.id = 'audit';
-    pre.textContent = JSON.stringify({ w: innerWidth, h: innerHeight, canvas: Math.round(document.querySelector('.canvas').getBoundingClientRect().width), problems: out });
+    pre.textContent = JSON.stringify({ w: innerWidth, h: innerHeight, canvas: Math.round(document.querySelector('.canvas').getBoundingClientRect().width), problems: out, words: { asks: [...WORDS.asks], marked: [...WORDS.marked], plain: [...WORDS.plain], min: WORDS.min, hot: WORDS.hot } });
     document.body.appendChild(pre);
     if (gal) { document.querySelector('.layout').style.display = 'none'; document.querySelector('.top').style.display = 'none'; document.querySelector('.partbar').style.display = 'none'; document.body.insertBefore(gal, document.body.firstChild); scrollTo(0, 0); }
   }

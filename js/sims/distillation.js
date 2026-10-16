@@ -74,7 +74,7 @@
     S('path', { class: 'glass-line', d: `M520,350 Q596,348 604,364 L604,394` }, g);
     K.stand(g, 440, 446, 250, 314, 420);
     k.label('thermometer', FX - 36, 128, FX - 5, 128, { anchor: 'end', layer: g, fade: false });
-    k.label('round-bottomed flask', FX + 66, 384, FX + 32, FY + 38, { anchor: 'start', layer: g, fade: false });
+    k.label('round-bottomed flask', FX + 66, 378, FX + 32, FY + 38, { anchor: 'start', layer: g, fade: false });
     k.label('condenser', 390, 248, 390, 292, { anchor: 'middle', layer: g, fade: false });
     k.label('distillate', 676, 432, 638, 432, { anchor: 'start', layer: g, fade: false });
     let seaLab = k.label('seawater', FX - 64, 338, FX - 40, 338, { anchor: 'end', layer: g, fade: false });
@@ -129,7 +129,7 @@
     ]);
     if (c2 === 'dry') {
       await k.tween(2600, t => { fl.liq.set(.22 * (1 - t)); rec.liq.set(.32 + .1 * t); T = 100 + 60 * Math.max(0, t - .7) / .3; th.set(Math.min(110, T)); k.readout('t', FX + 46, 132, Math.round(T) + ' °C'); saltTo(14 + Math.floor(70 * t)); });
-      seaLab.remove(); k.label('salt baked onto the glass', FX + 66, 404, FX + 24, FY + FR - 6, { anchor: 'start' });
+      seaLab.remove(); k.label('salt baked onto the glass', FX + 66, 410, FX + 24, FY + FR - 6, { anchor: 'start' });
       fw.stop(); bub.stop();
       S('path', { d: `M${FX - 30},${FY + 20} l10,8 l-4,10 l12,6 l-2,9 M${FX + 18},${FY + 30} l-8,6 l6,8`, stroke: '#1B1B1B', 'stroke-width': 2, fill: 'none', 'stroke-linejoin': 'round' }, g);
       bun.on(false);
@@ -197,10 +197,10 @@
     S('line', { x1: GX, y1: GY + GH, x2: GX + GW, y2: GY + GH, stroke: 'var(--ink3)', 'stroke-width': 1.4 }, gr);
     S('line', { x1: GX, y1: GY, x2: GX, y2: GY + GH, stroke: 'var(--ink3)', 'stroke-width': 1.4 }, gr);
     const ty = T => GY + GH - (T - 20) / 90 * GH;
-    [20, 40, 60, 78, 100].forEach(T => { S('line', { x1: GX - 4, y1: ty(T), x2: GX, y2: ty(T), stroke: 'var(--ink3)' }, gr); S('text', { x: GX - 7, y: ty(T) + 4, 'text-anchor': 'end', 'font-size': 11, 'font-weight': 700, fill: 'var(--ink2)' }, gr, T); });
+    [20, 40, 60, 78, 100].forEach(T => { S('line', { x1: GX - 4, y1: ty(T), x2: GX, y2: ty(T), stroke: 'var(--ink3)' }, gr); S('text', { x: GX - 7, y: ty(T) + 4, 'text-anchor': 'end', 'font-size': 15.5, 'font-weight': 700, fill: 'var(--ink2)' }, gr, T); });
     [78, 100].forEach(T => S('line', { x1: GX, y1: ty(T), x2: GX + GW, y2: ty(T), stroke: 'var(--rule2)', 'stroke-dasharray': '3 4' }, gr));
-    S('text', { x: GX + GW / 2, y: GY + GH + 22, 'text-anchor': 'middle', 'font-size': 12, 'font-weight': 800, fill: 'var(--ink2)' }, gr, 'time');
-    S('text', { x: GX - 34, y: GY - 10, 'font-size': 12, 'font-weight': 800, fill: 'var(--ink2)' }, gr, 'temperature / °C');
+    S('text', { x: GX + GW / 2, y: GY + GH + 22, 'text-anchor': 'middle', 'font-size': 16, 'font-weight': 800, fill: 'var(--ink2)' }, gr, 'time');
+    S('text', { x: GX - 34, y: GY - 10, 'font-size': 16, 'font-weight': 800, fill: 'var(--ink2)' }, gr, 'temperature / °C');
     const line = S('polyline', { points: '', fill: 'none', stroke: '#D22F27', 'stroke-width': 2.6, 'stroke-linejoin': 'round' }, gr);
     const TT = 15, temp = t => t < 2 ? 20 + 2 * t : t < 3 ? 24 + 54 * (t - 2) : t < 8 ? 78 : t < 12 ? 78 + 22 * (t - 8) / 4 : 100;   /* the vapour reaches the bulb at 2 s */
     const draw = t => { const pts = []; for (let s = 0; s <= t; s += .1) pts.push((GX + s / TT * GW).toFixed(1) + ',' + ty(temp(s)).toFixed(1)); line.setAttribute('points', pts.join(' ')); };
@@ -227,7 +227,7 @@
         if (T > 95 && !swapped) { swapped = 'late'; late(); return false; }
         return t < TT + 1;
       });
-      const r = await Promise.race([k.choose([{ id: 'swap', x: 550, y: 330, label: 'Change the beaker', side: 'r' }]).then(() => 'press'), lateP.then(() => 'late')]);
+      const r = await Promise.race([k.choose([{ id: 'swap', x: 550, y: 330, label: 'Change the beaker', side: 'r' }], { ask: 'Watch the thermometer. Change the beaker when the temperature starts to rise.', at: 'swap' }).then(() => 'press'), lateP.then(() => 'late')]);
       if (r === 'late' || t < 8) {
         swapped = 'done'; dripStop(); k.clearHots(); k.lapse(null); relabelMix(r === 'late' ? 'water left' : 'ethanol and water');
         if (r === 'late') bA.liq.color('#A6D2F0');
@@ -249,7 +249,7 @@
   }
 
   B.define(4, [
-    { id: 'simple', name: 'Simple distillation', title: 'Pure water from seawater', view: [40, 70, 720], task: { id: 'p4-sim', title: 'Bench: distilled seawater' }, run: simpleRun,
+    { id: 'simple', name: 'Simple distillation', title: 'Pure water from seawater', view: [20, 70, 740], task: { id: 'p4-sim', title: 'Bench: distilled seawater' }, run: simpleRun,
       alt: 'A round-bottomed flask of seawater over a Bunsen burner, a thermometer at the side arm, a sloping condenser with a cold-water jacket, and a flask to collect the distillate.' },
     { id: 'frac', name: 'Fractional', ext: true, title: 'Fractional distillation of ethanol and water', kicker: 'Extension · the bench', view: [20, 20, 780], task: { id: 'p4-sim-frac', title: 'Bench: fractional distillation (extension)' }, run: fracRun,
       alt: 'A flask of ethanol and water in an electric heater, under a column of glass beads, a condenser, two beakers and a graph of temperature against time.' }

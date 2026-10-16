@@ -51,7 +51,7 @@
       atom(g, x + D / 2, y, 6.5, 'O'); atom(g, x + D / 4, y + D / 2, 6.5, 'O'); atom(g, x, y, 9, 'Si');
     }
     S('line', { x1: cx - R, y1: top, x2: cx + R, y2: top, stroke: '#7A6A4E', 'stroke-width': 2, 'stroke-dasharray': '6 4' }, g);
-    const tag = (x, y, t) => S('text', { x, y, 'text-anchor': 'middle', 'font-size': 14, 'font-weight': 900, fill: '#3B3020', stroke: '#FFFFFF', 'stroke-width': 4, 'paint-order': 'stroke' }, g, t);
+    const tag = (x, y, t) => S('text', { x, y, 'text-anchor': 'middle', 'font-size': 16.5, 'font-weight': 900, fill: '#3B3020', stroke: '#FFFFFF', 'stroke-width': 4, 'paint-order': 'stroke' }, g, t);
     tag(cx, top + 34, 'solid: sand');
     return { g, tag };
   }
@@ -120,7 +120,7 @@
     mud: { draw: 'mud' }, air: { draw: 'air', note: 'Air is clear: you see straight through it.' },
     oil: { img: 'oil', by: 'Rolf Dietrich Brecher, CC BY 2.0' }, granite: { img: 'granite', by: 'James St. John, CC BY 2.0' }
   };
-  const EXTRA = [{ id: 'oil', name: 'Oil and water', x: 478, y: 318 }, { id: 'granite', name: 'Granite (a rock)', x: 672, y: 318 }];
+  const EXTRA = [{ id: 'oil', name: 'Oil and water', x: 478, y: 322 }, { id: 'granite', name: 'Granite (a rock)', x: 672, y: 322 }];
   const ZOOM = [1, 1.5, 2.2];
   function seeLens(lz, id, z) {
     const p = lz.inner, cx = lz.x, cy = lz.y, R = lz.r, L = SEE[id];
@@ -129,7 +129,7 @@
     const zg = S('g', { class: 'see-zoom', style: `transform-origin:${cx}px ${cy}px;transform:scale(${z})` }, p);
     if (L.img) S('image', { href: `img/photos/visible/${L.img}.jpg`, x: cx - R, y: cy - R, width: 2 * R, height: 2 * R, preserveAspectRatio: 'xMidYMid slice' }, zg);
     else if (L.draw === 'mud') drawMud(zg, cx, cy, R);
-    if (L.draw) { S('rect', { x: cx - 34, y: cy - R + 16, width: 68, height: 20, rx: 10, fill: 'rgba(255,255,255,.92)' }, p); S('text', { x: cx, y: cy - R + 30.5, 'text-anchor': 'middle', 'font-size': 12.5, 'font-weight': 800, fill: '#5A6672' }, p, 'drawing'); }
+    if (L.draw) { S('rect', { x: cx - 38, y: cy - R + 14, width: 76, height: 22, rx: 11, fill: 'rgba(255,255,255,.92)' }, p); S('text', { x: cx, y: cy - R + 30.5, 'text-anchor': 'middle', 'font-size': 14, 'font-weight': 800, fill: '#5A6672' }, p, 'drawing'); }
     return zg;
   }
   /* muddy water close up: cloudy brown water with small grains floating in it, and sand settled at the bottom */
@@ -152,41 +152,41 @@
     const name = s => (s.name + ' ' + (s.sub || '')).trim();
     const PART_SAY = 'Press a sample to see its particles. Look at all eight, then sort them in the first check. Press <b>👁 Show what you see</b> to look at a sample as your eyes see it.';
     const SEE_SAY = '<b>What you see</b>: press a sample to see it close up, as your eyes see it. Oil and water, and granite, are beside the lens. Which look the same all through (one phase)? In which can you see different parts (more than one phase)? Press <b>🔬 Show the particles</b> to zoom back in.';
-    const lines = (arr, y0) => arr.forEach((t, i) => S('text', { x: 400, y: y0 + i * 22, 'font-size': 17, 'font-weight': 700, fill: 'var(--ink2)' }, cap, t));
-    const more = () => S('text', { x: 400, y: 290, 'font-size': 15, 'font-weight': 800, fill: 'var(--ink)' }, cap, 'More mixtures to look at:');
+    const lines = (arr, y0) => arr.forEach((t, i) => S('text', { x: 400, y: y0 + i * 24, 'font-size': 19, 'font-weight': 700, fill: 'var(--ink2)' }, cap, t));
+    const more = () => S('text', { x: 400, y: 286, 'font-size': 17, 'font-weight': 800, fill: 'var(--ink)' }, cap, 'More mixtures to look at:');
     /* before the first press: the lens says what it is for (an empty first frame reads as broken) */
     const intro = see => {
       const p = lz.inner; p.innerHTML = ''; cap.innerHTML = '';
       S('rect', { x: 102, y: 72, width: 256, height: 256, fill: '#EAF3FB' }, p);
       S('circle', { cx: 218, cy: 186, r: 34, fill: 'none', stroke: 'var(--accent)', 'stroke-width': 7 }, p);
       S('line', { x1: 243, y1: 211, x2: 272, y2: 240, stroke: 'var(--accent)', 'stroke-width': 10, 'stroke-linecap': 'round' }, p);
-      S('text', { x: 230, y: 284, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 800, fill: '#1F4E79' }, p, 'Press a sample below');
+      S('text', { x: 230, y: 284, 'text-anchor': 'middle', 'font-size': 17, 'font-weight': 800, fill: '#1F4E79' }, p, 'Press a sample below');
       S('text', { x: 400, y: 150, 'font-size': 26, 'font-weight': 900, fill: 'var(--ink)' }, cap, see ? 'What do you see?' : 'What is it made of?');
-      lines(see ? ['Your eyes cannot see particles.', 'Press a sample on the bench', 'to see it close up.'] : ['Everything is made of particles.', 'Press each sample on the bench', 'to see its particles in the lens.'], 184);
+      lines(see ? ['Your eyes cannot see particles.', 'Press a sample on the bench', 'to see it close up.'] : ['Everything is made of particles.', 'Press each sample on the bench', 'to see its particles in the lens.'], 186);
       if (see) more();
     };
     const pointer = s => S('path', { d: `M${s.x},${400} L${230 + (s.x - 230) * .25},${330}`, stroke: 'var(--accent)', 'stroke-width': 2.5, 'stroke-dasharray': '5 5', fill: 'none' }, cap);
     const partCap = s => {
       cap.innerHTML = ''; pointer(s);
       S('text', { x: 400, y: 112, 'font-size': 26, 'font-weight': 900, fill: 'var(--ink)' }, cap, name(s));
-      const words = wrap(s.say, 34); lines(words, 146);
+      const words = wrap(s.say, 32); lines(words, 146);
       /* each row of the key draws exactly what it names: a whole water particle, one atom, or a pair of joined atoms
          (15 Oct 2026: pupils saw a water particle labelled "oxygen") */
-      s.key.forEach(([c, t], i) => { const y = 160 + words.length * 22 + i * 26;
+      s.key.forEach(([c, t], i) => { const y = 162 + words.length * 24 + i * 28;
         if (c === 'w') water(cap, 412, y - 5, 0);
         else if (c === 'N2' || c === 'O2') pair(cap, 412, y - 5, 0, c[0]).setAttribute('transform', `translate(412 ${y - 5}) scale(.75)`);
         else if (c === 'sand') S('rect', { x: 402, y: y - 14, width: 20, height: 16, fill: COL.sand, stroke: '#8A6A3A' }, cap);
         else if (c === 'hb') S('line', { x1: 400, y1: y - 5, x2: 424, y2: y - 5, stroke: '#2F4A66', 'stroke-width': 1.8, 'stroke-dasharray': '3 2.5', 'stroke-linecap': 'round' }, cap);
         else atom(cap, 412, y - 5, 8, c);
-        S('text', { x: 436, y, 'font-size': 15, 'font-weight': 800, fill: 'var(--ink)' }, cap, t); });
-      S('text', { x: 400, y: 172 + words.length * 22 + s.key.length * 26, class: 'zoom-sub', stroke: 'var(--wall)', 'stroke-width': 5, 'paint-order': 'stroke' }, cap, 'particles, not to scale');
+        S('text', { x: 436, y, 'font-size': 17, 'font-weight': 800, fill: 'var(--ink)' }, cap, t); });
+      S('text', { x: 400, y: 174 + words.length * 24 + s.key.length * 28, class: 'zoom-sub', stroke: 'var(--wall)', 'stroke-width': 5, 'paint-order': 'stroke' }, cap, 'particles, not to scale');
     };
     const seeCap = s => {
       cap.innerHTML = ''; if (!EXTRA.includes(s)) pointer(s);
-      const L = SEE[s.id], words = wrap(L.note || 'Close up, as your eyes see it.', 34).concat(wrap('Does it look the same all through, or can you see different parts?', 34));
+      const L = SEE[s.id], words = (L.note ? wrap(L.note, 32) : ['Close up, as your eyes see it.']).concat(['Is it the same all through?', 'Or can you see different parts?']);
       S('text', { x: 400, y: 112, 'font-size': 26, 'font-weight': 900, fill: 'var(--ink)' }, cap, name(s));
       lines(words, 146);
-      S('text', { x: 400, y: 152 + words.length * 22, class: 'zoom-sub' }, cap, L.img ? 'Photo: ' + L.by : 'A drawing, not a photo');
+      S('text', { x: 400, y: 154 + words.length * 24, class: 'zoom-sub' }, cap, L.img ? 'Photo: ' + L.by : 'A drawing, not a photo');
       more();
     };
     /* ＋ and −: the photo grows round the middle of the lens; the number says how much */
@@ -194,7 +194,7 @@
       zt.innerHTML = '';
       if (!zg) return;
       zg.style.transform = `scale(${ZOOM[zi]})`;
-      S('text', { x: 58, y: 211, 'text-anchor': 'middle', 'font-size': 17, 'font-weight': 900, fill: 'var(--ink)' }, zt, '×' + ZOOM[zi]);
+      S('text', { x: 58, y: 211, 'text-anchor': 'middle', 'font-size': 19, 'font-weight': 900, fill: 'var(--ink)' }, zt, '×' + ZOOM[zi]);
     };
     const draw = () => {
       zt.innerHTML = ''; zg = null;
@@ -216,7 +216,8 @@
       if (see) EXTRA.forEach(e => list.push({ id: e.id, x: e.x, y: e.y, label: e.name, quiet: true, done: looked.has(e.id) }));
       if (photo && zi < ZOOM.length - 1) list.push({ id: 'zin', x: 58, y: 160, label: '＋', quiet: true });
       if (photo && zi > 0) list.push({ id: 'zout', x: 58, y: 262, label: '−', quiet: true });
-      const id = await k.choose(list);
+      /* all eight seen in the particles: the switch for the second sort is asked beside it, not only in the text below */
+      const id = await k.choose(list, finished && !see && !looked.size ? { ask: 'Now press this', at: 'mode', side: 'r' } : {});
       if (id === 'zin' || id === 'zout') { zi += id === 'zin' ? 1 : -1; zoomShow(); continue; }
       if (id === 'mode') {
         mode = see ? 'particles' : 'see';
@@ -237,7 +238,7 @@
     const grains = S('g', null, bk.g), settled = S('g', null, bk.g);
     k.label('100 cm³ of water', 250, 474, null, null, { anchor: 'middle', layer: g, fade: false });
     /* the salt jar and the sand jar */
-    const jar = (x, col, t) => { S('rect', { x: x - 26, y: 380, width: 52, height: 66, rx: 8, fill: 'var(--glass-fill)', stroke: 'var(--glass)', 'stroke-width': 2 }, g); S('rect', { x: x - 22, y: 404, width: 44, height: 40, rx: 5, fill: col }, g); S('rect', { x: x - 28, y: 372, width: 56, height: 10, rx: 3, fill: 'var(--metal)' }, g); S('rect', { x: x - 20, y: 386, width: 40, height: 15, rx: 3, fill: '#FFFFFF', stroke: '#9AA3AC' }, g); S('text', { x, y: 398, 'text-anchor': 'middle', 'font-size': 11.5, 'font-weight': 900, fill: '#333' }, g, t); };
+    const jar = (x, col, t) => { S('rect', { x: x - 26, y: 380, width: 52, height: 66, rx: 8, fill: 'var(--glass-fill)', stroke: 'var(--glass)', 'stroke-width': 2 }, g); S('rect', { x: x - 22, y: 404, width: 44, height: 40, rx: 5, fill: col }, g); S('rect', { x: x - 28, y: 372, width: 56, height: 10, rx: 3, fill: 'var(--metal)' }, g); S('rect', { x: x - 20, y: 386, width: 40, height: 15, rx: 3, fill: '#FFFFFF', stroke: '#9AA3AC' }, g); S('text', { x, y: 398, 'text-anchor': 'middle', 'font-size': 14, 'font-weight': 900, fill: '#333' }, g, t); };
     jar(440, C.salt, 'salt'); jar(520, C.sand, 'sand');
     const lz = K.lens(g, 650, 215, 140, 'Inside the beaker', 'particles, not to scale');
     const L = lz.inner, cx = lz.x, cy = lz.y, R = lz.r;
@@ -285,7 +286,7 @@
     }
     for (;;) {
       k.step('Dissolve', 0, spoons < 3 ? `Add a spoon of salt (about 15 g) to the water. Spoons so far: <b>${spoons}</b>.` : '');
-      await k.choose([{ id: 'salt', x: 440, y: 482, label: 'Add a spoon of salt' }]);
+      await k.choose([{ id: 'salt', x: 482, y: 482, label: 'Add a spoon of salt' }]);
       const fall = await spoonIn(C.salt, 14); spoons++;
       /* in the lens: a tiny piece of a salt grain on the bottom (the whole lattice at the fourth spoon) */
       if (spoons < 3) { piece.setAttribute('opacity', 1); liq.setSolids([{ rect: [cx - 24, BOT - 17, cx + 30, cy + R] }]); }
@@ -340,12 +341,12 @@
     k.label('salt water', 160, 312, null, null, { anchor: 'middle', layer: g, fade: false });
     k.label('milk in water', 310, 312, null, null, { anchor: 'middle', layer: g, fade: false });
     k.label('muddy water', 460, 312, null, null, { anchor: 'middle', layer: g, fade: false });
-    S('text', { x: 160, y: 474, 'text-anchor': 'middle', 'font-size': 13, 'font-weight': 800, fill: '#DDE6EE' }, g, 'a solution');
-    S('text', { x: 310, y: 474, 'text-anchor': 'middle', 'font-size': 13, 'font-weight': 800, fill: '#DDE6EE' }, g, 'a colloid');
-    S('text', { x: 460, y: 474, 'text-anchor': 'middle', 'font-size': 13, 'font-weight': 800, fill: '#DDE6EE' }, g, 'a mechanical mixture');
+    S('text', { x: 160, y: 474, 'text-anchor': 'middle', 'font-size': 15.5, 'font-weight': 800, fill: '#DDE6EE' }, g, 'a solution');
+    S('text', { x: 310, y: 474, 'text-anchor': 'middle', 'font-size': 15.5, 'font-weight': 800, fill: '#DDE6EE' }, g, 'a colloid');
+    S('text', { x: 460, y: 474, 'text-anchor': 'middle', 'font-size': 15.5, 'font-weight': 800, fill: '#DDE6EE' }, g, 'a mechanical mixture');
     k.step(1, 3, 'Milk looks the same all through, like a solution, but you cannot see through it. Look inside it. (<b>Fat</b> is the oily part of milk, as in butter. <b>Protein</b> is a substance the body uses to grow, as in egg white.)');
     await k.choose([{ id: 'z', x: 310, y: 262, label: 'Zoom into the milk' }]);
-    const lz = K.lens(g, 650, 186, 112, 'Milk, much bigger', 'fat droplets and protein clumps in water · too small to see with your eyes');
+    const lz = K.lens(g, 650, 170, 100, 'Milk, much bigger', 'fat droplets and protein clumps in water · too small to see with your eyes');
     const L = lz.inner, cx = lz.x, cy = lz.y, R = lz.r;
     /* water fills the lens as a pale blue: at this size one water particle is far too small to draw (dots spread apart
        would look like a gas: Daniel, 15 Oct 2026) */
@@ -357,9 +358,9 @@
     add(() => { const q = S('g', null, L); const r = 9 + rnd() * 8; S('circle', { r, fill: '#F6D77A', stroke: '#C9A43A', 'stroke-width': 1.5 }, q); S('circle', { cx: -r * .35, cy: -r * .35, r: r * .3, fill: '#FFF3C4' }, q); return q; }, 7);
     add(() => { const q = S('g', null, L); for (let j = 0; j < 6; j++) S('circle', { cx: Math.cos(j) * 4.5, cy: Math.sin(j * 1.7) * 4.5, r: 3, fill: '#F4F4F2', stroke: '#9AA3AC', 'stroke-width': .8 }, q); return q; }, 6);
     const key = S('g', null, g);
-    S('circle', { cx: 548, cy: 392, r: 8, fill: '#F6D77A', stroke: '#C9A43A', 'stroke-width': 1.5 }, key); S('text', { x: 562, y: 397, class: 'note' }, key, 'fat droplet');
-    S('circle', { cx: 652, cy: 389, r: 3, fill: '#F4F4F2', stroke: '#9AA3AC' }, key); S('circle', { cx: 658, cy: 394, r: 3, fill: '#F4F4F2', stroke: '#9AA3AC' }, key); S('text', { x: 668, y: 397, class: 'note' }, key, 'protein clump');
-    S('rect', { x: 543, y: 407, width: 14, height: 12, rx: 2, fill: '#CFE4F6', stroke: '#7FB2E5' }, key); S('text', { x: 562, y: 419, class: 'note' }, key, 'water (particles too small to show)');
+    S('circle', { cx: 548, cy: 356, r: 8, fill: '#F6D77A', stroke: '#C9A43A', 'stroke-width': 1.5 }, key); S('text', { x: 562, y: 361, class: 'note' }, key, 'fat droplet');
+    S('circle', { cx: 545, cy: 375, r: 3, fill: '#F4F4F2', stroke: '#9AA3AC' }, key); S('circle', { cx: 551, cy: 380, r: 3, fill: '#F4F4F2', stroke: '#9AA3AC' }, key); S('text', { x: 562, y: 383, class: 'note' }, key, 'protein clump');
+    S('rect', { x: 541, y: 393, width: 14, height: 12, rx: 2, fill: '#CFE4F6', stroke: '#7FB2E5' }, key); S('text', { x: 562, y: 405, class: 'note' }, key, 'water (particles not shown)');
     k.loop(dt => { bits.forEach(m => { m.vx += (Math.random() - .5) * 120 * dt; m.vy += (Math.random() - .5) * 120 * dt; m.vx *= .96; m.vy *= .96; m.x += m.vx * dt; m.y += m.vy * dt; if (Math.hypot(m.x - cx, m.y - cy) > R - 18) { m.x += (cx - m.x) * .05; m.y += (cy - m.y) * .05; } put(m); }); return lz.g.isConnected; });
     k.step(2, 3, 'The droplets and clumps move in all directions all the time. They are too small to sink to the bottom or rise to the top. Now leave all three beakers to stand.');
     await k.choose([{ id: 'w', x: 310, y: 262, label: 'Leave them for an hour' }]);
@@ -368,7 +369,7 @@
     k.lapse(null);
     k.label('the sand settled', 600, 434, 488, 434, { anchor: 'start' });
     k.step(3, 3, 'Only the mud settled. The milk is still the same all through, and the salt water is still clear. Now shine a torch through all three.');
-    await k.choose([{ id: 't', x: 112, y: 372, label: 'Shine the torch', side: 't' }]);
+    await k.choose([{ id: 't', x: 112, y: 386, label: 'Shine the torch', side: 't' }]);
     S('rect', { x: 34, y: 386, width: 46, height: 18, rx: 4, fill: '#3C434B' }, g); S('path', { d: 'M80,382 L92,378 L92,412 L80,408 Z', fill: '#5B6573' }, g);
     const BY = 395;
     const beam = S('g', { opacity: 0 }, g);

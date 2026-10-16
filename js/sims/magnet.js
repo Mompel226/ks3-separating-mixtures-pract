@@ -29,7 +29,7 @@
     S('rect', { x: 60, y: BELT + 16, width: 10, height: 446 - BELT - 16, fill: 'var(--metal)' }, g);
     S('rect', { x: 580, y: BELT + 16, width: 10, height: 446 - BELT - 16, fill: 'var(--metal)' }, g);
     /* the bins */
-    const bin = (x, t, col) => { S('path', { d: `M${x - 52},${380} L${x - 44},${446} L${x + 44},${446} L${x + 52},${380} Z`, fill: col, stroke: 'rgba(0,0,0,.35)', 'stroke-width': 1.5 }, g); S('text', { x, y: 472, 'text-anchor': 'middle', 'font-size': 14, 'font-weight': 900, fill: '#fff' }, g, t); };
+    const bin = (x, t, col) => { S('path', { d: `M${x - 52},${380} L${x - 44},${446} L${x + 44},${446} L${x + 52},${380} Z`, fill: col, stroke: 'rgba(0,0,0,.35)', 'stroke-width': 1.5 }, g); S('text', { x, y: 472, 'text-anchor': 'middle', 'font-size': 15.5, 'font-weight': 900, fill: '#fff' }, g, t); };
     bin(690, 'aluminium', '#3E7CB1');
     /* the crane and the electromagnet */
     S('rect', { x: 120, y: 92, width: 640, height: 12, rx: 3, fill: 'var(--metal)' }, g);
@@ -90,7 +90,7 @@
        belt; it comes only now, so it never hides the cans riding the belt */
     const sb = S('g', null, g);
     S('path', { d: `M${458},${322} L${466},${446} L${554},${446} L${562},${322} Z`, fill: '#6D747B', stroke: 'rgba(0,0,0,.35)', 'stroke-width': 1.5 }, sb);
-    S('text', { x: 510, y: 472, 'text-anchor': 'middle', 'font-size': 14, 'font-weight': 900, fill: '#fff' }, sb, 'steel');
+    S('text', { x: 510, y: 472, 'text-anchor': 'middle', 'font-size': 15.5, 'font-weight': 900, fill: '#fff' }, sb, 'steel');
     g.insertBefore(sb, cans[0].e);
     k.step(3, 3, 'Not one aluminium can moved. Put the steel cans in their own bin.');
     await k.choose([{ id: 'drop', x: 600, y: 240, label: 'Switch off over the steel bin', side: 'l' }]);
@@ -125,7 +125,7 @@
     front();
     k.label('sieve', 214, 276, 241, 276, { anchor: 'end', layer: g, fade: false });
     /* the label says what is in the sieve now: "soil and stones", then "stones" once the soil has fallen through */
-    let inLab = k.label('soil and stones', 620, 280, 540, 280, { anchor: 'start', layer: g, fade: false }), soilGone = false;
+    let inLab = k.label('soil and stones', 584, 280, 540, 280, { anchor: 'start', layer: g, fade: false }), soilGone = false;
     k.step(1, 1, 'Garden soil with stones in it. <b>Press and hold</b> to shake the sieve.');
     let shaken = 0, ph = 0, left = fine.slice();
     const falling = [];
@@ -148,7 +148,7 @@
       k.note('Most of the soil is still in the sieve: shake a bit longer.');
     }
     falling.forEach(f => f.c.remove()); left.forEach(p => p.remove()); inLab.remove();
-    k.label('stones: too big', 620, 286, 532, 286, { anchor: 'start' });
+    k.label('stones: too big', 584, 286, 532, 286, { anchor: 'start' });
     k.label('soil', 620, 430, 500, 432, { anchor: 'start' });
     k.finish('The small soil particles fell through the holes of the sieve; the stones are too big, so they stayed. A sieve separates by <b>size</b>.');
   }

@@ -46,12 +46,12 @@
         const n = T[node];
         card.innerHTML = '';
         S('rect', { x: 70, y: 60, width: 660, height: 360, rx: 18, fill: 'var(--sheet)', stroke: 'var(--rule)', 'stroke-width': 1.5 }, card);
-        trail.forEach((t, i) => S('text', { x: 100, y: 96 + i * 22, 'font-size': 14, 'font-weight': 700, fill: 'var(--ink3)' }, card, '✓ ' + t));
+        trail.forEach((t, i) => S('text', { x: 100, y: 96 + i * 22, 'font-size': 16, 'font-weight': 700, fill: 'var(--ink3)' }, card, '✓ ' + t));
         const y0 = 110 + trail.length * 22;
         if (n.m) {
-          S('text', { x: 100, y: y0 + 10, 'font-size': 14, 'font-weight': 900, fill: 'var(--accent-ink)', 'letter-spacing': '.12em' }, card, 'USE');
-          S('text', { x: 100, y: y0 + 50, 'font-size': 36, 'font-weight': 900, fill: 'var(--ink)' }, card, n.m);
-          wrap(n.d, 52).forEach((ln, i) => S('text', { x: 100, y: y0 + 88 + i * 24, 'font-size': 18, 'font-weight': 600, fill: 'var(--ink2)' }, card, ln));
+          S('text', { x: 100, y: y0 + 10, 'font-size': 16, 'font-weight': 900, fill: 'var(--accent-ink)', 'letter-spacing': '.12em' }, card, 'USE');
+          S('text', { x: 100, y: y0 + 58, 'font-size': 36, 'font-weight': 900, fill: 'var(--ink)' }, card, n.m);
+          wrap(n.d, 52).forEach((ln, i) => S('text', { x: 100, y: y0 + 94 + i * 24, 'font-size': 18, 'font-weight': 600, fill: 'var(--ink2)' }, card, ln));
           await k.choose([{ id: 'again', x: 400, y: 450, label: '↺ Find another method' }]);
           break;
         }
