@@ -370,8 +370,8 @@
     S('circle', { cx: x, cy: y, r: r - 2 }, cp);
     S('circle', { class: 'zoom-ring', cx: x, cy: y, r }, g);
     const inner = S('g', { 'clip-path': `url(#${cid})` }, g);
-    if (title) S('text', { class: 'zoom-cap', x, y: y + r + 20, 'text-anchor': 'middle' }, g, title);
-    if (sub) { const parts = String(sub).split(' · '); parts.forEach((t, i) => S('text', { class: 'zoom-sub', x, y: y + r + 37 + i * 16, 'text-anchor': 'middle' }, g, t)); }
+    if (title) S('text', { class: 'zoom-cap', x, y: y + r + 21, 'text-anchor': 'middle' }, g, title);
+    if (sub) { const parts = String(sub).split(' · '); parts.forEach((t, i) => S('text', { class: 'zoom-sub', x, y: y + r + (title ? 42 : 21) + i * 19, 'text-anchor': 'middle' }, g, t)); }   /* 19 apart at 15 units (16 Oct 2026: bigger words) */
     return { g, inner, x, y, r };
   }
   /* a danger card (15 Oct 2026, Daniel: "add the warning sign … blinking … then you show goggles and lab coat on the left"):
@@ -389,13 +389,13 @@
     S('rect', { x: gx - 30, y: gy - 12, width: 27, height: 22, rx: 9, fill: '#BFE3F7', stroke: '#2F4357', 'stroke-width': 3 }, g);
     S('rect', { x: gx + 3, y: gy - 12, width: 27, height: 22, rx: 9, fill: '#BFE3F7', stroke: '#2F4357', 'stroke-width': 3 }, g);
     S('path', { d: `M${gx - 24},${gy - 5} l7,-3 M${gx + 9},${gy - 5} l7,-3`, stroke: '#FFFFFF', 'stroke-width': 2.2, 'stroke-linecap': 'round' }, g);
-    S('text', { x: gx, y: gy + 38, 'text-anchor': 'middle', 'font-size': 13, 'font-weight': 800, fill: 'var(--ink)' }, g, 'goggles');
+    S('text', { x: gx, y: gy + 38, 'text-anchor': 'middle', 'font-size': 14.5, 'font-weight': 800, fill: 'var(--ink)' }, g, 'goggles');
     /* lab coat */
     const cx = x + 146, cy = y + 146;
     S('path', { d: `M${cx - 13},${cy - 30} L${cx - 28},${cy - 23} L${cx - 34},${cy + 5} L${cx - 26},${cy + 7} L${cx - 22},${cy - 8} L${cx - 21},${cy + 30} L${cx + 21},${cy + 30} L${cx + 22},${cy - 8} L${cx + 26},${cy + 7} L${cx + 34},${cy + 5} L${cx + 28},${cy - 23} L${cx + 13},${cy - 30} L${cx},${cy - 16} Z`, fill: '#FFFFFF', stroke: '#5C6679', 'stroke-width': 2.4, 'stroke-linejoin': 'round' }, g);
     S('path', { d: `M${cx - 13},${cy - 30} L${cx - 2},${cy - 6} M${cx + 13},${cy - 30} L${cx + 2},${cy - 6} M${cx},${cy - 12} L${cx},${cy + 30}`, stroke: '#5C6679', 'stroke-width': 2, fill: 'none' }, g);
     [-2, 9, 20].forEach(d => S('circle', { cx: cx + 4, cy: cy + d, r: 1.8, fill: '#5C6679' }, g));
-    S('text', { x: cx, y: cy + 44, 'text-anchor': 'middle', 'font-size': 13, 'font-weight': 800, fill: 'var(--ink)' }, g, 'lab coat');
+    S('text', { x: cx, y: cy + 44, 'text-anchor': 'middle', 'font-size': 14.5, 'font-weight': 800, fill: 'var(--ink)' }, g, 'lab coat');
     return g;
   }
   /* a glass rod from (x1, y1) to (x2, y2): clear glass with an outline and a highlight, never a dark stick */

@@ -11,7 +11,9 @@ import { tmpdir } from 'node:os';
 
 const CHROME = process.env.CHROME || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const URL0 = process.env.PAGE || 'http://127.0.0.1:8787/practicals/ks3-separating-mixtures-pract/';
-const SIZES = [[1280, 720], [1366, 768], [1440, 790], [1440, 900], [1920, 1000], [1100, 800], [820, 1180]];
+const ALL = [[1280, 720], [1366, 768], [1440, 790], [1440, 900], [1920, 1000], [1100, 800], [820, 1180]];
+const oi = process.argv.indexOf('--only');                 /* --only 1280x720: one size, for a quick look */
+const SIZES = oi > 0 ? [process.argv[oi + 1].split('x').map(Number)] : ALL;
 function chrome(args, ms) {
   const prof = mkdtempSync(join(tmpdir(), 'ovl-'));
   try {
@@ -33,6 +35,21 @@ if (process.argv.includes('--scroll')) {
   const res = JSON.parse(m[1].replace(/&quot;/g, '"').replace(/&amp;/g, '&'));
   res.forEach(x => console.log(x.log ? 'log ' + JSON.stringify(x.log) : x.busy ? `half-done bench: stays ${x.stays ? 'yes' : 'NO'}, extension button calls ${x.calls ? 'yes' : 'NO'}` : `part ${x.part}: ${x.before} → ${x.after} ${x.ok ? '✓' : '✗'} (box top ${x.extTop}, height ${x.extH}, scrolled ${x.y}, window ${x.vh})`));
   process.exit(res.every(x => x.busy ? x.stays && x.calls : x.ok) ? 0 : 1);
+}
+/* --words: at one laptop size, the bubbles beside the buttons, the sentences highlighted under the bench and those left
+   plain, and the smallest size each word on the bench is drawn at (16 Oct 2026, the font-size and instructions audit) */
+if (process.argv.includes('--words')) {
+  const r = chrome(['--window-size=1440,790', '--virtual-time-budget=40000', '--dump-dom', `${URL0}?still=1&audit=1`], 150000);
+  const m = (r.stdout || '').match(/<pre id="audit">([\s\S]*?)<\/pre>/);
+  if (!m) { console.log('the page wrote no result'); process.exit(1); }
+  const W = JSON.parse(m[1].replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')).words;
+  console.log('BUBBLES:'); W.asks.forEach(x => console.log('  ? ' + x));
+  console.log('HIGHLIGHTED:'); W.marked.forEach(x => console.log('  + ' + x));
+  console.log('NOT HIGHLIGHTED:'); W.plain.forEach(x => console.log('  - ' + x));
+  const small = Object.entries(W.min).sort((a, b) => a[1] - b[1]);
+  console.log('SMALLEST WORDS ON THE BENCH (px):'); small.slice(0, 25).forEach(([t, px]) => console.log(`  ${String(px).padStart(5)}  ${t.slice(0, 50)}`));
+  console.log('BUTTONS (px):', [...new Set(Object.values(W.hot))].sort((a, b) => a - b).join(', '));
+  process.exit(0);
 }
 let bad = 0;
 for (const [w, h] of SIZES) {

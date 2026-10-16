@@ -43,9 +43,9 @@
     const cp = K.id('clip'), Z = 162 * 1.5; S('rect', { x: 50, y: 160, width: 162, height: 162, rx: 5 }, S('clipPath', { id: cp }, S('defs', null, g)));
     S('rect', { x: 42, y: 152, width: 178, height: 226, rx: 9, fill: 'var(--sheet)', stroke: 'var(--rule)', 'stroke-width': 1.2 }, g);
     S('image', { href: ph.src, x: 131 - .52 * Z, y: 241 - .53 * Z, width: Z, height: Z, 'clip-path': `url(#${cp})` }, g);
-    S('text', { x: 131, y: 346, 'text-anchor': 'middle', 'font-size': 13, 'font-weight': 800, fill: 'var(--ink)' }, g, 'Real chromatograms');
+    S('text', { x: 131, y: 346, 'text-anchor': 'middle', 'font-size': 15.5, 'font-weight': 800, fill: 'var(--ink)' }, g, 'Real chromatograms');
     const a = S('a', { href: ph.href, target: '_blank', rel: 'noopener' }, g);
-    S('text', { x: 131, y: 366, 'text-anchor': 'middle', 'font-size': 10.5, fill: 'var(--ink3)' }, a, `Photo: ${ph.credit}, ${ph.licence}`);
+    S('text', { x: 131, y: 366, 'text-anchor': 'middle', 'font-size': 13, fill: 'var(--ink3)' }, a, `Photo: ${ph.credit}, ${ph.licence}`);
     return g;
   }
 
@@ -61,8 +61,8 @@
     const run1 = S('g', null, paper), spots = S('g', null, paper);
     const bk = K.beaker(g, 400, 446, 320, 292, { color: '#BFDDF3', level: 0, opacity: .5 });
     K.glassRod(g, PX0 - 40, PTOP - 2, PX1 + 40, PTOP - 2);
-    INKS.forEach(([n], i) => S('text', { x: xs(i), y: LINE + 20, 'text-anchor': 'middle', 'font-size': 14, 'font-weight': 800, fill: '#5A5A5A' }, paper, n));
-    k.label('chromatography paper', PX1 + 40, 172, PX1 - 4, 172, { anchor: 'start', layer: g, fade: false });
+    INKS.forEach(([n], i) => S('text', { x: xs(i), y: LINE + 20, 'text-anchor': 'middle', 'font-size': 15.5, 'font-weight': 800, fill: '#5A5A5A' }, paper, n));
+    k.label('chromatography paper', PX1 + 26, 146, PX1 - 4, 172, { anchor: 'start', layer: g, fade: false });
     const bkLabel = k.label('beaker', PX1 + 46, 300, 560, 300, { anchor: 'start', layer: g, fade: false });
 
     let pen = false, ru = null;
@@ -90,7 +90,7 @@
       for (;;) {
         k.step(3, 5, 'Pour water into the beaker. How high should the water come?');
         const w = await k.choose([
-          { id: 'below', x: PX1 + 40, y: LINE + 30, label: 'Below the start line', side: 'r' },
+          { id: 'below', x: PX1 + 40, y: LINE + 42, label: 'Below the start line', side: 'r' },
           { id: 'above', x: PX0 - 40, y: LINE - 46, label: 'Above the start line', side: 'l' }
         ]);
         const to = w === 'below' ? (446 - 416) / 284 : (446 - 384) / 284;
@@ -133,7 +133,7 @@
       }
       /* 5 · out, and mark the front */
       k.step(5, 5, 'The water is near the top. Remove the paper and mark, with a pencil, how far the water reached.');
-      await k.choose([{ id: 'out', x: 400, y: 130, label: 'Remove it and mark the front' }]);
+      await k.choose([{ id: 'out', x: 388, y: 130, label: 'Remove it and mark the front' }]);
       lid.remove();
       /* the paper comes out of the water: the beaker is taken away, and the paper hangs from a clamp to dry */
       const standG = S('g', { opacity: 0 }, g); g.insertBefore(standG, paper);
@@ -147,8 +147,8 @@
       /* a ruler beside the paper, 0 at the start line (for the Rf extension) */
       ru = S('g', null, g);
       S('rect', { x: PX0 - 46, y: FRONT - 16, width: 30, height: LINE - FRONT + 32, rx: 3, fill: '#F7E7A8', stroke: '#B39A3E', 'stroke-width': 1.2 }, ru);
-      for (let mm = 0; mm <= 110; mm++) { const y = LINE - mm * CM / 10; if (y < FRONT - 14) break; S('line', { x1: PX0 - 16, y1: y, x2: PX0 - 16 - (mm % 10 ? (mm % 5 ? 5 : 8) : 12), y2: y, stroke: '#5A4A10', 'stroke-width': mm % 10 ? .7 : 1.2 }, ru); if (mm % 10 === 0) S('text', { x: PX0 - 40, y: y + 4, 'font-size': 10, 'font-weight': 800, fill: '#5A4A10' }, ru, mm / 10); }
-      S('text', { x: PX0 - 31, y: FRONT - 20, 'text-anchor': 'middle', 'font-size': 11, 'font-weight': 800, fill: 'var(--ink2)' }, ru, 'cm');
+      for (let mm = 0; mm <= 110; mm++) { const y = LINE - mm * CM / 10; if (y < FRONT - 14) break; S('line', { x1: PX0 - 16, y1: y, x2: PX0 - 16 - (mm % 10 ? (mm % 5 ? 5 : 8) : 12), y2: y, stroke: '#5A4A10', 'stroke-width': mm % 10 ? .7 : 1.2 }, ru); if (mm % 10 === 0) S('text', { x: PX0 - 40, y: y + 4, 'font-size': 14, 'font-weight': 800, fill: '#5A4A10' }, ru, mm / 10); }
+      S('text', { x: PX0 - 31, y: FRONT - 20, 'text-anchor': 'middle', 'font-size': 13.5, 'font-weight': 800, fill: 'var(--ink2)' }, ru, 'cm');
       break;
     }
     /* real life: smeared dyes, beside a real photograph when the page has one */
@@ -173,23 +173,23 @@
     K.glassRod(g, PX0 - 40, PTOP - 2, PX1 + 40, PTOP - 2);
     S('line', { x1: PX0 + 10, y1: LINE, x2: PX1 - 10, y2: LINE, stroke: '#6E6E6E', 'stroke-width': 2 }, paper);
     S('line', { x1: PX0 + 6, y1: FRONT, x2: PX1 - 6, y2: FRONT, stroke: '#6E6E6E', 'stroke-width': 2, 'stroke-dasharray': '7 5' }, paper);
-    INKS.forEach(([n, list], i) => { S('text', { x: xs(i), y: LINE + 20, 'text-anchor': 'middle', 'font-size': 14, 'font-weight': 800, fill: '#5A5A5A' }, paper, n);
+    INKS.forEach(([n, list], i) => { S('text', { x: xs(i), y: LINE + 20, 'text-anchor': 'middle', 'font-size': 15.5, 'font-weight': 800, fill: '#5A5A5A' }, paper, n);
       list.forEach(d => S('ellipse', { cx: xs(i), cy: LINE - RF[d] * (LINE - FRONT), rx: 8, ry: 6 + 3 * RF[d], fill: COLS[d], filter: 'url(#inkblur2)' }, paper));
       if (!list.length) S('ellipse', { cx: xs(i), cy: LINE, rx: 8, ry: 6, fill: '#1B1B22', filter: 'url(#inkblur2)' }, paper); });
     k.label('solvent front', PX1 + 40, FRONT, PX1 - 8, FRONT, { anchor: 'start', layer: g, fade: false });
     k.label('start line', PX1 + 40, LINE, PX1 - 12, LINE, { anchor: 'start', layer: g, fade: false });
     const ru = S('g', null, g);                                          /* the ruler, 0 at the start line */
     S('rect', { x: PX0 - 46, y: FRONT - 16, width: 30, height: LINE - FRONT + 32, rx: 3, fill: '#F7E7A8', stroke: '#B39A3E', 'stroke-width': 1.2 }, ru);
-    for (let mm = 0; mm <= 110; mm++) { const y = LINE - mm * CM / 10; if (y < FRONT - 14) break; S('line', { x1: PX0 - 16, y1: y, x2: PX0 - 16 - (mm % 10 ? (mm % 5 ? 5 : 8) : 12), y2: y, stroke: '#5A4A10', 'stroke-width': mm % 10 ? .7 : 1.2 }, ru); if (mm % 10 === 0) S('text', { x: PX0 - 40, y: y + 4, 'font-size': 10, 'font-weight': 800, fill: '#5A4A10' }, ru, mm / 10); }
-    S('text', { x: PX0 - 31, y: FRONT - 20, 'text-anchor': 'middle', 'font-size': 11, 'font-weight': 800, fill: 'var(--ink2)' }, ru, 'cm');
+    for (let mm = 0; mm <= 110; mm++) { const y = LINE - mm * CM / 10; if (y < FRONT - 14) break; S('line', { x1: PX0 - 16, y1: y, x2: PX0 - 16 - (mm % 10 ? (mm % 5 ? 5 : 8) : 12), y2: y, stroke: '#5A4A10', 'stroke-width': mm % 10 ? .7 : 1.2 }, ru); if (mm % 10 === 0) S('text', { x: PX0 - 40, y: y + 4, 'font-size': 14, 'font-weight': 800, fill: '#5A4A10' }, ru, mm / 10); }
+    S('text', { x: PX0 - 31, y: FRONT - 20, 'text-anchor': 'middle', 'font-size': 13.5, 'font-weight': 800, fill: 'var(--ink2)' }, ru, 'cm');
     /* the working, on a card to the right */
     const card = S('g', null, g), cx0 = 598;
     S('rect', { x: cx0, y: 226, width: 158, height: 160, rx: 12, fill: 'var(--sheet)', stroke: 'var(--rule2)', 'stroke-width': 1.5 }, card);
-    S('text', { x: cx0 + 79, y: 252, 'text-anchor': 'middle', 'font-size': 14, 'font-weight': 900, fill: 'var(--ink)' }, card, 'Rf of pen A’s yellow');
-    const l1 = S('text', { x: cx0 + 14, y: 282, 'font-size': 14, 'font-weight': 800, fill: '#B8860B' }, card, '');
-    const l2 = S('text', { x: cx0 + 14, y: 306, 'font-size': 14, 'font-weight': 800, fill: '#2A5FC8' }, card, '');
-    const l3 = S('text', { x: cx0 + 14, y: 340, 'font-size': 16, 'font-weight': 900, fill: 'var(--ink)' }, card, '');
-    const l4 = S('text', { x: cx0 + 14, y: 366, 'font-size': 16, 'font-weight': 900, fill: 'var(--ink)' }, card, '');
+    S('text', { x: cx0 + 79, y: 252, 'text-anchor': 'middle', 'font-size': 16, 'font-weight': 900, fill: 'var(--ink)' }, card, 'Rf of pen A’s yellow');
+    const l1 = S('text', { x: cx0 + 14, y: 282, 'font-size': 16, 'font-weight': 800, fill: '#B8860B' }, card, '');
+    const l2 = S('text', { x: cx0 + 14, y: 306, 'font-size': 16, 'font-weight': 800, fill: '#2A5FC8' }, card, '');
+    const l3 = S('text', { x: cx0 + 14, y: 340, 'font-size': 18, 'font-weight': 900, fill: 'var(--ink)' }, card, '');
+    const l4 = S('text', { x: cx0 + 14, y: 366, 'font-size': 18, 'font-weight': 900, fill: 'var(--ink)' }, card, '');
     const ax = xs(1), dyeY = LINE - RF.Y * (LINE - FRONT);
     const arrow = (x, y1, y2, col) => { const a = S('g', null, g), ln = S('line', { x1: x, y1, x2: x, y2: y1, stroke: col, 'stroke-width': 3 }, a), hd = S('path', { d: '', fill: col }, a);
       return { a, set(t) { const y = y1 + (y2 - y1) * t; ln.setAttribute('y2', y); hd.setAttribute('d', `M${x - 6},${y + 9} L${x},${y} L${x + 6},${y + 9} Z`); } }; };

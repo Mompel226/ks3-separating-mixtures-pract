@@ -88,8 +88,8 @@
     for (;;) {
       k.step(3, 5, 'Pour in all of the muddy water, sand and all. How do you pour it?');
       const how = await k.choose([
-        { id: 'fast', x: 640, y: 196, label: 'Pour it all in at once', side: 't' },
-        { id: 'slow', x: 640, y: 262, label: 'Pour slowly', sub: 'below the paper’s edge', side: 't' }
+        { id: 'fast', x: 640, y: 222, label: 'Pour it all in at once', side: 't' },   /* lower: the question fits on the wall above */
+        { id: 'slow', x: 640, y: 290, label: 'Pour slowly', sub: 'below the paper’s edge', side: 't' }
       ]);
       lblM.remove();
       if (how === 'fast') {
@@ -131,7 +131,7 @@
     k.step(4, 5, 'The beaker is empty. The sand stayed on the paper; clear water passed through. Why? Look at the paper close up.');
     await k.choose([{ id: 'z', x: 560, y: 150, label: 'Look closer at the paper', side: 'r' }]);
     bk.wrap.remove(); k.clearLabels();
-    const lz = K.lens(k.top, 628, 228, 100, 'Sand grains are too big to pass', 'water passes through the holes · its particles are too small to show');
+    const lz = K.lens(k.top, 616, 228, 100, 'Sand is too big to pass', 'water passes through · the holes: its particles · are too small to show');
     zoom(k, lz, true);
     k.label('residue (sand)', 250, AP - 12, FX - 6, AP - 12, { anchor: 'end' });
     k.label('filtrate (clear water)', 250, 430, FX - 52, 430, { anchor: 'end' });
@@ -167,7 +167,7 @@
     const ring = S('g', null, g);
     for (let i = 0; i < 26; i++) { const a = i / 26 * Math.PI * 2; S('rect', { x: wx + Math.cos(a) * 16 - 1.8, y: wy - 2 + Math.sin(a) * 3 - 1.8, width: 3.6, height: 3.6, fill: C.salt, stroke: '#9A968A', 'stroke-width': .6 }, ring); }
     k.label('salt left behind', wx - 74, wy - 14, wx - 18, wy - 4, { anchor: 'end' });
-    const lz2 = K.lens(k.top, 628, 228, 100, 'Salt particles pass through too', 'inside one hole, much bigger · each ion, with its water, · is far smaller than the hole');
+    const lz2 = K.lens(k.top, 616, 228, 100, 'Salt ions pass through too', 'inside one hole, much bigger · each ion, with its water, · is far smaller than the hole');
     zoom(k, lz2, false);
     k.finish('The salt passed through the paper. Filtration separates an <b>insoluble</b> solid from a liquid; it cannot remove a <b>dissolved</b> solid.');
   }
@@ -202,7 +202,7 @@
   function zoom(k, lz, sand) {
     const p = lz.inner, x = lz.x, y = lz.y, r = lz.r;
     const fibres = (g, x0, y0, w, h) => { S('rect', { x: x0, y: y0, width: w, height: h, fill: '#EDE6CF', stroke: '#B8AD8A', 'stroke-width': 1.5 }, g); for (let i = 0; i < (w + h) / 9; i++) { const fx = x0 + ((i * 37) % Math.max(1, w)), fy = y0 + ((i * 23) % Math.max(1, h)); S('line', { x1: fx, y1: fy, x2: Math.min(x0 + w, fx + 7), y2: Math.min(y0 + h, fy + 4), stroke: '#CDBF98', 'stroke-width': 1.2 }, g); } };
-    const tag = (tx, ty, t, col, rot) => S('text', { x: tx, y: ty, 'text-anchor': 'middle', 'font-size': 12.5, 'font-weight': 900, fill: col, stroke: '#EAF3FB', 'stroke-width': 4, 'paint-order': 'stroke', transform: rot ? `rotate(${rot} ${tx} ${ty})` : null }, p, t);
+    const tag = (tx, ty, t, col, rot) => S('text', { x: tx, y: ty, 'text-anchor': 'middle', 'font-size': 15.5, 'font-weight': 900, fill: col, stroke: '#EAF3FB', 'stroke-width': 4, 'paint-order': 'stroke', transform: rot ? `rotate(${rot} ${tx} ${ty})` : null }, p, t);
     if (sand) {
       S('rect', { x: x - r, y: y - r, width: 2 * r, height: 2 * r, fill: '#CFE4F6' }, p);
       const fy = y + 10, PH = 18, HW = 8, holes = [x - 80, x - 40, x, x + 40, x + 80];

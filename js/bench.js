@@ -28,8 +28,111 @@
   const lin = t => t;
   const mix = (a, b, t) => a + (b - a) * t;
 
+  /* ---------------- instructions where the eyes are (16 Oct 2026, Daniel: "highlight instructions otherwise they won't
+     read, and if it is about pressing a button put those next to the buttons, not in a text underneath the animation or
+     somewhere at the end of a long text without being highlighted … think how young kids interact with things"):
+     - a choice made with the buttons on the bench is asked in a yellow bubble beside those buttons: k.choose(list,
+       { ask, at, side }); without `ask`, the step's own question (its last sentence ending in "?") when there are two or more
+       buttons to choose from; `at` = the id of the one button the bubble points at; `side` ('t', 'b', 'r' or 'l') is the place
+       to try first; the bubble never covers a word on the bench or another button;
+     - under the bench, every sentence that tells the pupil to do something, and every question, is highlighted;
+     - a finished bench lights the button of the next one above it ("Next"). */
+  const DO = /^(?:(?:now|then|first|next|so)[,]?\s+)?(?:pour|light|heat|fold|open|put|press|hold|close|leave|look|watch|try|test|stir|add|choose|spot|draw|measure|pick|tip|wait|let|turn|switch|collect|repeat|compare|sort|shake|move|place|read|dip|use|take|remove|mark|start|find|cover|fill|wear|run|click|tap|pull|push|clamp|connect|scrape|rinse|weigh|count|write|check|decide|zoom|keep|lower|raise|drop|hang|bring|cool|boil|separate|decant|swirl|lift|stop|go|see|work|shine|divide|answer|filter(?! paper))\b/i;
+  const PRESS = /\b(press|tap|click)\b/i;
+  const sentences = html => String(html).split(/(?<=[.?!:])\s+(?=[A-Z<(👀👁🔬])/u);
+  const plainOf = s => s.replace(/<[^>]+>/g, '').replace(/^[(\s]+/, '').trim();
+  function markDo(html) {
+    if (!html) return html || '';
+    return sentences(html).map(s => { const t = plainOf(s); return DO.test(t) || PRESS.test(t) || /\?\)?$/.test(t) ? `<mark class="do">${s}</mark>` : s; }).join(' ');
+  }
+  const lastQuestion = html => sentences(html || '').filter(s => /\?\)?$/.test(plainOf(s))).pop() || '';
+
   /* ---------------- the frame on the left ---------------- */
   let root, head, sceneBar, togBar, canvas, svg, hots, stepbar, lapseEl, photoEl;
+  let stepHtml = '', askEl = null, askFor = [], askSide = '';
+  /* the bubble sits next to its buttons, where it hides the least: never a word on the bench or another button, and as
+     little of the drawing as it can (Daniel, 16 Oct 2026: "avoid making the new messages cover important things …
+     like diagrams"). It tries above, below, right and left of its buttons (`side` first), each centred and at either
+     end, and takes the place that covers least; its point stays on the buttons' middle. */
+  const SHAPES = /^(path|rect|circle|ellipse|line|polyline|polygon|image|text|use)$/i;
+  function shownEl(el) { for (let e = el; e && e !== svg; e = e.parentNode) { const o = e.getAttribute && e.getAttribute('opacity'); if ((o != null && +o < .05) || (e.style && (e.style.display === 'none' || (e.style.opacity !== '' && +e.style.opacity < .05)))) return false; } return true; }
+  function placeAsk() {
+    if (!askEl || !askEl.isConnected || !askFor.length) return;
+    const W = hots.clientWidth, H = hots.clientHeight, hr = hots.getBoundingClientRect();
+    const rel = r => ({ l: r.left - hr.left, t: r.top - hr.top, r: r.right - hr.left, b: r.bottom - hr.top });
+    const area = (a, b) => Math.max(0, Math.min(a.r, b.r) - Math.max(a.l, b.l)) * Math.max(0, Math.min(a.b, b.b) - Math.max(a.t, b.t));
+    const bs = askFor.map(b => rel(b.getBoundingClientRect()));
+    const u = { l: Math.min(...bs.map(b => b.l)), t: Math.min(...bs.map(b => b.t)), r: Math.max(...bs.map(b => b.r)), b: Math.max(...bs.map(b => b.b)) };
+    const G = 16, cx = (u.l + u.r) / 2, cy = (u.t + u.b) / 2;
+    /* the bench you can see: the drawing, and the wall beside it when the bench is narrower than its column */
+    const st = rel(canvas.parentNode.getBoundingClientRect()), X0 = Math.max(st.l, -60) + 4, X1 = Math.min(st.r, W + 60) - 4;
+    /* words and other buttons must stay clear; the drawing (apparatus, label lines) as clear as it can be */
+    const hard = [...hots.querySelectorAll('.hot')].map(b => rel(b.getBoundingClientRect()))          /* its own buttons too */
+      .concat([...svg.querySelectorAll('text')].filter(t => t.textContent.trim() && shownEl(t)).map(t => rel(t.getBoundingClientRect())).filter(r => r.r > r.l));
+    const drawn = [...svg.querySelectorAll('g.scene *, g.labels *')].filter(e => SHAPES.test(e.tagName) && shownEl(e)).map(e => rel(e.getBoundingClientRect()))
+      .filter(r => r.r > r.l && r.b > r.t && (r.r - r.l) * (r.b - r.t) < W * H * .35);
+    const covered = r => {          /* the share of the bubble that lies over the drawing, from a grid of points */
+      const near = drawn.filter(d => area(r, d) > 0); if (!near.length) return 0;
+      let n = 0; for (let i = 0; i < 12; i++) for (let j = 0; j < 6; j++) { const x = r.l + (i + .5) * (r.r - r.l) / 12, y = r.t + (j + .5) * (r.b - r.t) / 6; if (near.some(d => x >= d.l && x <= d.r && y >= d.t && y <= d.b)) n++; }
+      return n / 72;
+    };
+    /* its size on one line, or wrapped narrower to fit the wall beside its buttons */
+    const size = mw => { askEl.style.maxWidth = mw ? mw + 'px' : ''; return { w: askEl.offsetWidth, hh: askEl.offsetHeight, mw }; };
+    const one = size(0), C = [];
+    const order = [askSide, 't', 'b', 'r', 'l'].filter((x, i, a) => x && a.indexOf(x) === i);
+    order.forEach(k => {
+      if (k === 't' || k === 'b') { const { w, hh } = one; [cx - w / 2, u.l, u.r - w].forEach(x => C.push({ k, w, hh, mw: 0, x: Math.max(X0, Math.min(X1 - w, x)), y: k === 't' ? u.t - hh - G : u.b + G })); return; }
+      const room = k === 'r' ? X1 - (u.r + G) : (u.l - G) - X0;
+      const d = room >= one.w ? one : room >= 90 ? size(Math.floor(room)) : null; if (!d) return;
+      const cY = y => Math.max(4, Math.min(H - d.hh - 4, y));
+      [cy - d.hh / 2, u.t, u.b - d.hh].forEach(y => C.push({ k, w: d.w, hh: d.hh, mw: d.mw, x: k === 'r' ? u.r + G : u.l - d.w - G, y: cY(y) }));
+    });
+    /* last: high on the wall above the buttons, like a question written over the picture (two choices on either side
+       of the drawing leave no free place beside them) */
+    C.push({ k: 'free', w: one.w, hh: one.hh, mw: 0, x: Math.max(X0, Math.min(X1 - one.w, cx - one.w / 2)), y: 8, extra: .06 * one.w * one.hh });
+    let best = null;
+    for (const c of C) {
+      const r = { l: c.x, t: c.y, r: c.x + c.w, b: c.y + c.hh };
+      if (r.l < X0 - 1 || r.t < 2 || r.r > X1 + 1 || r.b > H - 2) continue;
+      const score = hard.reduce((a, o) => a + area(r, o), 0) * 4 + covered(r) * c.w * c.hh + (c.extra || 0);
+      if (!best || score < best.score - 1) best = { ...c, score };
+      if (!score) break;
+    }
+    if (!best) best = { k: 'b', ...one, x: Math.max(X0, Math.min(X1 - one.w, cx - one.w / 2)), y: Math.min(H - one.hh - 4, u.b + G) };
+    size(best.mw);
+    const w = best.w, hh = best.hh;
+    askEl.classList.remove('below', 'r', 'l', 'free');
+    if (best.k !== 't') askEl.classList.add(best.k === 'b' ? 'below' : best.k);
+    askEl.style.left = (100 * best.x / W) + '%'; askEl.style.top = (100 * best.y / H) + '%';        /* like the buttons: it scales with the bench */
+    askEl.style.setProperty('--ax', Math.max(18, Math.min(w - 18, cx - best.x)) + 'px');
+    askEl.style.setProperty('--ay', Math.max(14, Math.min(hh - 14, cy - best.y)) + 'px');
+  }
+  /* a question the pupil is reading can point at a button on the bench (its `cue` in js/questions.js: { label, ask }):
+     while they read it, the bubble stands beside that button, if the bench shows it and asks nothing else */
+  const cueOf = el => { const id = el && el.dataset && el.dataset.q, q = id && window.QS && window.QS[id]; return q && q.cue; };
+  function showCue() {
+    if (askEl && askEl.isConnected) return;
+    const c = cueOf(reading); if (!c) return;
+    const b = [...hots.querySelectorAll('.hot')].find(x => x.textContent.indexOf(c.label) >= 0); if (!b) return;
+    showAsk(c.ask, [b], c.side, '.3s'); askEl.dataset.cue = '1';
+  }
+  /* a button never runs past the edge of the bench you can see: nudged in by as much as it sticks out (16 Oct 2026:
+     bigger words made long labels near an edge stick out where the bench fills its column) */
+  function fitHots() {
+    const st = canvas.parentNode.getBoundingClientRect(), cr = canvas.getBoundingClientRect();
+    const L = Math.max(st.left, cr.left - 40) + 4, R = Math.min(st.right, cr.right + 40) - 4, T = st.top + 3, B = st.bottom - 3;
+    hots.querySelectorAll('.hot').forEach(b => {
+      b.style.marginLeft = b.style.marginTop = '';
+      const r = b.getBoundingClientRect();
+      const dx = r.left < L ? L - r.left : r.right > R ? R - r.right : 0, dy = r.top < T ? T - r.top : r.bottom > B ? B - r.bottom : 0;
+      if (dx) b.style.marginLeft = dx + 'px'; if (dy) b.style.marginTop = dy + 'px';
+    });
+  }
+  function showAsk(text, btns, side, delay) {
+    askEl = h('div', { class: 'ask', role: 'note' }, text); askFor = btns; askSide = side || '';
+    if (!S0.FAST) askEl.style.animationDelay = delay == null ? '1.1s' : delay;      /* the whole drawing is seen first */
+    hots.appendChild(askEl); placeAsk();
+  }
   function frame() {
     root = $('#bench');
     root.innerHTML = '';
@@ -43,6 +146,7 @@
     hots = h('div', { class: 'hots' });
     lapseEl = h('div', { class: 'lapse', 'aria-live': 'polite' });
     canvas.appendChild(svg); canvas.appendChild(hots); canvas.appendChild(lapseEl); stage.appendChild(canvas); root.appendChild(stage);
+    if (window.ResizeObserver) new ResizeObserver(() => { fitHots(); placeAsk(); }).observe(hots);
     stepbar = h('div', { class: 'stepbar', 'aria-live': 'polite' }, '<p class="sn"><span class="n"></span><button class="again" type="button">↺ Start this experiment again</button></p><p class="st"></p><div class="msgs"></div>');
     root.appendChild(stepbar);
     $('.again', stepbar).addEventListener('click', () => { if (curScene) run(curScene); });
@@ -98,22 +202,27 @@
       step(n, total, text) {
         alive();
         $('.n', stepbar).textContent = total ? `Step ${n} of ${total}` : n;
-        $('.st', stepbar).innerHTML = text;
+        stepHtml = text; $('.st', stepbar).innerHTML = markDo(text);
         $('.msgs', stepbar).innerHTML = '';
       },
-      say(text) { alive(); $('.st', stepbar).innerHTML = text; },
+      say(text) { alive(); stepHtml = text; $('.st', stepbar).innerHTML = markDo(text); },
       /* buttons on the apparatus; resolves with the id pressed */
-      choose(list) {
-        alive();
+      choose(list, opt) {
+        alive(); opt = opt || {};
         return new Promise((res, rej) => {
           clearHots();
+          const made = [];
           list.forEach(it => {
             const b = h('button', { type: 'button', class: 'hot ' + (it.side || '') + (it.hold ? ' hold' : '') + (it.quiet ? ' quiet' : '') + (it.done ? ' seen' : '') }, esc(it.label) + (it.sub ? `<small>${esc(it.sub)}</small>` : ''));
             b.style.left = px(it.x); b.style.top = py(it.y);
-            hots.appendChild(b);
+            hots.appendChild(b); made.push(b);
             if (it.onHold) { holdable(b, it, my); return; }   /* press and hold: never resolves; another button moves on */
             b.addEventListener('click', e => { kbd = e.detail === 0; scene._busy = !scene.free; clearHots(); my === gen ? res(it.id) : rej(CANCEL); });   /* a free bench (exploring, nothing to lose) is never half done */
           });
+          fitHots();
+          const ask = opt.ask !== undefined ? opt.ask : list.filter(it => !it.quiet).length > 1 ? lastQuestion(stepHtml) : '';
+          if (ask) showAsk(ask, made.filter((b, i) => opt.at ? list[i].id === opt.at : !list[i].quiet), opt.side);
+          else showCue();
           if (kbd) { const first = hots.querySelector('.hot'); if (first) first.focus({ preventScroll: true }); }
         });
       },
@@ -124,7 +233,7 @@
           clearHots();
           const b = h('button', { type: 'button', class: 'hot hold ' + (it.side || '') }, esc(it.label) + (it.sub ? `<small>${esc(it.sub)}</small>` : ''));
           b.style.left = px(it.x); b.style.top = py(it.y);
-          hots.appendChild(b);
+          hots.appendChild(b); fitHots();
           let held = false, last = 0, raf = 0;
           const tick = now => {
             if (my !== gen) { cancelAnimationFrame(raf); rej(CANCEL); return; }
@@ -147,16 +256,16 @@
         alive();
         return new Promise((res, rej) => {
           clearHots();
-          const m = h('div', { class: 'msg oops' }, `<span>${text}</span><button type="button">${esc(btn || 'Try again')}</button>`);
+          const m = h('div', { class: 'msg oops' }, `<span>${markDo(text)}</span><button type="button">${esc(btn || 'Try again')}</button>`);
           $('.msgs', stepbar).innerHTML = ''; $('.msgs', stepbar).appendChild(m);
           $('button', m).addEventListener('click', () => { m.remove(); my === gen ? res() : rej(CANCEL); });
         });
       },
-      note(text) { const m = h('div', { class: 'msg done' }, `<span>${text}</span>`); $('.msgs', stepbar).innerHTML = ''; $('.msgs', stepbar).appendChild(m); },
+      note(text) { const m = h('div', { class: 'msg done' }, `<span>${markDo(text)}</span>`); $('.msgs', stepbar).innerHTML = ''; $('.msgs', stepbar).appendChild(m); },
       finish(text) {
         alive(); clearHots(); lapse(null);
         $('.n', stepbar).textContent = 'Done';
-        const m = h('div', { class: 'msg done' }, `<span>${text}</span><button type="button">↺ Run it again</button>`);
+        const m = h('div', { class: 'msg done' }, `<span>${markDo(text)}</span><button type="button">↺ Run it again</button>`);
         $('.msgs', stepbar).innerHTML = ''; $('.msgs', stepbar).appendChild(m);
         $('button', m).addEventListener('click', () => run(scene));
         if (scene.task) L.done(scene.task.id);
@@ -261,9 +370,11 @@
     const list = SCENES[curPart] || [];
     sceneBar.innerHTML = '';
     if (list.length < 2) return;
+    /* the bench is finished: the next one not done yet calls "Next" (its instruction is above the bench, not in the text) */
+    const next = curScene && !curScene._busy && doneTask(curScene.task) ? list.find(sc => sc !== curScene && !sc.ext && !doneTask(sc.task)) : null;
     list.forEach(sc => {
-      const b = h('button', { type: 'button', class: (sc.ext ? 'ext' : '') + (sc._call && sc !== curScene ? ' call' : ''), 'aria-pressed': String(sc === curScene) },
-        esc(sc.name) + (doneTask(sc.task) ? ' <span class="tick" aria-label="done">✓</span>' : ''));
+      const b = h('button', { type: 'button', class: (sc.ext ? 'ext' : '') + (sc._call && sc !== curScene ? ' call' : '') + (sc === next ? ' next' : ''), 'aria-pressed': String(sc === curScene) },
+        esc(sc.name) + (doneTask(sc.task) ? ' <span class="tick" aria-label="done">✓</span>' : '') + (sc === next ? ' <span class="nx">Next ▸</span>' : ''));
       b.addEventListener('click', () => { sc._call = false; if (sc !== curScene) run(sc); });
       sceneBar.appendChild(b);
     });
@@ -280,6 +391,8 @@
     watched.forEach(el => { const r = el.getBoundingClientRect(); if (r.top <= innerHeight * .55 && r.bottom >= 80) now = el; });
     if (!now || now === reading) return;
     reading = now;
+    if (askEl && askEl.dataset.cue) askEl.remove();
+    showCue();
     const sc = (SCENES[curPart] || []).find(x => x.id === now.dataset.scene);
     if (!sc || sc === curScene) return;
     if (curScene && curScene._busy) { sc._call = true; paintScenes(); return; }

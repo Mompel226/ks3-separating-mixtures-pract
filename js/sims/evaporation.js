@@ -85,7 +85,7 @@
         await k.tween(900, t => specks.forEach(s => { s.e.setAttribute('x', BX + s.vx * t); s.e.setAttribute('y', BOT - 8 + s.vy * t + 320 * t * t); }), B.lin);
         specks.forEach(s => s.e.remove());
         const dz = K.danger(k.top, 70, 150, 'DANGER: hot salt\nspits out of the basin');
-        await k.oops('<b>Crack!</b> Near the end, hot salt <b>spits</b> out of the basin. It can burn your eyes and skin: always wear <b>goggles</b> and a <b>lab coat</b>. And you lose salt. When the salt starts to appear, turn the heat off and let the last water evaporate.');
+        await k.oops('<b>Crack!</b> Near the end, hot salt <b>spits</b> out of the basin. It can burn your eyes and skin: always wear <b>goggles</b> and a <b>lab coat</b>. And you lose salt. Turn the heat off when the salt starts to appear, and let the last water evaporate.');
         dz.remove();
         continue;
       }
@@ -123,7 +123,7 @@
     for (;;) {
       k.step(2, 4, `Heat to evaporate some of the water. Test with a cold glass rod: crystals on the rod show the solution is <b>saturated</b>. Heated so far: <b>${heats * 2} minutes</b>.` + lastTest);
       const c = await k.choose([
-        { id: 'heat', x: BX - 170, y: 230, label: 'Heat for 2 minutes', side: 'l' },
+        { id: 'heat', x: BX - 170, y: 214, label: 'Heat for 2 minutes', side: 'l' },
         { id: 'rod', x: BX + 160, y: 200, label: 'Test with a glass rod', side: 'r' },
         { id: 'cool', x: BX + 160, y: 262, label: 'Stop and leave to cool', side: 'r' }
       ]);

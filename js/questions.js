@@ -7,6 +7,8 @@
    gaps: [[answer|other accepted]]; anyOrder: gaps (numbered from 1) whose answers may swap.
    look: where on the bench to look to answer it (Daniel, 15 Oct 2026: "guide to the animations that help them answer"),
    shown above the question; the question's slot in index.html names that scene (data-scene), which comes up on scroll.
+   cue: { label, ask, side? }: while the pupil reads the question, a yellow bubble with `ask` stands beside the bench
+   button whose words include `label` (16 Oct 2026, Daniel: what to press goes next to the button).
    ============================================================ */
 window.METHODS = {
   dissolve: 'Dissolve in water', filtration: 'Filtration', evaporation: 'Evaporation', crystallisation: 'Crystallisation',
@@ -22,7 +24,8 @@ window.QS = {
     items: [['Gold', 0], ['Distilled water', 0], ['Salt', 0], ['Mineral water', 1], ['Black coffee', 1], ['Brass', 1], ['Muddy water', 1], ['Air', 1]],
     why: 'Gold is one element. Distilled water and salt are each one compound. The others have two or more substances that are not chemically joined.' },
   'p1-sort-kind': { part: 1, kind: 'sort', title: 'Solution or mechanical mixture?', short: 'sort 2',
-    look: '<b>Zoom in</b>: press <b>👁 Show what you see</b> above the lens, then press each mixture: the lens shows it close up, as your eyes see it (oil and water, and granite, are beside the lens). Press <b>＋</b> to look closer. Does it look the same all through, or can you see separate parts?', label: 'Sort',
+    cue: { label: 'Show what you see', ask: 'For this sort, press this', side: 'r' },
+    look: '<b>Zoom in</b>: press <b>👁 Show what you see</b>, then press each mixture to see it close up. Press <b>＋</b> to look closer.', label: 'Sort',
     stem: 'Now sort these mixtures by what your eyes can see, not by their particles.',
     bins: [{ t: 'Only one phase', s: 'homogeneous: solutions, alloys, gas mixtures' }, { t: 'More than one phase', s: 'heterogeneous: mechanical mixtures' }],
     items: [['Mineral water', 0], ['Black coffee', 0], ['Brass', 0], ['Air', 0], ['Muddy water', 1], ['Oil and water', 1], ['Granite (a rock with grains)', 1]],
@@ -38,6 +41,7 @@ window.QS = {
   /* the particle model the pupils learned (Daniel, 15 Oct 2026): liquid = touching, sliding, held by hydrogen bonds; gas =
      far apart, fast, nothing holding them. Answered from the zoom lens (distilled water, air). */
   'p1-sort-state': { part: 1, kind: 'sort', title: 'Liquid water or a gas?', short: 'sort 3', ext: 1, label: 'Extension',
+    cue: { label: 'Distilled', ask: 'Press this, then Air' },
     look: '<b>Zoom in</b>: press <b>Distilled water</b>, then <b>Air</b>. Watch how the particles move and what holds them.',
     stem: 'Look at distilled water and at air in the lens. Put each sentence in the right box.',
     bins: [{ t: 'Liquid water', s: 'distilled water in the lens' }, { t: 'A gas', s: 'air in the lens' }],
