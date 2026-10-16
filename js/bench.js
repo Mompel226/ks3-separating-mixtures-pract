@@ -128,6 +128,15 @@
       if (dx) b.style.marginLeft = dx + 'px'; if (dy) b.style.marginTop = dy + 'px';
     });
   }
+  /* the bar above the bench is one slim row, as tall as its buttons (16 Oct 2026, Daniel: "if you narrowed the labels at
+     the top why did you not also narrow the headers that contain them?"): the bench's title shows when it fits on that row,
+     and steps aside when it does not; the bench's own button, lit, already names it */
+  function fitHead() {
+    if (!head) return;
+    const t = $('.bench__title', head);
+    head.classList.remove('tight');
+    if (t.scrollWidth > t.clientWidth + 1) head.classList.add('tight');
+  }
   function showAsk(text, btns, side, delay) {
     askEl = h('div', { class: 'ask', role: 'note' }, text); askFor = btns; askSide = side || '';
     if (!S0.FAST) askEl.style.animationDelay = delay == null ? '1.1s' : delay;      /* the whole drawing is seen first */
@@ -146,7 +155,7 @@
     hots = h('div', { class: 'hots' });
     lapseEl = h('div', { class: 'lapse', 'aria-live': 'polite' });
     canvas.appendChild(svg); canvas.appendChild(hots); canvas.appendChild(lapseEl); stage.appendChild(canvas); root.appendChild(stage);
-    if (window.ResizeObserver) new ResizeObserver(() => { fitHots(); placeAsk(); }).observe(hots);
+    if (window.ResizeObserver) { new ResizeObserver(() => { fitHots(); placeAsk(); }).observe(hots); new ResizeObserver(fitHead).observe(head); }
     stepbar = h('div', { class: 'stepbar', 'aria-live': 'polite' }, '<p class="sn"><span class="n"></span><button class="again" type="button">↺ Start this experiment again</button></p><p class="st"></p><div class="msgs"></div>');
     root.appendChild(stepbar);
     $('.again', stepbar).addEventListener('click', () => { if (curScene) run(curScene); });
@@ -294,7 +303,7 @@
       toggle(label, onLabel, cb) {
         const b = h('button', { type: 'button', class: 'tog', 'aria-pressed': 'false' }, esc(label));
         b.addEventListener('click', () => { const on = b.getAttribute('aria-pressed') !== 'true'; b.setAttribute('aria-pressed', String(on)); b.textContent = on ? onLabel : label; if (my === gen) cb(on); });
-        togBar.appendChild(b); return b;
+        togBar.appendChild(b); fitHead(); return b;
       },
       /* start the scene again from its first step (after a mistake whose outcome ran to the end) */
       restart() { setTimeout(() => { if (my === gen) run(scene); }, 0); }
@@ -330,7 +339,7 @@
   function photoButton(scene) {
     const b = h('button', { type: 'button', class: 'tog photo', 'aria-pressed': 'false' }, '📷 Real photo');
     b.addEventListener('click', () => { const on = b.getAttribute('aria-pressed') !== 'true'; b.setAttribute('aria-pressed', String(on)); b.textContent = on ? '✕ Back to the bench' : '📷 Real photo'; showPhoto(on ? scene.photo : null); });
-    togBar.appendChild(b);
+    togBar.appendChild(b); fitHead();
   }
   function fadeIn(g) { if (S0.FAST) return; g.style.opacity = 0; g.style.transition = 'opacity .35s'; requestAnimationFrame(() => requestAnimationFrame(() => { g.style.opacity = 1; })); }
   function clearHots() { hots.innerHTML = ''; }
@@ -353,10 +362,10 @@
     const v = scene.view || [0, 0, VW]; VX = v[0]; VY = v[1]; VWW = v[2]; VHH = v[2] * VH / VW;
     svg.setAttribute('viewBox', `${VX} ${VY} ${VWW} ${VHH}`);
     background();
-    $('.bench__title', head).innerHTML = `${esc(scene.title || scene.name)}<small>${esc(scene.kicker || 'Part ' + curPart + ' · the bench')}</small>`;
+    $('.bench__title', head).textContent = scene.title || scene.name;
     $('.n', stepbar).textContent = ''; $('.st', stepbar).textContent = ''; $('.msgs', stepbar).innerHTML = '';
     svg.setAttribute('aria-label', scene.alt || ('The lab bench: ' + (scene.title || scene.name)));
-    paintScenes();
+    paintScenes(); fitHead();
     const kit = kitFor(scene, my);
     Promise.resolve().then(() => scene.run(kit)).catch(e => { if (e !== CANCEL) { console.error(e); } });
   }
@@ -378,6 +387,7 @@
       b.addEventListener('click', () => { sc._call = false; if (sc !== curScene) run(sc); });
       sceneBar.appendChild(b);
     });
+    fitHead();
   }
   /* a question or an extension box on the sheet names the scene it needs (data-scene). The bench shows the scene of the
      one the pupil is reading (Daniel, 15 Oct 2026: "as they scroll down and they reach the question that's related to

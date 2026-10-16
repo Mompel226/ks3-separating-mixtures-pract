@@ -232,6 +232,6 @@
     tag(x - 80, y + 4, 'paper', '#7A6D45', -90); tag(x + 80, y + 4, 'paper', '#7A6D45', 90);
   }
 
-  B.define(2, [{ id: 'filter', name: 'Filtration', title: 'Filtration', view: [70, 112, 670], kicker: 'Part 2 · the bench', task: { id: 'p2-sim', title: 'Bench: filtration of muddy water and salt water' }, run,
+  B.define(2, [{ id: 'filter', name: 'Filtration', title: 'Filtration', view: [70, 112, 670], task: { id: 'p2-sim', title: 'Bench: filtration of muddy water and salt water' }, run,
                  alt: 'A filter funnel held by a clamp over a conical flask, with filter paper and a beaker of muddy water.' }]);
 })();

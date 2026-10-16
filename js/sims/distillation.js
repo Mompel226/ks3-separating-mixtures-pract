@@ -251,7 +251,7 @@
   B.define(4, [
     { id: 'simple', name: 'Simple distillation', title: 'Pure water from seawater', view: [20, 70, 740], task: { id: 'p4-sim', title: 'Bench: distilled seawater' }, run: simpleRun,
       alt: 'A round-bottomed flask of seawater over a Bunsen burner, a thermometer at the side arm, a sloping condenser with a cold-water jacket, and a flask to collect the distillate.' },
-    { id: 'frac', name: 'Fractional', ext: true, title: 'Fractional distillation of ethanol and water', kicker: 'Extension · the bench', view: [20, 20, 780], task: { id: 'p4-sim-frac', title: 'Bench: fractional distillation (extension)' }, run: fracRun,
+    { id: 'frac', name: 'Fractional', ext: true, title: 'Fractional distillation of ethanol and water', view: [20, 20, 780], task: { id: 'p4-sim-frac', title: 'Bench: fractional distillation (extension)' }, run: fracRun,
       alt: 'A flask of ethanol and water in an electric heater, under a column of glass beads, a condenser, two beakers and a graph of temperature against time.' }
   ]);
 })();
