@@ -58,6 +58,8 @@ domain, except the filtration photo (David Rouzek, CC BY-SA 4.0).
 
 <details><summary>Behind the scenes</summary>
 
+The `tools/` named here stay on Daniel's computer: they are not in this repository (since 18 Oct 2026).
+
 - `index.html` holds the words of each part; `js/questions.js` every check (its id is its square on the teacher's
   board: keep the id when rewording); `js/words.js` the word bank with Korean and Chinese.
 - `js/bench.js` runs a bench (steps, buttons on the apparatus, mistakes, press-and-hold) and switches to the scene a
