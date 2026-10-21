@@ -282,11 +282,15 @@
     const btn = $('button', row), say = $('.say', row);
     let tries = A.tries || 0, locked = false;
     let ord = (A.ord && A.ord.length === q.items.length) ? A.ord.slice() : (() => { let o; do { o = shuffle(q.items.map((_, i) => i)); } while (o.every((v, i) => v === i)); return o; })();
-    function draw() {
+    /* The numbers are PLACES (1 = first) and stay where they are; only the step card moves (21 Oct 2026: with the
+       number inside the line, the list read 1, 2, 3 … after every press and a pupil thought nothing had moved).
+       After a press each card slides from where it was, and the card pressed is outlined for a moment. */
+    function draw(moved) {
+      const was = {}; $$('.oc', ol).forEach(c => { was[c.dataset.i] = c.getBoundingClientRect().top; });
       ol.innerHTML = '';
       ord.forEach((oi, k) => {
-        const li = h('li', null, `<span class="n">${k + 1}</span><span class="tx">${esc(q.items[oi])}</span>` + (locked ? '' :
-          `<span class="mv"><button type="button" aria-label="Move up" ${k === 0 ? 'disabled' : ''}>↑</button><button type="button" aria-label="Move down" ${k === ord.length - 1 ? 'disabled' : ''}>↓</button></span>`));
+        const li = h('li', null, `<span class="n">${k + 1}</span><span class="oc" data-i="${oi}"><span class="tx">${esc(q.items[oi])}</span>` + (locked ? '' :
+          `<span class="mv"><button type="button" aria-label="Move up" ${k === 0 ? 'disabled' : ''}>↑</button><button type="button" aria-label="Move down" ${k === ord.length - 1 ? 'disabled' : ''}>↓</button></span>`) + '</span>');
         if (locked) li.classList.add('right');
         ol.appendChild(li);
         if (!locked) {
@@ -295,8 +299,14 @@
           dn.addEventListener('click', () => { swap(k, k + 1); const b = $$('.mv button', ol)[(k + 1) * 2 + 1]; if (b && !b.disabled) b.focus(); });
         }
       });
+      const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      $$('.oc', ol).forEach(c => {
+        const dy = was[c.dataset.i] != null ? was[c.dataset.i] - c.getBoundingClientRect().top : 0;
+        if (dy && c.animate && !still) c.animate([{ transform: `translateY(${dy}px)` }, { transform: 'none' }], { duration: 200, easing: 'ease-out' });
+        if (c.dataset.i === String(moved)) { c.classList.add('is-moved'); setTimeout(() => c.classList.remove('is-moved'), 900); }
+      });
     }
-    function swap(a, b) { if (b < 0 || b >= ord.length) return; [ord[a], ord[b]] = [ord[b], ord[a]]; ans.put(id, { ord: ord.slice() }); ui.say(say, ''); draw(); }
+    function swap(a, b) { if (b < 0 || b >= ord.length) return; const m = ord[a]; [ord[a], ord[b]] = [ord[b], ord[a]]; ans.put(id, { ord: ord.slice() }); ui.say(say, ''); draw(m); }
     function lock(shown) { locked = true; btn.remove(); const sb = $('.show', row); if (sb) sb.remove(); draw(); ui.status(shown ? 'Order shown' : RIGHT, !shown); ui.say(say, shown ? 'This is the order.' : 'The right order.', shown ? '' : 'ok'); if (q.why) ui.why(q.why, shown); }
     function showBtn() {
       if (tries < 2 || $('.show', row)) return;
