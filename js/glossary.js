@@ -97,7 +97,7 @@
     ]},
     { g: 'Properties', w: [
       { k: 'size',            en: 'size',            ko: '크기',              zh: '大小',        d: 'How big the particles or pieces are.' },
-      { k: 'solubility',      en: 'solubility',      ko: '용해도',            zh: '溶解度',      d: 'How much of a substance can dissolve in a certain amount of a solvent.' },
+      { k: 'solubility',      en: 'solubility',      ko: '용해도',            zh: '溶解度',      d: 'The mass of a substance that can dissolve in a given volume of a solvent.' },
       { k: 'volatility',      en: 'volatility',      ko: '휘발성',            zh: '挥发性',      d: 'How easily a substance turns into a gas.' },
       { k: 'boiling-point',   en: 'boiling point',   ko: '끓는점',            zh: '沸点',        d: 'The temperature at which a liquid boils.' },
       { k: 'density',         en: 'density',         ko: '밀도',              zh: '密度',        d: 'How much mass there is in a certain volume. A less dense liquid floats on a denser one.' },
