@@ -1,4 +1,4 @@
-# Separating mixtures · KS3 Year 7
+# Y7 Chemistry practical: separating mixtures
 
 ![The chromatography bench: five inks on a paper, the dyes separated, a ruler beside it](img/screenshot.jpg)
 
