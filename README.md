@@ -49,7 +49,7 @@ saved for their teacher, who sees it live on the teacher page's 🔬 Practicals 
 of checks, and the wrong answers given. Signed out, the page works the same and nothing leaves the computer. Answers
 survive a reload.
 
-**Made by** Dr Daniel Mompel Riera, NLCS Jeju. Something wrong, or a suggestion? dmompelriera@nlcsjeju.kr
+**Made by** Dr Daniel Mompel Riera. Something wrong, or a suggestion? dmompelriera@nlcsjeju.kr
 
 **Licence.** Code: AGPL-3.0 (`LICENSE`). Teaching material: CC BY-NC-SA 4.0 (`LICENSE-CONTENT`): free for
 teaching, not for selling. Every drawing on the bench was drawn for this page. The real photos come from Wikimedia
