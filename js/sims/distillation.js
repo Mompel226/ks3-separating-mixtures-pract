@@ -34,7 +34,11 @@
     for (let i = 1; i < pts.length; i++) { const l = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); segs.push([pts[i - 1], pts[i], l]); tot += l; }
     const at = s => { let d = s * tot; for (const [a, b, l] of segs) { if (d <= l) return [a[0] + (b[0] - a[0]) * d / l, a[1] + (b[1] - a[1]) * d / l]; d -= l; } return pts[pts.length - 1]; };
     const parts = []; let acc = 0, on = true;
-    if (k.FAST) return { stop() {}, g };
+    /* Reduce motion: dots stand along the path, vapour before the condenser, drops after (gone at stop()) */
+    if (k.FAST) {
+      for (let s = .06; s < 1; s += .11) { const [x, y] = at(s), drop = s >= o.cond; S('circle', { cx: x, cy: y, r: drop ? 2.6 : 3.2, fill: drop ? (o.drop || '#5FA3E0') : '#FFFFFF', opacity: drop ? 1 : .35 + .5 * (1 - s / o.cond) }, g); }
+      return { g, stop() { g.remove(); } };
+    }
     k.loop(dt => {
       acc += dt;
       if (on && acc > (o.every || .12)) { acc = 0; parts.push({ c: S('circle', { r: 3.2, fill: '#FFFFFF', opacity: .8 }, g), s: 0 }); }
@@ -208,7 +212,50 @@
     k.step(1, 3, 'Ethanol boils at 78 °C, water at 100 °C. Ethanol catches fire easily, so it is heated with an electric heater, never a flame. Switch on the heater and watch the thermometer and the graph.');
     await k.choose([{ id: 'l', x: FX + 76, y: 420, label: 'Switch on the heater', side: 'r' }]);
     bun.on(true);
-    if (k.FAST) { draw(TT); th.set(100); k.readout('t', FX + 44, 80, '100 °C'); bA.liq.set(.3); bB.liq.set(.3); fl.liq.set(.3); relabelMix('water left'); k.finish('Ethanol collected first, at 78 °C; water followed at 100 °C.'); return; }
+    /* Reduce motion (Daniel, 9 Nov 2026: "Nothing should disappear"): no time-lapse, but the same task. Each press of
+       "Wait a little" shows the bench a little later, as a still: the thermometer, the graph and the beakers. The pupil
+       changes the beaker when the temperature starts to rise, as in the moving bench (too early or too late, the same
+       words, and the same try again). */
+    if (k.FAST) {
+      for (;;) {
+        let t = 1, drip = null;
+        const at = t2 => {
+          const T = temp(t2); th.set(T); k.readout('t', FX + 44, 80, Math.round(T) + ' °C'); draw(Math.min(t2, TT));
+          bA.liq.set(t2 > 3 ? Math.min(.42, (t2 - 3) / 5 * .42) : 0);
+          fl.liq.set(t2 > 3 ? .6 - .3 * Math.min(1, (t2 - 3) / (TT - 3)) : .6);
+          if (t2 > 3 && !drip) drip = K.drips(g, k, 496, 332, () => bA.liq.y(), { color: '#CFE9F7', every: .3 });
+        };
+        bA.liq.set(0); bB.liq.set(0); fl.liq.set(.6); bBw.setAttribute('transform', ''); bA.g.setAttribute('transform', ''); relabelMix('ethanol and water');
+        k.lapse('40 minutes: each press of Wait a little is a few minutes later');
+        k.step(2, 3, 'When almost no ethanol is left in the flask, the temperature starts to rise. Change the beaker <b>then</b>, not before. Watch the thermometer: press Wait a little to see it a few minutes later.');
+        at(t);
+        let r = null;
+        while (!r) {
+          /* side by side on the band under the bench, as the simple distillation's buttons, with the question beside them:
+             clear of the drawing and its words */
+          const c = await k.choose([{ id: 'wait', x: FX + 40, y: 484, label: 'Wait a little' }, { id: 'swap', x: FX + 300, y: 484, label: 'Change the beaker' }],
+            { ask: '' });   /* the step's own words ask it: a bubble here would cover the drawing on a small screen */
+          if (c === 'swap') r = 'press'; else { t += 1; at(t); if (temp(t) > 95) r = 'late'; }
+        }
+        if (r === 'late' || t < 8) {
+          if (drip) drip.kill(); k.clearHots(); k.lapse(null); relabelMix(r === 'late' ? 'water left' : 'ethanol and water');
+          if (r === 'late') bA.liq.color('#A6D2F0');
+          await k.oops(r === 'late'
+            ? 'Too late: the temperature reached almost 100 °C, so water vapour reached beaker 1 too. Beaker 1 now holds ethanol <b>and</b> water.'
+            : 'Too early: the temperature was still 78 °C, so ethanol was still reaching the beaker. You lost some ethanol into beaker 2.');
+          bA.liq.color('#CFE9F7'); draw(0); th.set(20); k.readout('t', FX + 44, 80, '20 °C');
+          continue;
+        }
+        bA.g.setAttribute('transform', 'translate(200 0)'); bBw.setAttribute('transform', 'translate(-100 0)');
+        k.step(3, 3, 'Good timing. Now water collects in beaker 2 at 100 °C.');
+        draw(TT); th.set(100); k.readout('t', FX + 44, 80, '100 °C'); bB.liq.set(.3); fl.liq.set(.3);
+        if (drip) drip.kill(); k.lapse(null); relabelMix('water left');
+        break;
+      }
+      bun.on(false);
+      k.finish('Ethanol (boiling point 78 °C) reached the beaker first, while the temperature stayed at 78 °C. When the temperature rose, almost no ethanol was left in the flask, and water followed at 100 °C.');
+      return;
+    }
     for (;;) {
       let t = 0, swapped = false, late = null;
       const lateP = new Promise(res => { late = res; });

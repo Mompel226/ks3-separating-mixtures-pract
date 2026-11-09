@@ -125,13 +125,21 @@
     for (let t = 0; t <= t1; t += 10) { const yy = y2 - 12 - (t - t0) / (t1 - t0) * (y2 - y1 - 20); S('line', { x1: x + 5, y1: yy, x2: x + (t % 50 ? 8 : 11), y2: yy, stroke: 'var(--glass)', 'stroke-width': 1 }, g); }
     return { g, set(t) { const yy = y2 - 12 - Math.max(0, (t - t0)) / (t1 - t0) * (y2 - y1 - 20); col.setAttribute('y', yy); col.setAttribute('height', y2 - yy); } };
   }
-  /* ---------------- moving bits ---------------- */
+  /* ---------------- moving bits ----------------
+     With Reduce motion (k.FAST) each is drawn still, never left out (Daniel, 9 Nov 2026: "Nothing should disappear"): a
+     few wisps, bubbles or drops where the moving ones pass, in the same places every time, gone at stop() */
+  function fixed(n, seed) { let s = seed; return Array.from({ length: n }, () => { s = (s * 9301 + 49297) % 233280; return s / 233280; }); }
+  function stillBits(g) { return { g, stop() { g.remove(); }, kill() { g.remove(); } }; }
   /* rising wisps of vapour from (x, y), drifting up; returns stop() */
   function steam(p, k, x, y, o) {
     o = o || {};
     const g = S('g', { class: 'steam', 'pointer-events': 'none' }, p), parts = [];
     let on = true, acc = 0;
-    if (k.FAST) return { stop() {}, g };
+    if (k.FAST) {
+      const r = fixed(10, 7);
+      for (let i = 0; i < 5; i++) S('circle', { cx: x + (r[i] - .5) * (o.spread || 30), cy: y - 8 - i * 11, r: 4 + i * 1.6, fill: o.color || '#FFFFFF', opacity: .55 * (1 - i / 5) }, g);
+      return stillBits(g);
+    }
     const run = k.loop(dt => {
       acc += dt;
       if (on && acc > (o.every || .09)) { acc = 0; const c = S('circle', { cx: x + (Math.random() - .5) * (o.spread || 30), cy: y, r: 3 + Math.random() * 4, fill: o.color || '#FFFFFF', opacity: .7 }, g); parts.push({ c, t: 0, vx: (Math.random() - .5) * 12 + (o.drift || 0), life: o.life || 1.4 }); }
@@ -153,7 +161,11 @@
     o = o || {};
     const g = S('g', { class: 'bubbles', 'pointer-events': 'none' }, p), parts = [];
     let on = true, acc = 0;
-    if (k.FAST) return { stop() {}, g };
+    if (k.FAST) {
+      const r = fixed(16, 11), top = surf();
+      for (let i = 0; i < 8; i++) S('circle', { cx: x0 + r[i] * (x1 - x0), cy: top + 4 + r[i + 8] * Math.max(0, yb - top - 6), r: 1.5 + r[(i + 3) % 16] * 2.5, fill: 'none', stroke: '#FFFFFF', 'stroke-width': 1.2, opacity: .85 }, g);
+      return stillBits(g);
+    }
     const run = k.loop(dt => {
       acc += dt;
       if (on && acc > (o.every || .07)) { acc = 0; const c = S('circle', { cx: x0 + Math.random() * (x1 - x0), cy: yb, r: 1.5 + Math.random() * 2.5, fill: 'none', stroke: '#FFFFFF', 'stroke-width': 1.3, opacity: .85 }, g); parts.push({ c, v: 50 + Math.random() * 50 }); }
@@ -168,7 +180,11 @@
     o = o || {};
     const g = S('g', { class: 'drips', 'pointer-events': 'none' }, p), parts = [];
     let on = true, acc = 0;
-    if (k.FAST) return { stop() {}, g };
+    if (k.FAST) {
+      const end = y1();
+      [.3, .7].forEach(f => S('ellipse', { cx: x, cy: y0 + (end - y0) * f, rx: 2.6, ry: 3.6, fill: o.color || C.water, opacity: .95 }, g));
+      return stillBits(g);
+    }
     const run = k.loop(dt => {
       acc += dt;
       if (on && acc > (o.every || .45)) { acc = 0; parts.push({ c: S('ellipse', { cx: x, cy: y0, rx: 2.6, ry: 3.6, fill: o.color || C.water, opacity: .95 }, g), v: 40 }); }

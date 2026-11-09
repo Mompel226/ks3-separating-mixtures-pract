@@ -31,12 +31,16 @@
   async function run(k) {
     const g = k.svg;
     const card = S('g', null, g);
-    if (!unlocked() && !k.FAST) {
+    /* the lock holds with Reduce motion too (Daniel, 9 Nov 2026: Reduce motion changes only the motion); only the page's own
+       test modes (?still=1, ?manifest) open the finder at once. The wait is a real second, never k.wait (instant with
+       Reduce motion), and it ends when the pupil leaves the bench */
+    const P = window.SEP.params, testing = P.has('still') || P.has('manifest');
+    if (!unlocked() && !testing) {
       S('rect', { x: 70, y: 60, width: 660, height: 360, rx: 18, fill: 'var(--sheet)', stroke: 'var(--rule)', 'stroke-width': 1.5 }, card);
       S('text', { x: 400, y: 200, 'text-anchor': 'middle', 'font-size': 44 }, card, '🔒');
       ['The method finder opens when you have', 'tried a job twice. Think about each job first.'].forEach((t, i) => S('text', { x: 400, y: 262 + i * 32, 'text-anchor': 'middle', 'font-size': 22, 'font-weight': 800, fill: 'var(--ink2)' }, card, t));
       k.step('Method finder', 0, 'Choose the methods for the jobs. If you are stuck on a job after two tries, the finder opens here.');
-      while (!unlocked()) await k.wait(1000);
+      while (!unlocked()) { await new Promise(r => setTimeout(r, 1000)); if (!card.isConnected) return; }
       card.innerHTML = '';
     }
     for (;;) {
