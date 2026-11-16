@@ -47,7 +47,8 @@ sorted or put in order. The answers are shown only after two tries.
 **For the teacher.** A pupil who signs in with their school Google account has every check and every finished bench
 saved for their teacher, who sees it live on the teacher page's 🔬 Practicals board: right first time, the number
 of checks, and the wrong answers given. Signed out, the page works the same and nothing leaves the computer. Answers
-survive a reload.
+survive a reload. A signed-in pupil's right answers also come back from the teacher's record on a cleared browser or
+another computer (16 Nov 2026), and the bars count them at once.
 
 **Made by** Dr Daniel Mompel Riera. Something wrong, or a suggestion? dmompelriera@nlcsjeju.kr
 
@@ -74,4 +75,7 @@ The `tools/` named here stay on Daniel's computer: they are not in this reposito
 - `node tools/overlap-audit.mjs` runs every bench, every step and every mistake at seven window sizes and reports
   buttons or words that overlap or are cut off; `--gallery <part> out.png` draws every step for a person to look at;
   `--scroll` checks that scrolling to a question or an extension brings up its scene.
+- `node tools/restore-check.mjs` (a stand-in labs script, made-up names) proves a signed-in pupil's right answers come
+  back from the record on a cleared browser, one check of each kind, and the bars count them; never a round closed by
+  Start again, or for a teacher. It needs the estate served on 127.0.0.1:8787 (`--url` for another).
 </details>
